@@ -1,7 +1,10 @@
 import TabPanel from "./tabpanel.js";
 import OpDependencyTab from "../../components/tabs/tab_opdependency.js";
 import { platform } from "../../platform.js";
-import { gui } from "../../gui.js";
+import Tab from "./tab.js";
+
+/** @typedef {import("cables-shared-client").OpDoc} OpDoc */
+/** @typedef {import("./tab.js").TabOptions} TabOptions */
 
 /**
  * a tab panel, that can contain tabs
@@ -13,37 +16,55 @@ import { gui } from "../../gui.js";
 export default class OpDependencyTabPanel extends TabPanel
 {
 
+    /** @type {OpDoc} */
+    #opDoc;
+
+    /** @type {Object[]} */
+    #sources;
+
     /**
      * Description
      * @param {string} eleId
-     * @param {object} options
+     * @param {OpDoc} opDoc
      */
-    constructor(eleId, options)
+    constructor(eleId, opDoc)
     {
         super(eleId, { "noUserSetting": true });
 
-        this._options = options;
-        this._sources = [
-            { "title": "Upload File", "value": "file", "icon": "file" },
-            { "title": "From URL", "value": "url", "icon": "globe" },
-            { "title": "Op", "value": "op", "icon": "op" },
-            { "title": "Core-Lib", "value": "corelib", "icon": "cables" }
+        this.#opDoc = opDoc;
+
+        this.#sources = [
+            { "title": "Upload File", "type": "file", "icon": "file" },
+            { "title": "From URL", "type": "url", "icon": "globe" },
+            { "title": "Op", "type": "op", "icon": "op" },
+            { "title": "Core-Lib", "type": "corelib", "icon": "cables" }
         ];
         if (platform.getSupportedOpDependencyTypes().includes("npm"))
         {
-            this._sources.splice(2, 0, { "title": "From NPM", "value": "npm" });
+            this.#sources.splice(2, 0, { "title": "From NPM", "type": "npm", "icon": "file" });
         }
+    }
 
+    /**
+     *
+     * @returns {OpDependencyTab}
+     */
+    getActiveTab()
+    {
+        return /** @type {OpDependencyTab} */(super.getActiveTab());
     }
 
     init()
     {
+
+        /** @type {Tab} */
         let activeTab = null;
-        this._sources.forEach((depSource, i) =>
+        this.#sources.forEach((source, i) =>
         {
-            const title = depSource.title || depSource.value;
-            const tabOptions = { "hideToolbar": true, "closable": false, "depSource": depSource.value, "icon": depSource.icon, ...this._options };
-            const depTab = new OpDependencyTab(this, title, tabOptions);
+
+            /** @type {TabOptions} */
+            const tabOptions = { "hideToolbar": true, "closable": false, "icon": source.icon };
+            const depTab = new OpDependencyTab(this, source.title, source.type, this.#opDoc, tabOptions);
             if (i > 0)
             {
                 depTab.deactivate();

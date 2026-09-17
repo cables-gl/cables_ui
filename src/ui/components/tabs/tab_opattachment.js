@@ -4,6 +4,10 @@ import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { fileUploader } from "../../dialogs/upload.js";
 import { platform } from "../../platform.js";
+import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
+
+/** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
 /**
  * tab to manage op dependencies like libs or npm-modules
@@ -14,25 +18,58 @@ import { platform } from "../../platform.js";
  */
 export default class OpAttachmentTab extends Tab
 {
-    constructor(tabs, title, options = {})
+
+    /** @type {TabPanel} */
+    #tabs;
+
+    /** @type {string} */
+    #sourceType;
+
+    /** @type {OpDoc} */
+    #opDoc;
+
+    /** @type {HTMLElement} */
+    #containerEle;
+
+    /** @type {HTMLInputElement} */
+    #srcEle;
+
+    /** @type {HTMLInputElement} */
+    #fileInputEle;
+
+    /** @type {HTMLElement} */
+    #errorsEle;
+
+    /**
+     *
+     * @param {TabPanel} tabs
+     * @param {string} title
+     * @param {string} sourceType
+     * @param {OpDoc} opDoc
+     * @param {import("../../elements/tabpanel/tab.js").TabOptions} tabOptions
+     */
+    constructor(tabs, title, sourceType, opDoc, tabOptions = {})
     {
-        super(title, options);
-        this._tabs = tabs || gui.mainTabs;
-        this._tabs.addTab(this);
+        super(title, tabOptions);
+
+        this.#sourceType = sourceType;
+        this.#opDoc = opDoc;
+
+        this.#tabs = tabs;
+        this.#tabs.addTab(this);
         gui.maintabPanel.show(true);
         this.html(this.getHtml());
-        this._initEventListeners();
+        this.#initEventListeners();
     }
 
     getHtml()
     {
         const acceptedFiles = CablesConstants.FILETYPES.opattachment_static;
         const templateOptions = {
-            ...this.options,
             "acceptedFileTypesUpload": acceptedFiles,
             "docsUrl": platform.getCablesDocsUrl()
         };
-        return getHandleBarHtml("op_add_attachment_" + this.options.attSource, templateOptions);
+        return getHandleBarHtml("op_add_attachment_" + this.#sourceType, templateOptions);
     }
 
     activate()
@@ -40,50 +77,88 @@ export default class OpAttachmentTab extends Tab
         this.active = true;
         this.contentEle.style.display = "block";
         this.toolbarContainerEle.style.display = "block";
-
-        const attSource = this.options.attSource;
-        const viewId = this.options.viewId;
-        const selector = "addopattachment_" + attSource + "_" + viewId;
-        const attsEle = ele.byId(selector);
-        if (attsEle)
-        {
-            const srcEle = attsEle.querySelector(".attSrc");
-            if (srcEle) srcEle.focus();
-        }
+        if (this.#srcEle) this.#srcEle.focus();
+        this.#validate();
         this.emitEvent(Tab.EVENT_ACTIVATE);
     }
 
-    _initEventListeners()
+    submit(done)
     {
-        const attSource = this.options.attSource;
-        const viewId = this.options.viewId;
 
-        const selector = "addopattachment_" + attSource + "_" + viewId;
-        const attsEle = ele.byId(selector);
-
-        if (attsEle)
+        let attachmentName = this.#srcEle.value;
+        let binary = null;
+        if (this.#sourceType === "js")
         {
-            const srcEle = attsEle.querySelector(".attSrc");
-            const attTypeEle = attsEle.querySelector("input[name='attType']");
+            if (!attachmentName.startsWith("inc_")) attachmentName = "inc_" + attachmentName;
+            if (!attachmentName.endsWith(".js")) attachmentName += ".js";
+        }
+        else if (this.#sourceType === "binary")
+        {
 
-            const selectFileButton = attsEle.querySelector(".cblbutton.upload");
-            if (selectFileButton)
+            attachmentName = this.#fileInputEle.files[0].name;
+            if (!attachmentName.startsWith("att_bin_")) attachmentName = "att_bin_" + attachmentName;
+            binary = this.#fileInputEle.files[0];
+        }
+
+        this.#addAttachment(this.#opDoc, attachmentName, binary, done);
+    }
+
+    #validate()
+    {
+        const modal = gui.currentModal;
+        ele.hide(this.#errorsEle);
+
+        const src = this.#srcEle.value;
+
+        let valid = !!src;
+        let errors = [];
+        switch (this.#sourceType)
+        {
+        case "string":
+            break;
+        case "js":
+            break;
+        case "binary":
+            break;
+        }
+
+        if (valid)
+        {
+            if (modal) modal.enableButton(ModalDialog.MODAL_CHOICE_OK_BUTTON_ID);
+        }
+        else
+        {
+            this.#showErrors(errors);
+            if (modal) modal.disableButton(ModalDialog.MODAL_CHOICE_OK_BUTTON_ID);
+        }
+
+    }
+
+    #initEventListeners()
+    {
+        const selector = "addopattachment_" + this.#sourceType;
+        this.#containerEle = ele.byId(selector);
+
+        if (this.#containerEle)
+        {
+            this.#srcEle = this.#containerEle.querySelector(".src");
+
+            this.#fileInputEle = this.#containerEle.querySelector("input[type='file']");
+            this.#errorsEle = this.#containerEle.querySelector(".highlightBlock.error");
+
+            if (this.#fileInputEle)
             {
-                const fileInput = attsEle.querySelector("input[type='file']");
-                selectFileButton.addEventListener("click", () => { fileInput.click(); });
-                fileInput.addEventListener("change", () =>
+                const selectFileButton = this.#containerEle.querySelector(".cblbutton.upload");
+                if (selectFileButton)
                 {
-                    srcEle.value = fileInput.files[0].name;
-                    if (attTypeEle && attTypeEle.value === "binary")
-                    {
-                        const usageEle = attsEle.querySelector(".usage.static code");
-                        if (usageEle) usageEle.innerText = "staticAttachments." + fileInput.files[0].name.replaceAll(".", "_");
-                    }
-                });
+                    selectFileButton.addEventListener("click", () => { this.#fileInputEle.click(); });
+                    this.#fileInputEle.addEventListener("change", this.#uploadFileChange.bind(this));
+                }
             }
-            else
+
+            if (this.#srcEle)
             {
-                srcEle.addEventListener("keydown", (e) =>
+                this.#srcEle.addEventListener("keydown", (e) =>
                 {
                     if (e.code == "Enter")
                     {
@@ -91,47 +166,13 @@ export default class OpAttachmentTab extends Tab
                         if (gui && gui.currentModal) gui.currentModal.close();
                     }
                 });
-
-                if (attTypeEle && attTypeEle.value === "string")
-                {
-                    srcEle.addEventListener("input", () =>
-                    {
-                        const usageEle = attsEle.querySelector(".usage.string code");
-                        if (usageEle) usageEle.innerText = "attachments." + srcEle.value.replaceAll(".", "_");
-                    });
-                }
+                this.#srcEle.addEventListener("input", this.#textInputChange.bind(this));
             }
         }
     }
 
-    submit(done)
-    {
-        const attSource = this.options.attSource;
-        const selector = "addopattachment_" + attSource + "_" + this.options.viewId;
-        const depsEle = ele.byId(selector);
-        const inputEle = depsEle.querySelector("input[type='text']");
-        let filename = inputEle.value;
-        let binary = null;
-        if (attSource === "js")
-        {
-            if (!filename.startsWith("inc_")) filename = "inc_" + filename;
-            if (!filename.endsWith(".js")) filename += ".js";
-        }
-        else if (attSource === "binary")
-        {
-
-            const fileInput = depsEle.querySelector("input[type='file']");
-            filename = fileInput.files[0].name;
-            if (!filename.startsWith("att_bin_")) filename = "att_bin_" + filename;
-            binary = fileInput.files[0];
-        }
-
-        this.#addAttachment(this.options.opDoc, filename, binary, done);
-    }
-
     /**
-     *
-     * @param {import("cables-shared-client").OpDoc} opDoc
+     * @param {OpDoc} opDoc
      * @param {string} filename
      * @param {any} [binary]
      * @param {function} [cb]
@@ -155,7 +196,7 @@ export default class OpAttachmentTab extends Tab
                 }
                 else
                 {
-                    this.#showError(err);
+                    this.#showErrors([err]);
                     if (cb) cb(err);
                 }
             });
@@ -185,7 +226,7 @@ export default class OpAttachmentTab extends Tab
                 }
                 else
                 {
-                    this.#showError(err);
+                    this.#showErrors([err]);
                     if (cb) cb(err);
                 }
             });
@@ -193,9 +234,45 @@ export default class OpAttachmentTab extends Tab
 
     }
 
-    #showError(err)
+    #textInputChange()
     {
-        gui.serverOps.showApiError(err);
+        this.#validate();
+        const usageEle = this.#containerEle.querySelector(".usage.string .codehint");
+        if (usageEle)
+        {
+            let attachmentName = this.#srcEle.value;
+            if (this.#sourceType === "js" && attachmentName.startsWith("inc_")) attachmentName += "inc_";
+            usageEle.innerText = "attachments." + attachmentName.replaceAll(".", "_");
+        }
+    }
+
+    #uploadFileChange()
+    {
+        this.#validate();
+        const uploadNameEle = this.#containerEle.querySelector(".uploadName");
+        if (uploadNameEle) uploadNameEle.innerText = this.#fileInputEle.files[0].name;
+        const usageEle = this.#containerEle.querySelector(".usage.binary .codehint");
+        if (usageEle) usageEle.innerText = "staticAttachments." + this.#fileInputEle.files[0].name.replaceAll(".", "_");
+    }
+
+    /**
+     *
+     * @param {string[]} msgs
+     */
+    #showErrors(msgs)
+    {
+        if (!this.#errorsEle) return;
+        this.#errorsEle.innerHTML = "";
+        if (!msgs || msgs.length === 0)
+        {
+            ele.hide(this.#errorsEle);
+            return;
+        }
+        msgs.forEach((msg) =>
+        {
+            this.#errorsEle.innerHTML += msg + "<br/>";
+        });
+        ele.show(this.#errorsEle);
     }
 
 }

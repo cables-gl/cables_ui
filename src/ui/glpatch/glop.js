@@ -217,11 +217,11 @@ export default class GlOp extends Events
         this._initGl();
 
         // @ts-ignore
-        gui.on(Gui.EVENT_MOUSEOVERPORT, (a, b, c) =>
+        gui.on(Gui.EVENT_MOUSEOVERPORT, () =>
         {
             this._onMouseHover();
-
         });
+
         gui.on(Gui.EVENT_MOUSEOVERPORT_OUT, (_num) =>
         {
             this._onMouseHover();
@@ -1065,9 +1065,9 @@ export default class GlOp extends Events
                             this.updateSize();
                         }
                     });
-                    colorPorts[0].on("change", updateColorIndicator);
-                    colorPorts[1].on("change", updateColorIndicator);
-                    colorPorts[2].on("change", updateColorIndicator);
+                    colorPorts[0].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
+                    colorPorts[1].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
+                    colorPorts[2].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
                     if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
                 }
                 found = true;

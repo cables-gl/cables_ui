@@ -115,7 +115,7 @@ export class ParamInputListeners
 
     /**
      * @param {Port} port
-     * @param {string} index
+     * @param {number} index
      */
     static CheckDefaultValue(port, index)
     {

@@ -263,6 +263,7 @@ export default class Gui extends Events
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
+        /** @type {user} */
         this.user = null;
         this.onSaveProject = null;
         this.lastNotIdle = now();

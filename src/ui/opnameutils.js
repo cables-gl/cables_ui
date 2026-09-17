@@ -82,6 +82,7 @@ opNames.getOpsForFilename = (filename) =>
 
     return ops;
 };
+
 opNames.getVarGetterOpNameByType = (type, port) =>
 {
     let portName = "Value";

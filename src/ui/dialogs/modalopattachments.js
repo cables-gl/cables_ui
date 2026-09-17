@@ -1,7 +1,8 @@
-import { utils } from "cables";
 import ModalDialog from "./modaldialog.js";
-import { gui } from "../gui.js";
 import OpAttachmentTabPanel from "../elements/tabpanel/opattachmenttabpanel.js";
+import { gui } from "../gui.js";
+
+/** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
 /**
  * Opens a modal dialog and shows a loading indicator animation
@@ -18,34 +19,34 @@ export default class ModalOpAttachments
     /** @type {ModalDialog} */
     #dialog;
 
-    #options = {};
+    /** @type {OpDoc} */
     #opDoc;
-    #opName;
-    #canEdit;
-    #modalOptions;
 
-    constructor(options)
+    /** @type {boolean} */
+    #canEdit;
+
+    /**
+     *
+     * @param {OpDoc} opDoc
+     */
+    constructor(opDoc)
     {
 
-        this.#options = options || {};
-        this.#opDoc = this.#options.opDoc;
-        this.#opName = this.#opDoc.name;
-        this.#canEdit = this.#options.canEditOp;
+        this.#opDoc = opDoc;
+        this.#canEdit = gui.serverOps.canEditOp(gui.user, this.#opDoc.name);
 
         /** @type {import("./modaldialog.js").ModalDialogOptions} */
-        this.#modalOptions = {
-            "title": options.modalTitle || "Create attachment for " + this.#opName,
-            "html": this.getHtml(),
-            "showOkButton": !this.#canEdit,
-            "warning": !this.#canEdit,
-            "choice": this.#canEdit
+        const modalOptions = {
+            "title": "Create attachment for " + this.#opDoc.name,
+            "html": this.getHtml()
         };
 
         if (this.#canEdit)
         {
-            this.#modalOptions.okButton = {
+            modalOptions.choice = true;
+            modalOptions.okButton = {
                 "text": "Add",
-                "cssClasses": "",
+                "disabled": true,
                 "callback": (done) =>
                 {
                     const activeTab = this.#tabs.getActiveTab();
@@ -53,8 +54,13 @@ export default class ModalOpAttachments
                 }
             };
         }
+        else
+        {
+            modalOptions.showOkButton = true;
+            modalOptions.warning = true;
+        }
 
-        this.#dialog = new ModalDialog(this.#modalOptions);
+        this.#dialog = new ModalDialog(modalOptions);
         this.#initTabs();
 
     }
@@ -66,7 +72,7 @@ export default class ModalOpAttachments
     {
         if (this.#canEdit)
         {
-            return "<div id=\"" + this.#options.viewId + "_attachmenttabs\" class=\"attachmenttabs\"></div>";
+            return "<div id=\"attachmenttabs\" class=\"attachmenttabs\"></div>";
         }
         else
         {
@@ -78,28 +84,7 @@ export default class ModalOpAttachments
     {
         if (this.#canEdit)
         {
-
-            const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
-            const libs = [];
-            allLibs.forEach((lib) =>
-            {
-                libs.push({
-                    "url": lib,
-                    "name": utils.basename(lib),
-                    "isAssetLib": lib.startsWith("/assets/")
-                });
-            });
-
-            const panelOptions = {
-                "opDoc": this.#opDoc,
-                "libs": libs,
-                "coreLibs": gui.opDocs.coreLibs,
-                "user": gui.user,
-                "canEditOp": this.#canEdit,
-                "viewId": this.#options.viewId
-            };
-
-            this.#tabs = new OpAttachmentTabPanel(this.#options.viewId + "_attachmenttabs", panelOptions);
+            this.#tabs = new OpAttachmentTabPanel("attachmenttabs", this.#opDoc);
             this.#tabs.init();
         }
     }

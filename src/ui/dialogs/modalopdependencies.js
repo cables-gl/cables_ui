@@ -2,6 +2,9 @@ import { utils } from "cables";
 import ModalDialog from "./modaldialog.js";
 import { gui } from "../gui.js";
 import OpDependencyTabPanel from "../elements/tabpanel/opdependencytabpanel.js";
+import OpDependencyTab from "../components/tabs/tab_opdependency.js";
+
+/** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
 /**
  * Opens a modal dialog and shows a loading indicator animation
@@ -18,23 +21,25 @@ export default class ModalOpDependencies
     /** @type {ModalDialog} */
     #dialog;
 
-    #options = {};
+    /** @type {OpDoc} */
     #opDoc;
-    #opName;
-    #canEdit;
-    #modalOptions;
 
-    constructor(options)
+    /** @type {boolean} */
+    #canEdit;
+
+    /**
+     *
+     * @param {OpDoc} opDoc
+     */
+    constructor(opDoc)
     {
 
-        this.#options = options || {};
-        this.#opDoc = this.#options.opDoc;
-        this.#opName = this.#opDoc.name;
-        this.#canEdit = this.#options.canEditOp;
+        this.#opDoc = opDoc;
+        this.#canEdit = gui.serverOps.canEditOp(gui.user, this.#opDoc.name);
 
         /** @type {import("./modaldialog.js").ModalDialogOptions} */
-        this.#modalOptions = {
-            "title": options.modalTitle || "Add dependency for " + this.#opName,
+        const modalOptions = {
+            "title": "Add dependency for " + this.#opDoc.name,
             "html": this.getHtml(),
             "showOkButton": !this.#canEdit,
             "warning": !this.#canEdit,
@@ -43,9 +48,10 @@ export default class ModalOpDependencies
 
         if (this.#canEdit)
         {
-            this.#modalOptions.okButton = {
+            modalOptions.choice = true;
+            modalOptions.okButton = {
                 "text": "Add",
-                "cssClasses": "",
+                "disabled": true,
                 "callback": (done) =>
                 {
                     const activeTab = this.#tabs.getActiveTab();
@@ -53,8 +59,13 @@ export default class ModalOpDependencies
                 }
             };
         }
+        else
+        {
+            modalOptions.showOkButton = true;
+            modalOptions.warning = true;
+        }
 
-        this.#dialog = new ModalDialog(this.#modalOptions);
+        this.#dialog = new ModalDialog(modalOptions);
         this.#initTabs();
 
     }
@@ -66,7 +77,7 @@ export default class ModalOpDependencies
     {
         if (this.#canEdit)
         {
-            return "<div id=\"" + this.#options.viewId + "_dependencytabs\" class=\"dependencytabs\"></div>";
+            return "<div id=\"dependencytabs\" class=\"dependencytabs\"></div>";
         }
         else
         {
@@ -90,16 +101,7 @@ export default class ModalOpDependencies
                 });
             });
 
-            const panelOptions = {
-                "opDoc": this.#opDoc,
-                "libs": libs,
-                "coreLibs": gui.opDocs.coreLibs,
-                "user": gui.user,
-                "canEditOp": this.#canEdit,
-                "viewId": this.#options.viewId
-            };
-
-            this.#tabs = new OpDependencyTabPanel(this.#options.viewId + "_dependencytabs", panelOptions);
+            this.#tabs = new OpDependencyTabPanel("dependencytabs", this.#opDoc);
             this.#tabs.init();
         }
     }

@@ -475,7 +475,7 @@ class ParamsListener extends Events
                     strval += (inpEle.value || 0.0) + ",";
             }
 
-            thePort.attribs.sg = strval.substring(0, strval.length - 1) || 0;
+            thePort.attribs.sg = strval.substring(0, strval.length - 1) || "0";
             thePort.op.updateGraph();
         }
 
@@ -889,7 +889,7 @@ class ParamsListener extends Events
 
     /**
      * @param {Port[]} ports
-     * @param {string} index
+     * @param {number} index
      * @param {string} panelid
      */
     initPortInputListener(ports, index, panelid)
@@ -964,7 +964,7 @@ class ParamsListener extends Events
                 el.addEventListener("pointerdown", (e) => { cb(e, false); }, false); // does only work with mousedown, not with click or keydown................
                 el.addEventListener("pointerenter", () => { isMouse = true; });
                 el.addEventListener("pointerleave", () => { isMouse = false; });
-                el.addEventListener("focus", () =>
+                el.addEventListener("focus", (e) =>
                 {
                     if (isMouse) return;
                     el.removeAttribute("tabindex");
@@ -1028,7 +1028,7 @@ class ParamsListener extends Events
 
         if (el) el.addEventListener("input", (e) =>
         {
-            let v = "" + el.value;
+            let vstr = "" + el.value;
 
             gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
 
@@ -1036,17 +1036,17 @@ class ParamsListener extends Events
                 ports[index].uiAttribs.display != "bool" &&
                 (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number"))
             {
-                if (v.length >= 3 && (isNaN(v) || v === ""))
+                if (vstr.length >= 3 && (isNaN(vstr) || vstr === ""))
                 {
-                    let mathParsed = v;
+                    let mathParsed = vstr;
                     try
                     {
-                        mathParsed = CABLES.UI.mathparser.parse(v);
+                        mathParsed = CABLES.UI.mathparser.parse(vstr);
                     }
                     catch (ex)
                     {
                         // failed to parse math, use unparsed value
-                        mathParsed = v;
+                        mathParsed = vstr;
                     }
                     if (!isNaN(mathParsed))
                     {
@@ -1063,13 +1063,13 @@ class ParamsListener extends Events
                 else
                 {
                     el.classList.remove("invalid");
-                    v = parseFloat(v) || 0;
+                    vstr = parseFloat(vstr) || 0;
                 }
             }
 
             if (ports[index].uiAttribs.type == "int")
             {
-                if (isNaN(v) || v === "")
+                if (isNaN(vstr) || vstr === "")
                 {
                     el.classList.add("invalid");
                     return;
@@ -1077,7 +1077,7 @@ class ParamsListener extends Events
                 else
                 {
                     el.classList.remove("invalid");
-                    v = parseInt(v, 10) || 0;
+                    vstr = parseInt(vstr, 10) || 0;
                     // this._log.log("invalid int");
                 }
             }
@@ -1127,30 +1127,31 @@ class ParamsListener extends Events
                                 catch (ex) { this._log.warn("undo failed"); }
                             }
                         });
-                }(ports[index].get(), v, ports[index].op.id, ports[index].name));
+                }(ports[index].get(), vstr, ports[index].op.id, ports[index].name));
             }
 
             if (ports[index].uiAttribs.type == "string")
             {
-                if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
-                if ((v || v == "") && v.length < ports[index].uiAttribs.minLength)
+                if (vstr && ports[index].uiAttribs.stringTrim)vstr = String(vstr).trim();
+                if ((vstr || vstr == "") && vstr.length < ports[index].uiAttribs.minLength)
                 {
                     ports[index].op.setUiError("uiminlength", "User Input: Minimum length of string " + ports[index].title + " is " + ports[index].uiAttribs.minLength, 2);
                 }
                 else ports[index].op.setUiError("uiminlength", null);
 
-                ports[index].set(v || "");
+                ports[index].set(vstr || "");
             }
             else if (ports[index].uiAttribs.display == "bool")
             {
-                if (!v || v == "false" || v == "0" || v == 0) v = false;
-                else v = true;
+                let vboolNum = 0;
+                if (!vstr || vstr == "false" || vstr == "0" || vstr == 0) vboolNum = 0;
+                else vboolNum = 1;
 
-                ports[index].set(v ? 1 : 0);
+                ports[index].set(vboolNum);
             }
             else
             {
-                ports[index].set(v || 0);
+                ports[index].set(vstr || 0);
             }
 
             const op = ports[index].op;
@@ -1170,7 +1171,7 @@ class ParamsListener extends Events
 
             if (!e.detail || !e.detail.ignorePaco)
             {
-                gui.emitEvent("portValueEdited", op, ports[index], v);
+                gui.emitEvent("portValueEdited", op, ports[index], vstr);
             }
         });
 

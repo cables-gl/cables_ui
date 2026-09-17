@@ -141,7 +141,7 @@ export default class GlPort
             if (!this.#longPortRect) this.#longPortRect = new GlRect(this.#rectInstancer, { "name": "longport", "parent": this.#parentRect, "interactive": false });
 
             const col = GlPort.getColor(this.#type, false, false, false);
-            this.#longPortRect.setColor(col[0], col[1], col[2], 0.5);
+            this.#longPortRect.setColor(col[0], col[1], col[2], 1);
 
             this.updateSize();
         }
@@ -263,12 +263,11 @@ export default class GlPort
         const col = GlPort.getColor(this.#type, hover, false, act);
         this.#rect.setColorArray(col);
 
-        if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
+        // if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
+        if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
         else this.#rect.setOpacity(1);
 
-        if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
-
-        if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
+        // if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }
 
     get direction()
@@ -330,12 +329,12 @@ export default class GlPort
 
             const lastposX = op.posByIndex(this.#port.uiAttribs.longPort + this.portIndex - 1, n);
 
-            this.#longPortRect.setSize(lastposX - this.#posX, gluiconfig.portLongPortHeight);
+            this.#longPortRect.setSize(lastposX - this.#posX - this.#rect.w, gluiconfig.portLongPortHeight);
 
             let yl = gluiconfig.portHeight - gluiconfig.portLongPortHeight;
             if (this.#direction == Port.DIR_OUT) yl = this.#parentRect.h - gluiconfig.portHeight;
 
-            this.#longPortRect.setPosition(this.#posX, yl, -0.0001);
+            this.#longPortRect.setPosition(this.#posX + this.#rect.w, yl, this.#rect.z + 0.00001);
         }
     }
 
