@@ -116,7 +116,6 @@ export default class ModalDialog extends Events
 
     close()
     {
-        console.log("CLOSING TAB");
         this.#ele.remove();
         this.#bg.hide();
         if (gui) gui.currentModal = null;
