@@ -264,9 +264,8 @@ export default class GlPort
         this.#rect.setColorArray(col);
 
         // if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
-        // if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
-        // else this.#rect.setOpacity(1);
-        this.#rect.setOpacity(1);
+        if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
+        else this.#rect.setOpacity(1);
 
         // if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }

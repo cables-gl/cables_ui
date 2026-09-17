@@ -13,12 +13,22 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
+
 import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { CmdOps } from "../commands/cmd_op.js";
 
+// todo: merge serverops and opdocs.js and/or response from server ? ....
+
 /**
- * @typedef LinterDiag
+ * @typedef User
+ * @property {boolean} isStaff
+ * @property {boolean} isAdmin
+ * @property {boolean} username
+ */
+
+/**
+ * @typedef {Object} LinterDiag
  * @property {string} message
  * @property {number} line
  * @property {number} [column]
@@ -26,8 +36,9 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {boolean} [fatal]
  */
 
-// todo: merge serverops and opdocs.js and/or response from server ? ....
-
+/**
+ * @param {string | any[]} str
+ */
 function capitalize(str)
 {
     if (!str) return "";
@@ -38,14 +49,18 @@ function capitalize(str)
 export default class ServerOps
 {
 
-    /** @type {Op[]} */
-    #ops = [];
+    /** @type {import("cables-shared-client").OpDoc[]} */
+    #opDocs = [];
     #log = new Logger("opsserver");
     #patchId;
     opIdsChangedOnServer = {};
     loaded = false;
     saveOpsInProgress = {};
 
+    /**
+     * @param {string} patchId
+     * @param {Function} next
+     */
     constructor(patchId, next)
     {
         this.#patchId = patchId;
@@ -94,13 +109,16 @@ export default class ServerOps
 
         CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) =>
         {
-            this.#ops.push(newOp);
+            this.#opDocs.push(newOp);
         });
 
         gui.opDocs.addCoreOpDocs();
         this.load(next);
     }
 
+    /**
+     * @param {string} opId
+     */
     addOpIdChangedOnServer(opId, data = {})
     {
         if (!opId) return;
@@ -110,6 +128,9 @@ export default class ServerOps
         }
     }
 
+    /**
+     * @param {string} opId
+     */
     removeOpIdChangedOnSever(opId)
     {
         if (!opId) return;
@@ -129,8 +150,9 @@ export default class ServerOps
 
             res.forEach((newOp) =>
             {
-                this.#ops.push(newOp);
+                this.#opDocs.push(newOp);
             });
+
             if (gui.opDocs)
             {
                 gui.opDocs.addOpDocs(res);
@@ -145,7 +167,7 @@ export default class ServerOps
             {
 
                 gui.corePatch().logStartup("Ops loaded");
-                if (cb) cb(this.#ops);
+                if (cb) cb(this.#opDocs);
                 this.loaded = true;
                 incrementStartup();
             });
@@ -1017,6 +1039,10 @@ export default class ServerOps
         });
     }
 
+    /**
+     * @param {Object} obj
+     * @param {string[]|string} path
+     */
     _deletePropertyByPath(obj, path)
     {
         if (!obj || !path)
@@ -1269,21 +1295,19 @@ export default class ServerOps
         }
     }
 
-    editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
+    /**
+     * @param {string} opname
+     * @param {string} attachmentName
+     * @param {boolean} [readOnly]
+     * @param {Function} [cb]
+     */
+    editAttachment(opname, attachmentName, readOnly, cb, fromListener = false)
     {
-        let opname = op;
+        // let opname = op;
         let opId = opname;
 
-        if (typeof opname == "object")
-        {
-            opname = op.objName;
-            opId = op.opId;
-        }
-        else
-        {
-            const docs = gui.opDocs.getOpDocByName(opname);
-            if (docs) opId = docs.id; else this.#log.warn("could not find opid for ", opname);
-        }
+        const docs = gui.opDocs.getOpDocByName(opname);
+        if (docs) opId = docs.id; else this.#log.warn("could not find opid for ", opname);
 
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
@@ -1319,8 +1343,8 @@ export default class ServerOps
         if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
         const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
-        let inactive = false;
-        if (fromListener) if (lastTab !== title) inactive = true;
+        // let inactive = false;
+        // if (fromListener) if (lastTab !== title) inactive = true;
 
         // let editorTab = new EditorTab({
         const editorTab = createEditor({
@@ -1331,7 +1355,7 @@ export default class ServerOps
             "editorObj": editorObj,
             "allowEdit": this.canEditAttachment(gui.user, opname),
             "showSaveButton": true,
-            "inactive": inactive,
+            // "inactive": inactive,
             "onClose": (which) =>
             {
                 if (editorObj && editorObj.name) editorSession.remove(editorObj.type, editorObj.name);
@@ -1425,13 +1449,14 @@ export default class ServerOps
             }
 
             if (cb) cb(); else gui.maintabPanel.show(userInteraction);
-        }, (err) =>
-        {
-            gui.jobs().finish("load_attachment_" + attachmentName);
-            this.#log.error("error opening attachment " + attachmentName);
-            this.#log.log(err);
-            if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
         });
+        // , (err) =>
+        //     {
+        //         gui.jobs().finish("load_attachment_" + attachmentName);
+        //         this.#log.error("error opening attachment " + attachmentName);
+        //         this.#log.log(err);
+        //         if (editorObj) editorSession.remove(editorObj.type, editorObj.name);
+        //     });
 
         if (!editorObj && title)
         {
@@ -1440,11 +1465,13 @@ export default class ServerOps
         }
     }
 
+    /**
+     * @param {string} opname
+     */
     getOpEditorTitle(opname)
     {
         const parts = opname.split(".");
         return "Op " + parts[parts.length - 1];
-
     }
 
     // Shows the editor and displays the code of an op in it
@@ -1468,21 +1495,11 @@ export default class ServerOps
 
         let opid = opname;
 
-        if (typeof opname == "object")
-        {
-            // todo remove if not happening anymore
-            console.error("edit op needs opname");
-            opid = op.opId;
-            opname = op.objName;
-        }
-        else
-        {
-            const docs = gui.opDocs.getOpDocByName(opname);
-            if (!docs) return this.#log.warn("[opsserver] could not find docs", opname);
-            opid = docs.id;
+        const docs = gui.opDocs.getOpDocByName(opname);
+        if (!docs) return this.#log.warn("[opsserver] could not find docs", opname);
+        opid = docs.id;
 
-            if (!opid) this.#log.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
-        }
+        if (!opid) this.#log.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
 
         if (!opname || opname == "")
         {
@@ -1498,6 +1515,14 @@ export default class ServerOps
 
         const editorObj = editorSession.rememberOpenEditor("op", opname);
         let editorTab;
+
+        let existingTab = gui.maintabPanel.tabs.getTabByTitle(this.getOpEditorTitle(opname));
+        if (existingTab)
+        {
+            gui.mainTabs.activateTabByName(existingTab.title);
+            gui.maintabPanel.show(true);
+            return;
+        }
 
         if (editorObj)
         {
@@ -1712,6 +1737,10 @@ export default class ServerOps
         return [...opLibs, ...opCoreLibs, ...opDependencies];
     }
 
+    /**
+     * @param {String} opIdentifier
+     * @param {Function} _next
+     */
     loadOpDependencies(opIdentifier, _next, reload = false)
     {
         if (!opIdentifier) this.#log.error("no opIdentifier:", opIdentifier);
@@ -1800,25 +1829,37 @@ export default class ServerOps
         return this.loaded;
     }
 
+    /**
+     * @param {User} user
+     * @param {string} opName
+     */
     canEditOp(user, opName)
     {
         if (!platform.isTrustedPatch()) return false;
         if (!user) return false;
         if (user.isAdmin) return true;
-        const op = this.#ops.find((o) => { return o.name === opName; });
+        const op = this.#opDocs.find((o) => { return o.name === opName; });
         if (!op) return false;
         return op.allowEdit || false;
     }
 
+    /**
+     * @param {User} user
+     * @param {string} opName
+     */
     canEditOpReason(user, opName)
     {
         if (!platform.isTrustedPatch()) return "Untrusted patch";
         if (!user) return "no user";
-        const op = this.#ops.find((o) => { return o.name === opName; });
+        const op = this.#opDocs.find((o) => { return o.name === opName; });
         if (op && !op.allowEdit) return "no rights";
         return "unknown";
     }
 
+    /**
+     * @param {User} user
+     * @param {string} opName
+     */
     canEditAttachment(user, opName)
     {
         return this.canEditOp(user, opName);
@@ -1852,6 +1893,9 @@ export default class ServerOps
         return missingOps;
     }
 
+    /**
+     * @param {Op<any>} op
+     */
     isLoaded(op)
     {
         const perf = gui.uiProfiler.start("[opsserver] isloaded");
@@ -1861,9 +1905,9 @@ export default class ServerOps
         let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.name === opIdentifier; });
-        if (!foundOp) foundOp = this.#ops.find((loadedOp) => { return loadedOp.id === opIdentifier; });
-        if (!foundOp) foundOp = this.#ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
-        if (!foundOp) foundOp = this.#ops.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
+        if (!foundOp) foundOp = this.#opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+        if (!foundOp) foundOp = this.#opDocs.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
+        if (!foundOp) foundOp = this.#opDocs.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
         let loaded = false;
         if (foundOp)
         {
@@ -2000,7 +2044,7 @@ export default class ServerOps
                                         collectionsToLoad.push(namespace.getCollectionName(opName));
                                     }
                                 }
-                                this.#ops.push(opDoc);
+                                this.#opDocs.push(opDoc);
                             });
                             if (forceReload && oldName)
                             {
@@ -2077,7 +2121,7 @@ export default class ServerOps
                         gui.jobs().finish("loadjsopdocs");
                         res.opDocs.forEach((newOp) =>
                         {
-                            this.#ops.push(newOp);
+                            this.#opDocs.push(newOp);
                         });
                         if (gui.opDocs)
                         {
@@ -2116,7 +2160,7 @@ export default class ServerOps
         {
             const options = {
                 "title": "Error/Invalid response from server",
-                "codeText": JSON.stringify(err, false, 4)
+                "codeText": JSON.stringify(err, null, 4)
             };
 
             if (err && err.data && err.data.msg) options.text = err.data.msg;
@@ -2125,12 +2169,18 @@ export default class ServerOps
         }
     }
 
+    /**
+     * @param {Op} op
+     */
     getOpIdentifier(op)
     {
         if (!op) return undefined;
         return op.opId || op.objName || op.id;
     }
 
+    /**
+     * @param {string} opIdentifier
+     */
     getOpNameByIdentifier(opIdentifier)
     {
         if (!opIdentifier) return undefined;
