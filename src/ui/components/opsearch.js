@@ -402,12 +402,6 @@ export default class OpSearch extends Events
                 points += (list[i].pop || 2) / CABLES.UI.OPSELECT.maxPop || 1;
             }
 
-            if (found && this._list[i].notUsable)
-            {
-                points = 0.1;
-                scoreDebug += "0.1 not usable<br/>";
-            }
-
             if (!found) points = 0;
 
             if (points === 0 && list[i].score > 0) list[i].score = 0;
@@ -611,11 +605,6 @@ export default class OpSearch extends Events
                     "pop": popularity
 
                 };
-                if (opDoc && opDoc.notUsable)
-                {
-                    op.notUsable = true;
-                    op.notUsableReasons = opDoc.notUsableReasons;
-                }
                 if (namespace.isCollection(opName))
                 {
                     op.isOp = false;
