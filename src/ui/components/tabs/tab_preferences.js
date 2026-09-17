@@ -138,7 +138,7 @@ export default class Preferences
             {
                 const valueEle = pathSelectEle.querySelector(".value");
                 if (valueEle) valueEle.innerText = currentValue;
-                pathSelectEle.addEventListener("click", () =>
+                ele.on(pathSelectEle, "click", () =>
                 {
                     platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SELECT_DIR, { "dir": currentValue }, (err, dirName) =>
                     {
@@ -162,32 +162,34 @@ export default class Preferences
         this._tab.html(html);
         this.updateValues();
 
-        let elements = document.getElementsByClassName("prefswitch");
+        let elements = /** @type {HTMLCollectionOf<HTMLElement>} */ (document.getElementsByClassName("prefswitch"));
         for (let i = 0; i < elements.length; i++)
         {
-            elements[i].addEventListener("click", (e) =>
+            ele.on(elements[i], "click", (e, target) =>
             {
-                let v = e.target.dataset.value;
+                /** @type {any} */
+                let v = target.dataset.value;
 
                 if (v === "true") v = true;
                 if (v === "false") v = false;
 
-                userSettings.set(e.target.dataset.setting, v);
+                userSettings.set(target.dataset.setting, v);
             });
         }
 
-        elements = document.getElementsByClassName("valinput");
-        for (let i = 0; i < elements.length; i++)
+        const inputElements = /** @type {HTMLCollectionOf<HTMLInputElement>} */ (document.getElementsByClassName("valinput"));
+        for (let i = 0; i < inputElements.length; i++)
         {
-            elements[i].addEventListener("input", (e) =>
+            ele.on(inputElements[i], "input", (e, target) =>
             {
-                let v = e.target.value;
-                if (e.target.classList.contains("numberinput")) v = parseFloat(v);
-                if (v == v) userSettings.set(e.target.dataset.setting, v);
+                /** @type {any} */
+                let v = target.value;
+                if (target.classList.contains("numberinput")) v = parseFloat(v);
+                if (v == v) userSettings.set(target.dataset.setting, v);
             });
         }
 
-        ele.byId("resetPrefs").addEventListener("click", () =>
+        ele.on(ele.byId("resetPrefs"), "click", () =>
         {
             userSettings.reset();
         });
