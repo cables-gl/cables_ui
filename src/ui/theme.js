@@ -32,36 +32,11 @@ import defaultTheme from "./defaulttheme.json";
  * @property {Number[]} default
  */
 /**
- * @typedef theme_colors_namespaces
+ * @typedef {Object.<string, Number[]>} theme_colors_namespaces
  * @property {Number[]} unknown
- * @property {Number[]} Ops.Dev
- * @property {Number[]} Ops.Ui
- * @property {Number[]} Ops.Vars
- * @property {Number[]} Ops.Patch
- * @property {Number[]} Ops.Cables
- * @property {Number[]} Ops.Array
- * @property {Number[]} Ops.Arrays
- * @property {Number[]} Ops.Points
- * @property {Number[]} Ops.String
- * @property {Number[]} Ops.Website
- * @property {Number[]} Ops.Math
- * @property {Number[]} Ops.Boolean
- * @property {Number[]} Ops.Date
- * @property {Number[]} Ops.Color
- * @property {Number[]} Ops.Time
- * @property {Number[]} Ops.Anim
- * @property {Number[]} Ops.Number
- * @property {Number[]} Ops.Sidebar
- * @property {Number[]} Ops.Json
- * @property {Number[]} Ops.Html
- * @property {Number[]} Ops.Net
- * @property {Number[]} Ops.WebAudio
- * @property {Number[]} Ops.Gl
- * @property {Number[]} Ops.Trigger
- * @property {Number[]} Ops.Graphics
  */
 /**
- * @typedef theme_textedit
+ * @typedef {Number} theme_textedit
  */
 /**
  * @typedef theme_colors_timeline
@@ -93,7 +68,7 @@ import defaultTheme from "./defaulttheme.json";
  * @typedef theme_colors_patch
  * @property {Number[]} opBgRectSelected
  * @property {Number[]} selected deprecated
- * @property {Number[]} selectedBorder
+ * @property {Number[]} [selectedBorder]
  * @property {Number[]} selectedCable
  * @property {Number[]} patchSelectionArea
  * @property {Number[]} opTitleExt
