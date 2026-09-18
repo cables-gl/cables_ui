@@ -1983,7 +1983,7 @@ export default class ServerOps
                 "id": "getopdocs",
                 "title": "load opdocs for " + oldName || opIdentifier
             });
-            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DOCS, opIdentifier, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DOCS, { "opIdentifier": opIdentifier }, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
                 if (err)
