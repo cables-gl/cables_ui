@@ -29,28 +29,28 @@ const MODE_HOVER = 1;
  */
 export default class TexturePreviewer
 {
+    _showing = false;
+    _lastTimeActivity = 0;
+    _paused = false;
+    _shader = null;
+    _shaderTexUniform = null;
+    _tempTexturePort = null;
+    _hoveringTexPort = false;
+    _listeningFrame = false;
+    _emptyCubemap = null;
+    _currentHeight = -1;
+    _currentWidth = -1;
+    _lastClicked = null;
+    scale = 0.2;
+    _texturePorts = [];
+
     constructor()
     {
         this._log = new Logger("TexturePreviewer");
 
-        this._texturePorts = [];
-        this._showing = false;
-        this._lastTimeActivity = 0;
         this._mode = userSettings.get(UserSettings.PREF_TEXPREVIEW_MODE) == "corner" ? MODE_CORNER : MODE_HOVER;
-        console.log("modeeeeeeeee", this._mode);
-        this._paused = false;
-        this._shader = null;
-        this._shaderTexUniform = null;
-        this._tempTexturePort = null;
-        this._hoveringTexPort = false;
-        this._listeningFrame = false;
-        this._emptyCubemap = null;
         this._timer = new Timer();
         this._timer.play();
-        this._currentHeight = -1;
-        this._currentWidth = -1;
-        this._lastClicked = null;
-        this.scale = 0.2;
 
         this._ele = /** @type {HTMLCanvasElement} */(document.getElementById("bgpreview"));
         this.setSize();
@@ -73,7 +73,7 @@ export default class TexturePreviewer
         }
         if (this._mode == MODE_CORNER)
         {
-            this._enabled = false;
+            this._enabled = true;
             ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
             ele.byId("bgpreview").classList.remove("hidden");
         }
@@ -137,19 +137,15 @@ export default class TexturePreviewer
      */
     _renderTexture(tp, element)
     {
+        if (!window.gui) return;
         if (!tp && this._lastClickedP)
         {
             tp = this.updateTexturePort(this._lastClickedP);
         }
-        if (!tp) return console.log("no tp");
 
-        // if (!this._enabled)
-        // {
-        //     return console.log("not enablet");
-        // }
-        // console.log("iiiiiiiii");
+        if (!tp) return; // console.log("no tp");
 
-        // if (!window.gui) return;
+        if (!this._enabled) return;// console.log("not enabled");
 
         let port = tp.port || this._lastClickedP;
         if (!port)
