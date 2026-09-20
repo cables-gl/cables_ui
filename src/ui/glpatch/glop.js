@@ -17,6 +17,7 @@ import { UiOp } from "../core_extend_op.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlLink from "./gllink.js";
 import SuggestionDialog from "../components/suggestiondialog.js";
+import OpDocs from "../components/opdocs.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -839,13 +840,9 @@ export default class GlOp extends Events
         if (this.#glRectSelectedBorder)
         {
             if (gui.patchView.getNumSelectedOps() > 1)
-            {
                 this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
-            }
             else
-            {
                 this.#glRectSelectedBorder.setSize(0, 0);
-            }
         }
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this.#glRectBg.w);
 
@@ -1019,8 +1016,6 @@ export default class GlOp extends Events
         return ports;
     }
 
-    /**
-     */
     initColorSwatch()
     {
         if (!this.#op) return;
@@ -1300,7 +1295,7 @@ export default class GlOp extends Events
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_HINT) hasHints = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_WARNING) hasWarnings = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_ERROR) hasErrors = true;
-                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_NOTWORKING) notworking = true;
+                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_NOTWORKINGlinkTimeListener) notworking = true;
             }
 
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
@@ -1413,8 +1408,39 @@ export default class GlOp extends Events
         if (!this.#wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
 
-        if ((this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
+        if (
+            (
+                this.opUiAttribs.scopeArea || this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA
+            )
+            && !this._resizableArea)
+        {
+
             this._resizableArea = new GlArea(this.#instancer, this);
+            if (this.opUiAttribs.scopeArea)
+            {
+                const startScope = this.op.getPortByName("areaScopeBegin");
+                if (startScope && !startScope.isLinked())
+                {
+                    // const parts=
+                    const opdocBegin = gui.opDocs.getOpDocByName(this.op.objName);
+                    console.log("opdoc,", opdocBegin, opdocBegin.nameNoVersion, opdocBegin.version);
+
+                    let endOpName = opdocBegin.nameNoVersion + "End";
+                    if (opdocBegin.version)endOpName += "_v" + opdocBegin.version;
+
+                    gui.patchView.addOp(endOpName, { "onOpAdd": (endOp) =>
+                    {
+                        endOp.setPos(this.x, this.y + 200);
+                        // const glEndop = this.#glPatch.getGlOp(endOp);
+                        const endScope = endOp.getPortByName("areaScopeEnd");
+                        this.op.patch.link(startScope.op, startScope.name, endScope.op, endScope.name);
+
+                    } });
+
+                }
+
+            }
+        }
 
         // extended title
         if (this.displayType != this.DISPLAY_COMMENT)

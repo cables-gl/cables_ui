@@ -4,6 +4,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
 import GlOp from "./glop.js";
+import { UiOp } from "../core_extend_op.js";
 
 export default class GlArea
 {
@@ -20,6 +21,13 @@ export default class GlArea
 
     #instancer;
 
+    _w = 300;
+    _h = 200;
+    _visible = true;
+
+    /** @type {GlOp} */
+    #glOpScopeEnd;
+
     /**
      * @param {GlRectInstancer} instancer
      * @param {GlOp} glop
@@ -28,35 +36,11 @@ export default class GlArea
     {
         this.#instancer = instancer;
 
-        /**
-         * @private
-         * @type {GlOp}
-         */
         this.#glop = glop;
 
-        /**
-         * @private
-         * @type {Number}
-         */
-        this._w = 300;
-
-        /**
-         * @private
-         * @type {Number}
-         */
-        this._h = 200;
-
-        /**
-         * @private
-         * @type {Boolean}
-         */
-        this._visible = true;
-
-        /**
-         * @type {GlRect}
-         */
         this.#rectBg = this.#instancer.createRect({ "name": "glarea bg", "interactive": false, "draggable": false });
         this.#rectBg.setSize(this._w, this._h);
+        // this.#rectBg.setBorder(1);
         this._updateColor();
 
         /**
@@ -92,6 +76,11 @@ export default class GlArea
             }
 
             gui.savedState.setUnSaved("resizeGlArea", this.#glop.op.getSubPatch());
+
+            if (this.#glOpScopeEnd)
+            {
+                this.#glOpScopeEnd.op.setPos(this.#rectBg.x, this.#rectResize.y + this.#rectResize.h / 2 - this.#glOpScopeEnd.h);
+            }
             this.#update();
         });
 
@@ -127,13 +116,32 @@ export default class GlArea
                 this.#glop.y,
                 0.1);
 
-            this.#rectBg.setSize(this._w, this._h);
+            if (this.#glOpScopeEnd)
+            {
+
+                // this.#glOpScopeEnd.op.setPos(this.#rectResize.x, this.#glOpScopeEnd.y);
+
+                this.#rectBg.setSize(
+                    this._w,
+                    this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h);
+
+                this.#rectResize.setPosition(this.#rectResize.x, this.#glOpScopeEnd.y + this.#glOpScopeEnd.h);
+            }
+            else
+                this.#rectBg.setSize(this._w, this._h);
 
             this.#rectResize.setPosition(
                 this.#glop.x + this._w - this.#rectResize.w,
                 this.#glop.y + this._h - this.#rectResize.h,
                 -0.1
             );
+        }
+
+        if (!this.#glOpScopeEnd && this.#glop.getUiAttribs().scopeArea)
+        {
+            if (this.#glop.op.tempData.scopeAreaEndOp)
+                this.#glOpScopeEnd = this.#glop.glPatch.getGlOp(this.#glop.op.tempData.scopeAreaEndOp);
+
         }
 
         this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
