@@ -253,4 +253,11 @@ export default class PlatformElectron extends Platform
             cb(err, r);
         });
     }
+
+    noCacheUrl(url)
+    {
+        let separator = "?";
+        if (url.includes("?")) separator = "&";
+        return url + separator + "nc=" + (Date.now() + "").substr(-6);
+    }
 }
