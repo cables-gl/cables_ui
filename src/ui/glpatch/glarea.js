@@ -61,7 +61,7 @@ export default class GlArea
 
         this.#glop.on(GlOp.EVENT_DRAG, () =>
         {
-            this.#update();
+            this.update();
         });
 
         this.#rectResize.on("drag", (_e) =>
@@ -81,7 +81,7 @@ export default class GlArea
             {
                 this.#glOpScopeEnd.op.setPos(this.#rectBg.x, this.#rectResize.y + this.#rectResize.h / 2 - this.#glOpScopeEnd.h);
             }
-            this.#update();
+            this.update();
         });
 
         if (this.#glop.op.uiAttribs.area)
@@ -91,7 +91,7 @@ export default class GlArea
             this._h = this.#glop.op.uiAttribs.area.h;
         }
 
-        this.#update();
+        this.update();
     }
 
     /**
@@ -100,10 +100,10 @@ export default class GlArea
     set visible(v)
     {
         this._visible = v;
-        this.#update();
+        this.update();
     }
 
-    #update()
+    update()
     {
         if (this.#rectBg)
         {
@@ -118,12 +118,13 @@ export default class GlArea
 
             if (this.#glOpScopeEnd)
             {
-
+                // console.log("resize update", this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h);
                 // this.#glOpScopeEnd.op.setPos(this.#rectResize.x, this.#glOpScopeEnd.y);
 
+                this._h = this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h;
                 this.#rectBg.setSize(
                     this._w,
-                    this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h);
+                    this._h);
 
                 this.#rectResize.setPosition(this.#rectResize.x, this.#glOpScopeEnd.y + this.#glOpScopeEnd.h);
             }

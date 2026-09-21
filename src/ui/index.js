@@ -102,6 +102,8 @@ CABLES.UI.startUi = startUi;
 CABLES.UI.OpSearch = OpSearch;
 CABLES.UI.codeWatcher = codeWatcher;
 
+CABLES.UI.mathparser = new MathParser();
+
 CABLES.UI_EVENT_EDITORSESSION_INIT = "cblEditorSessionInit";
 
 // added during webpack build

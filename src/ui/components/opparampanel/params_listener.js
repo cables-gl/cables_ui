@@ -894,7 +894,6 @@ class ParamsListener extends Events
      */
     initPortInputListener(ports, index, panelid)
     {
-        if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
         ParamInputListeners.CheckDefaultValue(ports[index], index);
 
         // added missing math constants
@@ -1005,6 +1004,7 @@ class ParamsListener extends Events
                     const keyCode = e.keyCode || e.which;
                     if (keyCode == 13 || keyCode == 8)
                     {
+                        console.log("mathparse");
                         if (isNaN(e.target.value))
                         {
                             let mathParsed = e.target.value;
@@ -1028,7 +1028,7 @@ class ParamsListener extends Events
 
         if (el) el.addEventListener("input", (e) =>
         {
-            let vstr = "" + el.value;
+            let vstr = String(el.value);
 
             gui.savedState.setUnSaved("paramsInput", ports[index].op.getSubPatch());
 
@@ -1036,8 +1036,10 @@ class ParamsListener extends Events
                 ports[index].uiAttribs.display != "bool" &&
                 (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number"))
             {
-                if (vstr.length >= 3 && (isNaN(vstr) || vstr === ""))
+                // if (vstr.length >= 3 && (isNaN(vstr) || vstr === ""))
+                if (vstr.length >= 3 && (vstr === ""))
                 {
+                    console.log("mathparse...", vstr);
                     let mathParsed = vstr;
                     try
                     {
@@ -1046,6 +1048,7 @@ class ParamsListener extends Events
                     catch (ex)
                     {
                         // failed to parse math, use unparsed value
+                        console.log("math parse exp", ex);
                         mathParsed = vstr;
                     }
                     if (!isNaN(mathParsed))

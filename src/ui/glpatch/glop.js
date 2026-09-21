@@ -213,6 +213,7 @@ export default class GlOp extends Events
 
             if (this.#op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
             else if (this.#op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
+
         }
 
         this._initGl();
@@ -343,7 +344,7 @@ export default class GlOp extends Events
             else offX = 0;
 
         for (const i in glOps)
-            glOps[i].setPassiveDragOffset(offX, offY);
+            glOps[i].setPassiveDragOffset(offX, offY, false);
 
         this.#glPatch.opShakeDetector.move(offX);
 
@@ -430,14 +431,16 @@ export default class GlOp extends Events
 
         const perf = gui.uiProfiler.start("[glop] mouseDown");
 
-        if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
+        // if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
+        if (this.#op.uiAttribs.hasArea || this.#op.uiAttribs.scopeArea)
         {
+            const padding = 0;
             if (this.opUiAttribs.translate)
                 this.#glPatch._selectOpsInRect(
-                    this.opUiAttribs.translate.x,
-                    this.opUiAttribs.translate.y,
-                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w,
-                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h
+                    this.opUiAttribs.translate.x - padding,
+                    this.opUiAttribs.translate.y - padding,
+                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w + padding,
+                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h + padding
                 );
         }
 
@@ -1751,7 +1754,6 @@ export default class GlOp extends Events
         }
 
         if (this._hidePorts) for (let i = 0; i < this.#glPorts.length; i++) this.#glPorts[i].rect.setOpacity(0);
-        // if (this._resizableArea) this._resizableArea._updateColor();
 
         if (this._glColorIndicatorSpacing)
         {
@@ -1853,6 +1855,7 @@ export default class GlOp extends Events
     {
         if (!this._passiveDragStartX) this.startPassiveDrag();
 
+        if (gui.patchView.getSelectedOps().length == 1 && this.opUiAttribs.moveableOnlyY)x = 0;
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
@@ -1862,6 +1865,15 @@ export default class GlOp extends Events
         this.#glPatch.patchAPI.setOpUiAttribs(this.#id, "translate", { "x": x, "y": y });
         this.emitEvent(GlOp.EVENT_DRAG);
         this.updatePosition();
+
+        if (this.op.tempData.scopeAreaEndOp)
+        {
+            const scopeEndOp = this.op.tempData.scopeAreaEndOp;
+            scopeEndOp.setPos(this.op.uiAttribs.translate.x, scopeEndOp.uiAttribs.translate.y);
+
+            this._resizableArea.update();
+        }
+
     }
 
     /**
