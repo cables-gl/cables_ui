@@ -16,6 +16,7 @@ import { gui } from "./gui.js";
 import { GuiText } from "./text.js";
 import { getConverters } from "./components/converterops.js";
 import { UiPort } from "./core_extend_port.js";
+import GlPatch from "./glpatch/glpatch.js";
 
 CABLES.OpUnLinkTempReLinkP1 = null;
 CABLES.OpUnLinkTempReLinkP2 = null;
@@ -423,7 +424,7 @@ class UiOp extends Op
                     this.#log.warn("[needsStringToWork] port not found");
                     continue;
                 }
-                if (p.linkTimeListener)p.linkTimeListener = p.off(p.linkTimeListener);
+                if (p.tempData.linkTimeListener)p.tempData.linkTimeListener = p.off(p.tempData.linkTimeListener);
                 if (!p.isLinked() && p.get() == "")
                 {
                     working = false;
@@ -432,7 +433,7 @@ class UiOp extends Op
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
 
-                    p.linkTimeListener = p.on("change", (v, port) =>
+                    p.tempData.linkTimeListener = p.on("change", (_v, port) =>
                     {
                         if (port.op.checkLinkTimeWarnings)port.op.checkLinkTimeWarnings();
                     });
@@ -527,7 +528,7 @@ class UiOp extends Op
         if (!working)
         {
             notWorkingMsg = "<span style=\"background-color:red;\" class=\"icon icon-x\"></span>&nbsp;" + notWorkingMsg;
-            this.setUiError("notworking", notWorkingMsg, 3);
+            this.setUiError("notworking", notWorkingMsg, Op.UI_ERRORLEVEL_NOTWORKING);
         }
         else if (hadError)
         {
@@ -623,17 +624,17 @@ class UiOp extends Op
             if (this.portsIn[i].links[0])
             {
                 const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+                const op = /** @type {UiOp} */(otherport.op);
 
-                if (otherport.op.getTempPosY() > maxY)
+                if (op.getTempPosY() > maxY)
                 {
-                    maxY = otherport.op.getTempPosY();
-                    lowestOp = otherport.op;
+                    maxY = op.getTempPosY();
+                    lowestOp = op;
                 }
             }
         }
 
         return lowestOp;
-
     }
 
     isBlueprint2()
@@ -719,16 +720,26 @@ class UiOp extends Op
         this.setUiAttribs({ "translateTemp": pos });
     }
 
+    /**
+     * @param {number} y
+     */
     setTempOpPosY(y)
     {
         this.setTempOpPos(this.getTempPosX(), y);
     }
 
+    /**
+     * @param {number} x
+     */
     setTempOpPosX(x)
     {
         this.setTempOpPos(x, this.getTempPosY());
     }
 
+    /**
+     * @param {UiOp[]} ops
+     * @param {GlPatch} glpatch
+     */
     testTempCollision(ops, glpatch)
     {
         for (let j = 0; j < ops.length; j++)
