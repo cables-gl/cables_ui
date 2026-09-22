@@ -2223,7 +2223,7 @@ export default class ServerOps
         let otherEnvButton = "Try " + otherEnvName;
         let errMsg = "";
         let opLinks = [];
-        let hideEnvButton = false;
+        let hideEnvButton = !platform.frontendOptions.suggestOtherEnvironmentsForOps;
         if (err && err.data)
         {
             if (err.data.text) errMsg = err.data.text;
