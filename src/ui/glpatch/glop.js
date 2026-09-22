@@ -119,6 +119,8 @@ export default class GlOp extends Events
 
     /** @type {import("cables/src/core/core_patch.js").OpUiAttribs } */
     opUiAttribs = {};
+
+    /** @type {Object<string,GlLink>} */
     _links = {};
     _visPort = null;
 
@@ -238,8 +240,16 @@ export default class GlOp extends Events
 
     }
 
+    get isHidden()
+    {
+        return this.op.uiAttribs.hidden;
+    }
+
     _storageChanged()
     {
+        if (this.#op.uiAttribs.hasArea)
+            this._rectBorder = 1;
+
         if (this.#op?.isSubPatchOp())
         {
             this.displayType = this.DISPLAY_SUBPATCH;
@@ -625,6 +635,24 @@ export default class GlOp extends Events
             this.updateSize();
         }
 
+        if (newAttribs.hasOwnProperty("areaCollapsed"))
+        {
+            this._resizableArea.update();
+            this._needsUpdate = true;
+
+            this.update();
+            const ops = gui.corePatch().getOpsByArea(this.op.attribs.area);
+
+            for (let i = 0; i < ops.length; i++)
+            {
+                const glop = this.#glPatch.getGlOp(ops[i]);
+                for (const j in glop._links)
+                {
+                    glop._links[j].updateVisible();
+                }
+            }
+        }
+
         perf.finish();
         this._needsUpdate = true;
     }
@@ -747,10 +775,11 @@ export default class GlOp extends Events
                 this.#glRectSelectedBorder = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
                 this.#glRectSelectedBorder.setColorArray(gui.theme.colors_patch.selected);
 
+                this.#glRectSelectedBorder.visible = this.#visible;
                 this.updateSize();
                 this.updatePosition();
             }
-            this.#glRectSelectedBorder.visible = true;
+            // this.#glRectSelectedBorder.visible = true;
         }
     }
 
@@ -1178,6 +1207,7 @@ export default class GlOp extends Events
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
+
     }
 
     set visible(v)
@@ -1206,6 +1236,7 @@ export default class GlOp extends Events
      */
     _setVisible(v)
     {
+        // console.log("set visi", v, this.#visible);
         let changed = false;
         if (this.#visible == v) return;
         if (v !== undefined)
@@ -1224,10 +1255,22 @@ export default class GlOp extends Events
         if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
+        if (this.#glDotHint) this.#glDotHint.visible = visi;
+        if (this.#glDotWarning) this.#glDotWarning.visible = visi;
+        if (this.#glDotError) this.#glDotError.visible = visi;
+
         if (changed) this._updateIndicators();
 
-        if (changed) for (const i in this._links) this._links[i].visible = true;
+        if (changed)
+        {
+            // console.log("chandeg", this._links);
+            for (const i in this._links)
+            {
 
+                // console.log("change visible ");
+                this._links[i].updateVisible();
+            }
+        }
         if (!visi) this._isHovering = false;
     }
 
@@ -1313,6 +1356,7 @@ export default class GlOp extends Events
                 this.#glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
                 this.#glDotHint.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                this.#glDotHint.visible = this.#visible;
             }
 
             if (hasWarnings && !this.#glDotWarning)
@@ -1321,6 +1365,7 @@ export default class GlOp extends Events
                 this.#glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this.#glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);
                 this.#glDotWarning.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                this.#glDotWarning.visible = this.#visible && hasWarnings;
             }
 
             if (hasErrors && !this.#glDotError)

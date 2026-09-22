@@ -103,72 +103,102 @@ export default class GlArea
         this.update();
     }
 
+    minsize = 20;
+
     update()
     {
+
         if (this.#rectBg)
         {
-            this.#rectBg.visible = this._visible;
-            this.#rectResize.visible = this._visible;
 
-            if (!this._visible) return;
-            this.#rectBg.setPosition(
-                this.#glop.x,
-                this.#glop.y,
-                0.1);
-
-            this.updateChildOps();
-
-            if (this.#glOpScopeEnd)
+            if (this.#glop.op.uiAttribs.areaCollapsed && this._h != this.minsize)
             {
-                // console.log("resize update", this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h);
-                // this.#glOpScopeEnd.op.setPos(this.#rectResize.x, this.#glOpScopeEnd.y);
+                this.#glop.op.uiAttribs.area.origW = this._w;
+                this.#glop.op.uiAttribs.area.origH = this._h;
 
-                this._h = this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h;
-                this.#rectBg.setSize(
-                    this._w,
-                    this._h);
+                this._w = this.minsize;
+                this._h = this.minsize;
 
-                this.#rectResize.setPosition(this.#rectResize.x, this.#glOpScopeEnd.y + this.#glOpScopeEnd.h);
-            }
-            else
                 this.#rectBg.setSize(this._w, this._h);
+            }
 
-            this.#rectResize.setPosition(
-                this.#glop.x + this._w - this.#rectResize.w,
-                this.#glop.y + this._h - this.#rectResize.h,
-                -0.1
-            );
+            if (!this.#glop.op.uiAttribs.areaCollapsed)
+
+            {
+                if (this._h == this.minsize && !this.#glop.op.uiAttribs.areaCollapsed)
+                {
+
+                    this._w = this.#glop.op.uiAttribs.area.origW;
+                    this._h = this.#glop.op.uiAttribs.area.origH;
+                }
+
+                this.#rectBg.visible = this._visible;
+                this.#rectResize.visible = this._visible;
+
+                if (!this._visible) return;
+                this.#rectBg.setPosition(
+                    this.#glop.x,
+                    this.#glop.y,
+                    0.1);
+
+                if (this.#glOpScopeEnd)
+                {
+
+                    this._h = this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h;
+                    this.#rectBg.setSize(
+                        this._w,
+                        this._h);
+
+                    this.#rectResize.setPosition(this.#rectResize.x, this.#glOpScopeEnd.y + this.#glOpScopeEnd.h);
+                }
+                else
+                    this.#rectBg.setSize(this._w, this._h);
+
+                this.#rectResize.setPosition(
+                    this.#glop.x + this._w - this.#rectResize.w,
+                    this.#glop.y + this._h - this.#rectResize.h,
+                    -0.1
+                );
+            }
         }
-
         if (!this.#glOpScopeEnd && this.#glop.getUiAttribs().scopeArea)
         {
             if (this.#glop.op.tempData.scopeAreaEndOp)
                 this.#glOpScopeEnd = this.#glop.glPatch.getGlOp(this.#glop.op.tempData.scopeAreaEndOp);
-
         }
 
-        this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+        if (!this.#glop.op.uiAttribs.areaCollapsed)
+        {
+            this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+            this.updateChildOps();
+        }
+
     }
 
     updateChildOps()
     {
+
         const childs = this.#glop.glPatch._getGlOpsInRect(this.#glop.x, this.#glop.y, this.#glop.x + this._w, this.#glop.y + this._h);
-        console.log("childs", childs);
+        const opChilds = [];
 
         let changed = false;
         for (let i = 0; i < childs.length; i++)
         {
-            if (childs[i].op.attribs.area != this.#id)
+            if (childs[i].op)
             {
-                childs[i].op.attribs.area = this.#id;
-                changed = true;
+                opChilds.push(childs[i].op);
+                if (childs[i].op.attribs.area != this.#id)
+                {
+                    childs[i].op.attribs.area = this.#id;
+                    changed = true;
+                }
             }
         }
 
         const currentChilds = gui.corePatch().getOpsByArea(this.#id);
         for (let i = 0; i < currentChilds.length; i++)
         {
-            if (childs.indexOf(currentChilds[i]) == -1)
+            if (opChilds.indexOf(currentChilds[i]) == -1)
             {
                 delete currentChilds[i].attribs.area;
                 changed = true;

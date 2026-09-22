@@ -72,7 +72,7 @@ export default class GlCable
         this.#glPatch = glPatch;
         this.#buttonRect = buttonRect;
         this.#type = type;
-        if (link) this.#visible = link.visible;
+        // if (link) this.#visible = link.visible;
 
         this.#link = link;
 
@@ -181,14 +181,16 @@ export default class GlCable
     updateVisible()
     {
         const old = this.#visible;
-        this.#visible = (this.#subPatch == this.#glPatch.getCurrentSubPatch());
-        if (this.#disposed) this.#visible = false;
+        let visi = !(this.#link.opIn.uiAttribs.hidden && this.#link.opOut.uiAttribs.hidden);
+        if (this.#disposed) visi = false;
 
-        if (old != this.#visible)
+        if (old != visi)
         {
-            if (!this.#visible) this.setCloseToMouse(false);
+            if (!visi) this.setCloseToMouse(false);
             this.updateMouseListener();
         }
+        this.visible = visi;
+
     }
 
     /**
@@ -200,6 +202,7 @@ export default class GlCable
         if (this.#visible != v) this._oldx = null;
         this.#visible = v;
         this.#updateLinePos();
+
     }
 
     /**
@@ -433,25 +436,12 @@ export default class GlCable
         if (this.#visible)
         {
 
-            // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._distFromPort);
-            // this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort);
-            // this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + this._distFromPort, this._x2, this._y2);
+            this.#splineDrawer.showSpline(this.#splineIdx);
         }
         else
         {
-            // this._splineDrawer.hideSpline(this._splineIdx);
+            this.#splineDrawer.hideSpline(this.#splineIdx);
 
-            // this._splineDrawer.setSpline(this._splineIdx,
-            //     [
-            //         0, 0, 0,
-            //         0, 0, 0,
-            //         0, 0, 0,
-            //         0, 0, 0
-            //     ]);
-
-            // this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
-            // this._lineDrawer.setLine(this._lineIdx1, 0, 0, 0, 0);
-            // this._lineDrawer.setLine(this._lineIdx2, 0, 0, 0, 0);
         }
     }
 

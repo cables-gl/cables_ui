@@ -680,11 +680,23 @@ export default class GlPatch extends Events
     #onCanvasDblClick(e)
     {
         let isOverSubPatchOp = false;
+        let isOverArea = false;
+
         if (this._hoverOps.length > 0)
         {
             isOverSubPatchOp = this._hoverOps[0].op && this._hoverOps[0].op.isSubPatchOp();
+            isOverArea = this._hoverOps[0].op.uiAttribs.hasArea;
         }
 
+        if (isOverArea)
+        {
+
+            const hoverOp = this._hoverOps[0].op;
+            const colPort = hoverOp.getPortByName("Collapse");
+            if (colPort)colPort._onTriggered();
+
+        }
+        else
         if (isOverSubPatchOp)
         {
             const hoverOp = this._hoverOps[0].op;
@@ -1021,7 +1033,6 @@ export default class GlPatch extends Events
         if (!options.hasOwnProperty("unselectAll"))options.unselectAll = true;
         if (!options.hasOwnProperty("zoom"))options.zoom = true;
 
-        // console.log("gotooppppppppppp", options);
         const op = gui.corePatch().getOpById(opid);
 
         if (!op)

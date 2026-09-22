@@ -194,6 +194,9 @@ export default class VizLayer extends Events
         }
     }
 
+    /**
+     * @param {boolean} gl
+     */
     renderVizLayer(gl)
     {
         const startTime = performance.now();
@@ -226,7 +229,7 @@ export default class VizLayer extends Events
         {
             const item = this._items[i];
             const port = item.port;
-            if (!port || !item.op || !item.op.uiAttribs || !item.op.uiAttribs.translate) continue;
+            if (!port || !item.op || !item.op.uiAttribs || !item.op.uiAttribs.translate || item.op.uiAttribs.hidden) continue;
 
             item.posX = item.op.uiAttribs.translate.x;
             item.posY = item.op.uiAttribs.translate.y;
