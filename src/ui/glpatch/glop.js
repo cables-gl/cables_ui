@@ -240,6 +240,11 @@ export default class GlOp extends Events
 
     }
 
+    get isHidden()
+    {
+        return this.op.uiAttribs.hidden;
+    }
+
     _storageChanged()
     {
         if (this.#op.uiAttribs.hasArea)
@@ -439,17 +444,16 @@ export default class GlOp extends Events
 
         // if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
         if (this.#op.uiAttribs.hasArea || this.#op.uiAttribs.scopeArea)
-            if (!this.#op.uiAttribs.areaCollapsed)
-            {
-                const padding = 0;
-                if (this.opUiAttribs.translate)
-                    this.#glPatch._selectOpsInRect(
-                        this.opUiAttribs.translate.x - padding,
-                        this.opUiAttribs.translate.y - padding,
-                        this.opUiAttribs.translate.x + this.opUiAttribs.area.w + padding,
-                        this.opUiAttribs.translate.y + this.opUiAttribs.area.h + padding
-                    );
-            }
+        {
+            const padding = 0;
+            if (this.opUiAttribs.translate)
+                this.#glPatch._selectOpsInRect(
+                    this.opUiAttribs.translate.x - padding,
+                    this.opUiAttribs.translate.y - padding,
+                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w + padding,
+                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h + padding
+                );
+        }
 
         this.#glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
@@ -771,10 +775,11 @@ export default class GlOp extends Events
                 this.#glRectSelectedBorder = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
                 this.#glRectSelectedBorder.setColorArray(gui.theme.colors_patch.selected);
 
+                this.#glRectSelectedBorder.visible = this.#visible;
                 this.updateSize();
                 this.updatePosition();
             }
-            this.#glRectSelectedBorder.visible = true;
+            // this.#glRectSelectedBorder.visible = true;
         }
     }
 
@@ -1351,6 +1356,7 @@ export default class GlOp extends Events
                 this.#glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
                 this.#glDotHint.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                this.#glDotHint.visible = this.#visible;
             }
 
             if (hasWarnings && !this.#glDotWarning)
@@ -1359,6 +1365,7 @@ export default class GlOp extends Events
                 this.#glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this.#glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);
                 this.#glDotWarning.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                this.#glDotWarning.visible = this.#visible && hasWarnings;
             }
 
             if (hasErrors && !this.#glDotError)
