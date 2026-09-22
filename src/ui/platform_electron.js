@@ -255,4 +255,16 @@ export default class PlatformElectron extends Platform
         if (url.includes("?")) separator = "&";
         return url + separator + "nc=" + (Date.now() + "").substr(-6);
     }
+
+    /**
+     * electron used to have file.path for File objects, this
+     * moved to these methods in 43.2.0
+     *
+     * @param {File} file
+     */
+    getPathForFile(file)
+    {
+        const { webUtils } = window.nodeRequire("electron");
+        return webUtils.getPathForFile(file);
+    }
 }

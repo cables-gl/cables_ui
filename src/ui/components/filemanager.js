@@ -334,8 +334,7 @@ export default class FileManager
                 else
                 {
                     uploadText = "<br/><br/><br/><br/><div class=\"text-center\">Patch does not use any files, yet!<br/><br/>";
-                    uploadText += "<a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.uploadFileDialog();\">Add files</a> or ";
-                    uploadText += "drag them onto the patchfiled to use them";
+                    uploadText += "Drag them onto the patchfiled to use them";
                 }
                 uploadText += "</div>";
                 els.innerHTML = uploadText;
