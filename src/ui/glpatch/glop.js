@@ -119,6 +119,8 @@ export default class GlOp extends Events
 
     /** @type {import("cables/src/core/core_patch.js").OpUiAttribs } */
     opUiAttribs = {};
+
+    /** @type {Object<string,GlLink>} */
     _links = {};
     _visPort = null;
 
@@ -240,6 +242,9 @@ export default class GlOp extends Events
 
     _storageChanged()
     {
+        if (this.#op.uiAttribs.hasArea)
+            this._rectBorder = 1;
+
         if (this.#op?.isSubPatchOp())
         {
             this.displayType = this.DISPLAY_SUBPATCH;
@@ -434,16 +439,17 @@ export default class GlOp extends Events
 
         // if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
         if (this.#op.uiAttribs.hasArea || this.#op.uiAttribs.scopeArea)
-        {
-            const padding = 0;
-            if (this.opUiAttribs.translate)
-                this.#glPatch._selectOpsInRect(
-                    this.opUiAttribs.translate.x - padding,
-                    this.opUiAttribs.translate.y - padding,
-                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w + padding,
-                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h + padding
-                );
-        }
+            if (!this.#op.uiAttribs.areaCollapsed)
+            {
+                const padding = 0;
+                if (this.opUiAttribs.translate)
+                    this.#glPatch._selectOpsInRect(
+                        this.opUiAttribs.translate.x - padding,
+                        this.opUiAttribs.translate.y - padding,
+                        this.opUiAttribs.translate.x + this.opUiAttribs.area.w + padding,
+                        this.opUiAttribs.translate.y + this.opUiAttribs.area.h + padding
+                    );
+            }
 
         this.#glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
@@ -623,6 +629,24 @@ export default class GlOp extends Events
         {
             for (let i = 0; i < this.#glPorts.length; i++) this.#glPorts[i].updateSize();
             this.updateSize();
+        }
+
+        if (newAttribs.hasOwnProperty("areaCollapsed"))
+        {
+            this._resizableArea.update();
+            this._needsUpdate = true;
+
+            this.update();
+            const ops = gui.corePatch().getOpsByArea(this.op.attribs.area);
+
+            for (let i = 0; i < ops.length; i++)
+            {
+                const glop = this.#glPatch.getGlOp(ops[i]);
+                for (const j in glop._links)
+                {
+                    glop._links[j].updateVisible();
+                }
+            }
         }
 
         perf.finish();
@@ -1178,6 +1202,7 @@ export default class GlOp extends Events
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
+
     }
 
     set visible(v)
@@ -1206,6 +1231,7 @@ export default class GlOp extends Events
      */
     _setVisible(v)
     {
+        // console.log("set visi", v, this.#visible);
         let changed = false;
         if (this.#visible == v) return;
         if (v !== undefined)
@@ -1224,10 +1250,22 @@ export default class GlOp extends Events
         if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
+        if (this.#glDotHint) this.#glDotHint.visible = visi;
+        if (this.#glDotWarning) this.#glDotWarning.visible = visi;
+        if (this.#glDotError) this.#glDotError.visible = visi;
+
         if (changed) this._updateIndicators();
 
-        if (changed) for (const i in this._links) this._links[i].visible = true;
+        if (changed)
+        {
+            // console.log("chandeg", this._links);
+            for (const i in this._links)
+            {
 
+                // console.log("change visible ");
+                this._links[i].updateVisible();
+            }
+        }
         if (!visi) this._isHovering = false;
     }
 

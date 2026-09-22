@@ -134,8 +134,7 @@ export default class GlLink
                         this.#link.remove();
                         this.#glPatch.portDragLine.stop();
 
-                        gui.corePatch().link(
-                            fromOp, fromPort.name, otherPort.op, otherPort.name);
+                        gui.corePatch().link(fromOp, fromPort.name, otherPort.op, otherPort.name);
 
                         return;
                     }
@@ -358,10 +357,7 @@ export default class GlLink
     {
         // const sub = this._glPatch.getCurrentSubPatch();
 
-        if (!this.#glOpIn || !this.#glOpOut)
-        {
-            return;
-        }
+        if (!this.#glOpIn || !this.#glOpOut) return;
 
         if (
             (
@@ -392,6 +388,7 @@ export default class GlLink
     }
 
     /**
+     * @deprecated
      * @param {boolean} _v
      */
     set visible(_v)
