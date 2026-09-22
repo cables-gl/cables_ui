@@ -12,6 +12,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import namespace from "../../namespaceutils.js";
 import ModalOpDependencies from "../../dialogs/modalopdependencies.js";
 import ModalOpAttachments from "../../dialogs/modalopattachments.js";
+import ModalOpCredits from "../../dialogs/modalopcredits.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -326,6 +327,7 @@ export default class ManageOp
                     "opid": opDoc.id,
                     "opname": opDoc.name,
                     "changelog": changelog,
+                    "credits": opDoc.credits,
                     "opDoc": opDoc,
                     "opFiles": opFiles,
                     "viewId": this.#id,
@@ -351,6 +353,11 @@ export default class ManageOp
                 ele.clickables(this.#tab.contentEle, ".attachment-add", (e, dataset) =>
                 {
                     if (canEditOp) new ModalOpAttachments(opDoc);
+                });
+
+                ele.clickables(this.#tab.contentEle, ".credits-add", (e, dataset) =>
+                {
+                    if (canEditOp) new ModalOpCredits(opDoc);
                 });
 
                 ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>

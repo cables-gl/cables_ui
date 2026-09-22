@@ -67,7 +67,9 @@ export default class ModalDialog extends Events
     /** @type {ModalDialogOptions} */
     #options = {};
 
+    /** @type {HTMLElement} */
     #ele = null;
+
     #eleContent = null;
     #bg = new ModalBackground();
 
@@ -365,6 +367,10 @@ export default class ModalDialog extends Events
         }, 50); // why is this delay needed in some cases (e.g. resolution button below canvas)
     }
 
+    /**
+     *
+     * @returns {HTMLElement}
+     */
     getElement()
     {
         return this.#ele;

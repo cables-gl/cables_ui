@@ -819,6 +819,23 @@ export default class ServerOps
         });
     }
 
+    /**
+     *
+     * @param {import("cables-shared-client").OpDoc} opDocs
+     * @param {import("cables-shared-client").OpCredits} opCredits
+     * @param {Function} done
+     */
+    addOpCredits(opDocs, opCredits, done)
+    {
+        console.log("ADDING", opCredits);
+        done();
+        // platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_CREDITS, { "opID": opDocs.id, "credits": opCredits }, (err, res) =>
+        // {
+        //     console.log("ADDING", res);
+        //     if (done) done();
+        // });
+    }
+
     testServer()
     {
         let opname = platform.getPatchOpsNamespace() + "test_" + utils.shortId();
