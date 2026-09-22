@@ -53,7 +53,7 @@ export default class GlOp extends Events
     #glPatch;
 
     /** @type {GlRect} */
-    _glRectArea = null;
+    #glRectArea = null;
 
     _titleExtPortTimeout = null;
     _titleExtPortLastTime = null;
@@ -380,14 +380,14 @@ export default class GlOp extends Events
 
             for (const i in glOps) glOps[i].endPassiveDrag();
 
-            (function (scope, _oldUiAttribs)
+            const undof = (scope, _oldUiAttribs) =>
             {
                 if (!scope.#op) return;
 
                 const newUiAttr = JSON.stringify(scope.#op.uiAttribs);
                 undo.add({
                     "title": "Move op",
-                    "undo": function ()
+                    "undo": () =>
                     {
                         try
                         {
@@ -397,7 +397,7 @@ export default class GlOp extends Events
                         }
                         catch (e) {}
                     },
-                    "redo": function ()
+                    "redo": () =>
                     {
                         const u = JSON.parse(newUiAttr);
                         scope.#glPatch.patchAPI.setOpUiAttribs(scope.#id, "translate", { "x": u.translate.x, "y": u.translate.y });
@@ -408,7 +408,8 @@ export default class GlOp extends Events
                      */
                     }
                 });
-            }(this, this._dragOldUiAttribs + ""));
+            };
+            undof(this, this._dragOldUiAttribs + "");
 
             gui.patchView.testCollision(this.#op);
 
@@ -811,7 +812,7 @@ export default class GlOp extends Events
         if (this._glColorIndicator)
         {
             let h = this._height;
-            if (this._glRectArea)h = this._glRectArea.h;
+            if (this.#glRectArea)h = this.#glRectArea.h;
             if (this.opUiAttribs.area)h = this.opUiAttribs.area.h;
 
             this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0);
@@ -899,7 +900,7 @@ export default class GlOp extends Events
         this._disposed = true;
 
         if (this.#glRerouteDot) this.#glRerouteDot = this.#glRerouteDot.dispose();
-        if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
+        if (this.#glRectArea) this.#glRectArea = this.#glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this.#glRectSelectedBorder) this.#glRectSelectedBorder = this.#glRectSelectedBorder.dispose();
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
@@ -1062,6 +1063,7 @@ export default class GlOp extends Events
 
                             this.updateSize();
                         }
+
                     });
                     colorPorts[0].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
                     colorPorts[1].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
@@ -1132,6 +1134,7 @@ export default class GlOp extends Events
         if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
+        if (this._resizableArea) this._resizableArea.update();
 
         if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
         {
@@ -1480,10 +1483,10 @@ export default class GlOp extends Events
             this.updateSize();
         }
 
-        if (this.opUiAttribs.hasArea && this._glRectArea)
+        if (this.opUiAttribs.hasArea && this.#glRectArea)
         {
-            this._glRectArea = this.#instancer.createRect({ "name": "area", "parent": this.#glRectBg, "interactive": false });
-            this._glRectArea.setColor(0, 0, 0, 0.15);
+            this.#glRectArea = this.#instancer.createRect({ "name": "area", "parent": this.#glRectBg, "interactive": false });
+            this.#glRectArea.setColor(0, 0, 0, 0.15);
         }
 
         if (this.opUiAttribs.resizable && !this.#rectResize)
