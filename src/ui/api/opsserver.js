@@ -2260,10 +2260,11 @@ export default class ServerOps
             }
         }
 
-        const continueLoadingCallback = () =>
+        const continueLoadingCallback = (done) =>
         {
             gui.patchView.store.opCrashed = true;
             if (cb) cb([]);
+            if (done) done();
         };
 
         const tryOtherEnvCallback = () =>
