@@ -1424,6 +1424,7 @@ export default class GlOp extends Events
             this._resizableArea = new GlArea(this.#instancer, this);
             if (this.opUiAttribs.scopeArea)
             {
+                console.log("scope area");
                 const startScope = this.op.getPortByName("areaScopeBegin");
                 if (startScope && !startScope.isLinked())
                 {
@@ -1434,6 +1435,7 @@ export default class GlOp extends Events
                     let endOpName = opdocBegin.nameNoVersion + "End";
                     if (opdocBegin.version)endOpName += "_v" + opdocBegin.version;
 
+                    console.log("scope area create...", endOpName);
                     gui.patchView.addOp(endOpName, { "onOpAdd": (endOp) =>
                     {
                         endOp.setPos(this.x, this.y + 200);
@@ -1864,6 +1866,8 @@ export default class GlOp extends Events
 
         x = this.#glPatch.snap.snapOpX(x, this.#op);
         y = this.#glPatch.snap.snapY(y, this.#glPatch._pressedCtrlKey);
+
+        if (this.op.tempData.scopeAreaStartOp) x = this.op.tempData.scopeAreaStartOp.uiAttribs.translate.x;
 
         this.#glPatch.patchAPI.setOpUiAttribs(this.#id, "translate", { "x": x, "y": y });
         this.emitEvent(GlOp.EVENT_DRAG);
