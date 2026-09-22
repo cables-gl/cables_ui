@@ -116,6 +116,8 @@ export default class GlArea
                 this.#glop.y,
                 0.1);
 
+            this.updateChildOps();
+
             if (this.#glOpScopeEnd)
             {
                 // console.log("resize update", this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h);
@@ -146,6 +148,39 @@ export default class GlArea
         }
 
         this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+    }
+
+    updateChildOps()
+    {
+        const childs = this.#glop.glPatch._getGlOpsInRect(this.#glop.x, this.#glop.y, this.#glop.x + this._w, this.#glop.y + this._h);
+        console.log("childs", childs);
+
+        let changed = false;
+        for (let i = 0; i < childs.length; i++)
+        {
+            if (childs[i].op.attribs.area != this.#id)
+            {
+                childs[i].op.attribs.area = this.#id;
+                changed = true;
+            }
+        }
+
+        const currentChilds = gui.corePatch().getOpsByArea(this.#id);
+        for (let i = 0; i < currentChilds.length; i++)
+        {
+            if (childs.indexOf(currentChilds[i]) == -1)
+            {
+                delete currentChilds[i].attribs.area;
+                changed = true;
+            }
+
+        }
+        if (changed)
+        {
+            this.#glop?.op.emitEvent("areaChildrenChange", childs);
+            this.#glOpScopeEnd?.op.emitEvent("areaChildrenChange", childs);
+        }
+
     }
 
     /**
