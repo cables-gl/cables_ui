@@ -24,7 +24,7 @@ export default class WelcomeTab
             const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": platform.getCablesStaticUrl(), "version": platform.getCablesVersion() });
             this._tab.html(html);
 
-            utils.ajax("https://dev.cables.gl/api/events/", (err2, res, xhr) =>
+            utils.ajax("https://dev.cables.gl/api/events", (err2, res, xhr) =>
             {
                 if (!(err2 || (xhr && xhr.status === 0)))
                 {
@@ -38,7 +38,7 @@ export default class WelcomeTab
             });
 
             if (platform.frontendOptions.isElectron)
-                utils.ajax("https://dev.cables.gl/api/downloads/latest/", (err2, res, xhr) =>
+                utils.ajax("https://dev.cables.gl/api/downloads/latest", (err2, res, xhr) =>
                 {
                     if (!(err2 || (xhr && xhr.status === 0)))
                     {
