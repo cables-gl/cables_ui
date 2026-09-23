@@ -1476,7 +1476,7 @@ export default class GlPatch extends Events
                     this.unSelectOpId(unselIds[i]);
             }
 
-            gui.emitEvent("drawSelectionArea", this.#lastMouseX, this.#lastMouseY, (x - this.#lastMouseX), (y - this.#lastMouseY));
+            // gui.emitEvent("drawSelectionArea", this.#lastMouseX, this.#lastMouseY, (x - this.#lastMouseX), (y - this.#lastMouseY));
 
             gui.patchView.showSelectedOpsPanel();
 

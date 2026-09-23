@@ -2379,15 +2379,6 @@ export default class Gui extends Events
         {
         });
 
-        this.patchView.patchRenderer.on("webglcontextlost", () =>
-        {
-            new ModalDialog({
-                "warning": true,
-                "title": "Context lost",
-                "text": "something went wrong. webgl context was lost. reload page or try restarting your browser"
-            });
-        });
-
         this.#corePatch.checkExtensionOpPatchAssets();
 
     }
