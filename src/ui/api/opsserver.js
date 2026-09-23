@@ -2332,8 +2332,8 @@ export default class ServerOps
             if (lines[i].includes("op.outFunction"))diags.push({ "line": i + 1, "message": "deprecated - use op.outTrigger" });
             if (lines[i].includes("op.inFunction"))diags.push({ "line": i + 1, "message": "deprecated - use op.inTrigger" });
             if (lines[i].includes("op.outValue"))diags.push({ "line": i + 1, "message": "deprecated - use outNumber,outString etc." });
-            if (lines[i].includes("op.outBool"))diags.push({ "line": i + 1, "message": "deprecated" });
-            if (lines[i].includes("op.error"))diags.push({ "line": i + 1, "message": "deprecated" });
+            if (lines[i].includes("op.outBool("))diags.push({ "line": i + 1, "message": "deprecated - use outBoolNum" });
+            if (lines[i].includes("op.error"))diags.push({ "line": i + 1, "message": "deprecated - use op.setUiError" });
         }
         return diags;
     }
