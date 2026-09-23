@@ -13,6 +13,8 @@ import namespace from "../../namespaceutils.js";
 import ModalOpDependencies from "../../dialogs/modalopdependencies.js";
 import ModalOpAttachments from "../../dialogs/modalopattachments.js";
 import ModalOpCredits from "../../dialogs/modalopcredits.js";
+import ModalError from "../../dialogs/modalerror.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
@@ -188,8 +190,10 @@ export default class ManageOp
                 const opName = this.#currentName;
                 let summary = "";
                 let portJson = null;
+                let credits = opDoc.credits;
 
                 if (res.changelog && res.changelog.length > 0) changelog = res.changelog;
+                if (res.credits && res.credits.length > 0) credits = res.credits;
 
                 let opFiles = [];
 
@@ -327,7 +331,7 @@ export default class ManageOp
                     "opid": opDoc.id,
                     "opname": opDoc.name,
                     "changelog": changelog,
-                    "credits": opDoc.credits,
+                    "credits": credits,
                     "opDoc": opDoc,
                     "opFiles": opFiles,
                     "viewId": this.#id,
@@ -468,6 +472,47 @@ export default class ManageOp
                                 });
                                 break;
                             }
+                        }
+                    });
+
+                    if (items.length > 0)
+                    {
+                        contextMenu.show({ "items": items }, event.currentTarget);
+                    }
+
+                });
+
+                ele.clickables(this.#tab.contentEle, ".credit-options", (e, dataset) =>
+                {
+                    const creditDate = dataset.creditdate ? parseInt(dataset.creditdate) : null;
+                    const creditTitle = dataset.credittitle;
+                    const creditAuthor = dataset.creditauthor;
+                    const items = [];
+                    items.push({
+                        "title": "remove",
+                        "iconClass": "icon icon-x",
+                        "func": (ee) =>
+                        {
+                            const opCredit = {
+                                "date": creditDate,
+                                "title": creditTitle,
+                                "author": creditAuthor
+                            };
+                            gui.serverOps.removeOpCredit(opDoc, opCredit, (err, res) =>
+                            {
+                                if (!err)
+                                {
+                                    gui.emitEvent("refreshManageOp", opName);
+                                }
+                                else
+                                {
+                                    new ModalDialog({
+                                        "title": "Failed to remove credit",
+                                        "warning": true,
+                                        "text": err ? err.msg || err : "unknown error"
+                                    });
+                                }
+                            });
                         }
                     });
 

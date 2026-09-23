@@ -1042,8 +1042,8 @@ export default class GlOp extends Events
 
         if (emit)
         {
-            ports[0].op.emitEvent("glportOrderChanged");
-            if (this.op.getSubPatch() != ports[0].op.getSubPatch()) this.#op.emitEvent("glportOrderChanged");
+            ports[0].op.emitEvent(GlPort.EVENT_GLPORTORDER_CHANGED);
+            if (this.op.getSubPatch() != ports[0].op.getSubPatch()) this.#op.emitEvent(GlPort.EVENT_GLPORTORDER_CHANGED);
         }
         return ports;
     }

@@ -48,8 +48,40 @@ export default class ModalOpCredits
                 "disabled": true,
                 "callback": (done) =>
                 {
-                    const credits = {};
-                    gui.serverOps.addOpCredits(opDoc, credits, done);
+                    const dialogElement = this.#dialog.getElement();
+                    const inputs = dialogElement.querySelectorAll("input");
+                    const credit = {
+                        "title": "",
+                        "author": "",
+                        "url": "",
+                        "licence": "",
+                        "version": ""
+                    };
+                    inputs.forEach((input) =>
+                    {
+                        const name = input.getAttribute("name");
+                        if (name && credit.hasOwnProperty(name))
+                        {
+                            credit[name] = input.value;
+                        }
+                    });
+
+                    gui.serverOps.addOpCredit(opDoc, credit, (err, res) =>
+                    {
+                        if (!err)
+                        {
+                            gui.emitEvent("refreshManageOp", this.#opDoc.name);
+                            if (done) done();
+                        }
+                        else
+                        {
+                            new ModalDialog({
+                                "title": "Failed to add credit",
+                                "warning": true,
+                                "text": err ? err.msg || err : "unknown error"
+                            });
+                        }
+                    });
                 }
             };
         }

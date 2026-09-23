@@ -12,6 +12,7 @@ import GlPatch from "./glpatch.js";
 import GlRect from "../gldraw/glrect.js";
 import GlOp from "./glop.js";
 import { UiOp } from "../core_extend_op.js";
+import GlPort from "./glport.js";
 
 /**
  * drawing gl links {@link GlCable}
@@ -643,27 +644,27 @@ export default class GlLink
         if (!this.addedOrderListeners)
         {
             this.addedOrderListeners = true;
-            if (this.#glOpIn) this.#glOpIn.op.on("glportOrderChanged", () =>
+            if (this.#glOpIn) this.#glOpIn.op.on(GlPort.EVENT_GLPORTORDER_CHANGED, () =>
             {
                 this.update();
             });
-            if (this.#glOpOut) this.#glOpOut.op.on("glportOrderChanged", () =>
+            if (this.#glOpOut) this.#glOpOut.op.on(GlPort.EVENT_GLPORTORDER_CHANGED, () =>
             {
                 this.update();
             });
 
-            if (this._subPatchOp) this._subPatchOp.on("glportOrderChanged", () =>
+            if (this._subPatchOp) this._subPatchOp.on(GlPort.EVENT_GLPORTORDER_CHANGED, () =>
             {
                 this.#log.log("this._subPatchOp --- glport order changed!@!!");
                 this.update();
             });
 
-            if (this._subPatchInputOp) this._subPatchInputOp.on("glportOrderChanged", () =>
+            if (this._subPatchInputOp) this._subPatchInputOp.on(GlPort.EVENT_GLPORTORDER_CHANGED, () =>
             {
                 this.update();
             });
 
-            if (this._subPatchOutputOp) this._subPatchOutputOp.on("glportOrderChanged", () =>
+            if (this._subPatchOutputOp) this._subPatchOutputOp.on(GlPort.EVENT_GLPORTORDER_CHANGED, () =>
             {
                 this.update();
             });

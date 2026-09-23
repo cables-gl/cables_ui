@@ -45,6 +45,7 @@ export default class GlPatch extends Events
 {
     static USERPREF_GLPATCH_CABLE_WIDTH = "glcablewidth";
 
+    static EVENT_MOUSE_META_SCROLL = "metascroll";
     static EVENT_MOUSE_UP_OVER_OP = "mouseUpOverOp";
     static EVENT_MOUSE_UP_OVER_PORT = "mouseUpOverPort";
     static EVENT_MOUSE_DOWN_OVER_PORT = "mouseDownOverPort";
@@ -72,13 +73,18 @@ export default class GlPatch extends Events
 
     hoveringResize = false;
     _mouseLeaveButtons = 0;
+
+    /** @type {number[]} */
     _cutLine = [];
     cutLineActive = false;
 
     /** @type {Object<string,GlOp>} */
     _glOpz = {};
 
+    /** @type {string | any[]} */
     _hoverOps = [];
+
+    /** @type {string[]} */
     _ignoreNonExistError = [];
     _hoverOpLongStartTime = 0;
 
@@ -97,6 +103,7 @@ export default class GlPatch extends Events
     /** @type {Object<string,GlOp>} */
     _selectedGlOps = {};
 
+    /** @type {Object<string,GlLink>} */
     links = {};
 
     _dropInCircleLink = null;
@@ -130,6 +137,8 @@ export default class GlPatch extends Events
 
     #lastMouseX = -1;
     #lastMouseY = -1;
+
+    /** @type {GlLink} */
     #hoverLink;
     #lines;
 
@@ -237,8 +246,8 @@ export default class GlPatch extends Events
         cgl.canvas.addEventListener(DomEvents.POINTER_LEAVE, this._onCanvasMouseLeave.bind(this), { "passive": false });
         cgl.canvas.addEventListener(DomEvents.POINTER_ENTER, this._onCanvasMouseEnter.bind(this), { "passive": false });
         cgl.canvas.addEventListener(DomEvents.POINTER_DBL_CLICK, this.#onCanvasDblClick.bind(this), { "passive": false });
-        cgl.canvas.addEventListener("focus", this.isFocused.bind(this));
-        cgl.canvas.addEventListener("blur", this.isFocused.bind(this));
+        cgl.canvas.addEventListener(DomEvents.TOUCH_FOCUS, this.isFocused.bind(this));
+        cgl.canvas.addEventListener(DomEvents.TOUCH_BLUR, this.isFocused.bind(this));
 
         gui.on(Gui.EVENT_THEMECHANGED, this.updateTheme.bind(this));
 
@@ -471,7 +480,7 @@ export default class GlPatch extends Events
             {
                 if (msg.clients)
                 {
-                    msg.clients.forEach((client) =>
+                    msg.clients.forEach((/** @type {{ clientId: string | number; }} */ client) =>
                     {
                         if (this._glCursors[client.clientId]) this._glCursors[client.clientId].visible = false;
                     });
@@ -492,38 +501,8 @@ export default class GlPatch extends Events
             this.vizFlowMode = userSettings.get(UserSettings.PREF_GLFLOWMODE);
             this.updateVizFlowMode();
 
-            if (key == "linetype")
-                for (let i in this.links)
-                    this.links[i].updateLineStyle();
-
             this.updateCableWidth();
         });
-
-        // if (userSettings.get(UserSettings.PREF_DEVINFOS))
-        // {
-        //     gui.corePatch().on("subpatchesChanged", () =>
-        //     {
-        //         if (!this.subpatchAreaSpline) this.subpatchAreaSpline = this.#overlaySplines.getSplineIndex();
-
-        //         const bounds = gui.patchView.getSubPatchBounds();
-
-        //         this.#overlaySplines.setSpline(this.subpatchAreaSpline, [
-        //             bounds.minX, bounds.minY, 0,
-        //             bounds.maxX, bounds.minY, 0,
-
-        //             bounds.maxX, bounds.minY, 0,
-        //             bounds.maxX, bounds.maxY, 0,
-
-        //             bounds.maxX, bounds.maxY, 0,
-        //             bounds.minX, bounds.maxY, 0,
-
-        //             bounds.minX, bounds.maxY, 0,
-        //             bounds.minX, bounds.minY, 0
-        //         ]);
-
-        //         this.#overlaySplines.setSplineColor(this.subpatchAreaSpline, [0.25, 0.25, 0.25, 1]);
-        //     });
-        // }
 
         this.snap.update();
         this._cablesHoverButtonRect = undefined;
@@ -719,22 +698,6 @@ export default class GlPatch extends Events
         {
             gui.inputBindings.exec(InputBindings.MOUSE_PATCH_DBL_CLICK);
         }
-        // if (!this.dblClickAction || this.dblClickAction == "parentSub")
-        // {
-        //     if (this._currentSubpatch != 0)
-        //     {
-        //         const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-        //         if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
-        //     }
-        // }
-        // else if (this.dblClickAction == "addOp")
-        // {
-        //     CmdPatch.addOp();
-        // }
-        // else if (this.dblClickAction == "centerPatch")
-        // {
-        //     this.viewBox.centerSelectedOps();
-        // }
 
         e.preventDefault();
     }
@@ -946,6 +909,10 @@ export default class GlPatch extends Events
         return this._hoverOps.length > 0;
     }
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     center(x, y)
     {
         if (x === undefined) this.viewBox.centerSelectedOps();
@@ -957,6 +924,9 @@ export default class GlPatch extends Events
         return this.#lines;
     }
 
+    /**
+     * @param {string } linkId
+     */
     deleteLink(linkId)
     {
         const l = this.links[linkId];
@@ -972,6 +942,9 @@ export default class GlPatch extends Events
         }
     }
 
+    /**
+     * @param {string} opid
+     */
     deleteOp(opid) // should work  th opid...
     {
         const glop = this._glOpz[opid];
@@ -1503,7 +1476,7 @@ export default class GlPatch extends Events
                     this.unSelectOpId(unselIds[i]);
             }
 
-            gui.emitEvent("drawSelectionArea", this.#lastMouseX, this.#lastMouseY, (x - this.#lastMouseX), (y - this.#lastMouseY));
+            // gui.emitEvent("drawSelectionArea", this.#lastMouseX, this.#lastMouseY, (x - this.#lastMouseX), (y - this.#lastMouseY));
 
             gui.patchView.showSelectedOpsPanel();
 
@@ -1929,7 +1902,7 @@ export default class GlPatch extends Events
      */
     paste(e)
     {
-        gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY, (ops, _focusSubpatchop) =>
+        gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY, (/** @type {string | any[]} */ ops, /** @type {any} */ _focusSubpatchop) =>
         {
             this.unselectAll();
             for (let i = 0; i < ops.length; i++)

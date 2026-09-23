@@ -127,6 +127,8 @@ export class DomEvents
     static POINTER_WHEEL = "wheel";
     static TOUCH_ENTER = "touchenter";
     static TOUCH_LEAVE = "touchleave";
+    static TOUCH_FOCUS = "focus";
+    static TOUCH_BLUR = "blur";
 }
 
 export function setUpTheme(theme = {})

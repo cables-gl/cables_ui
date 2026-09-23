@@ -19,6 +19,7 @@ import { UiOp } from "../core_extend_op.js";
  */
 export default class GlPort
 {
+    static EVENT_GLPORTORDER_CHANGED = "glportOrderChanged";
     #name;
     #type;
 

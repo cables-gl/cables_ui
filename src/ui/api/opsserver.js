@@ -29,6 +29,7 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {boolean} isStaff
  * @property {boolean} isAdmin
  * @property {boolean} isSupporter
+ * @property {boolean} hasWriteRights
  */
 
 /**
@@ -822,18 +823,29 @@ export default class ServerOps
     /**
      *
      * @param {import("cables-shared-client").OpDoc} opDocs
-     * @param {import("cables-shared-client").OpCredits} opCredits
+     * @param {import("cables-shared-client").OpCredit} opCredit
      * @param {Function} done
      */
-    addOpCredits(opDocs, opCredits, done)
+    addOpCredit(opDocs, opCredit, done)
     {
-        console.log("ADDING", opCredits);
-        done();
-        // platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_CREDITS, { "opID": opDocs.id, "credits": opCredits }, (err, res) =>
-        // {
-        //     console.log("ADDING", res);
-        //     if (done) done();
-        // });
+        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_CREDITS, { "opId": opDocs.id, "credit": opCredit }, (err, res) =>
+        {
+            if (done) done(err, res);
+        });
+    }
+
+    /**
+     *
+     * @param {import("cables-shared-client").OpDoc} opDocs
+     * @param {import("cables-shared-client").OpCredit} opCredit
+     * @param {Function} done
+     */
+    removeOpCredit(opDocs, opCredit, done)
+    {
+        platform.talkerAPI.send(TalkerAPI.CMD_REMOVE_OP_CREDITS, { "opId": opDocs.id, "credit": opCredit }, (err, res) =>
+        {
+            if (done) done(err, res);
+        });
     }
 
     testServer()
@@ -2331,8 +2343,8 @@ export default class ServerOps
             if (lines[i].includes("op.outFunction"))diags.push({ "line": i + 1, "message": "deprecated - use op.outTrigger" });
             if (lines[i].includes("op.inFunction"))diags.push({ "line": i + 1, "message": "deprecated - use op.inTrigger" });
             if (lines[i].includes("op.outValue"))diags.push({ "line": i + 1, "message": "deprecated - use outNumber,outString etc." });
-            if (lines[i].includes("op.outBool"))diags.push({ "line": i + 1, "message": "deprecated" });
-            if (lines[i].includes("op.error"))diags.push({ "line": i + 1, "message": "deprecated" });
+            if (lines[i].includes("op.outBool("))diags.push({ "line": i + 1, "message": "deprecated - use outBoolNum" });
+            if (lines[i].includes("op.error"))diags.push({ "line": i + 1, "message": "deprecated - use op.setUiError" });
         }
         return diags;
     }
