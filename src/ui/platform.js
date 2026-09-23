@@ -731,4 +731,16 @@ export class Platform extends Events
     {
         return true;
     }
+
+    /**
+     * this only makes sense in electron, File has no property .path in
+     * browser, and also not in electron anymore
+     *
+     * @param {File} _file
+     * @returns {String}
+     */
+    getPathForFile(_file)
+    {
+        return "";
+    }
 }

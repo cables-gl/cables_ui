@@ -819,6 +819,23 @@ export default class ServerOps
         });
     }
 
+    /**
+     *
+     * @param {import("cables-shared-client").OpDoc} opDocs
+     * @param {import("cables-shared-client").OpCredits} opCredits
+     * @param {Function} done
+     */
+    addOpCredits(opDocs, opCredits, done)
+    {
+        console.log("ADDING", opCredits);
+        done();
+        // platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_CREDITS, { "opID": opDocs.id, "credits": opCredits }, (err, res) =>
+        // {
+        //     console.log("ADDING", res);
+        //     if (done) done();
+        // });
+    }
+
     testServer()
     {
         let opname = platform.getPatchOpsNamespace() + "test_" + utils.shortId();
@@ -1983,7 +2000,7 @@ export default class ServerOps
                 "id": "getopdocs",
                 "title": "load opdocs for " + oldName || opIdentifier
             });
-            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DOCS, opIdentifier, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_GET_OP_DOCS, { "opIdentifier": opIdentifier }, (err, res) =>
             {
                 gui.jobs().finish("getopdocs");
                 if (err)
@@ -2223,7 +2240,7 @@ export default class ServerOps
         let otherEnvButton = "Try " + otherEnvName;
         let errMsg = "";
         let opLinks = [];
-        let hideEnvButton = false;
+        let hideEnvButton = !platform.frontendOptions.suggestOtherEnvironmentsForOps;
         if (err && err.data)
         {
             if (err.data.text) errMsg = err.data.text;
@@ -2260,10 +2277,11 @@ export default class ServerOps
             }
         }
 
-        const continueLoadingCallback = () =>
+        const continueLoadingCallback = (done) =>
         {
             gui.patchView.store.opCrashed = true;
             if (cb) cb([]);
+            if (done) done();
         };
 
         const tryOtherEnvCallback = () =>

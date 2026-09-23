@@ -12,6 +12,16 @@ const MODE_CORNER = 0;
 const MODE_HOVER = 1;
 
 /**
+ * @typedef ClickedPort
+ * @property {Port} [port]
+ * @property {String} title
+ * @property {String} id
+ * @property {String} opid
+ * @property {number} order
+ * @property {String} size
+ */
+
+/**
  * texturepreview floating over the patchfield
  *
  * @export
@@ -19,29 +29,30 @@ const MODE_HOVER = 1;
  */
 export default class TexturePreviewer
 {
+    _showing = false;
+    _lastTimeActivity = 0;
+    _paused = false;
+    _shader = null;
+    _shaderTexUniform = null;
+    _tempTexturePort = null;
+    _hoveringTexPort = false;
+    _listeningFrame = false;
+    _emptyCubemap = null;
+    _currentHeight = -1;
+    _currentWidth = -1;
+    _lastClicked = null;
+    scale = 0.2;
+    _texturePorts = [];
+
     constructor()
     {
         this._log = new Logger("TexturePreviewer");
 
-        this._texturePorts = [];
-        this._showing = false;
-        this._lastTimeActivity = 0;
         this._mode = userSettings.get(UserSettings.PREF_TEXPREVIEW_MODE) == "corner" ? MODE_CORNER : MODE_HOVER;
-        this._paused = false;
-        this._shader = null;
-        this._shaderTexUniform = null;
-        this._tempTexturePort = null;
-        this._hoveringTexPort = false;
-        this._listeningFrame = false;
-        this._emptyCubemap = null;
         this._timer = new Timer();
         this._timer.play();
-        this._currentHeight = -1;
-        this._currentWidth = -1;
-        this._lastClicked = null;
-        this.scale = 0.2;
 
-        this._ele = document.getElementById("bgpreview");
+        this._ele = /** @type {HTMLCanvasElement} */(document.getElementById("bgpreview"));
         this.setSize();
 
         userSettings.on(UserSettings.EVENT_CHANGE, (key, v) =>
@@ -60,6 +71,13 @@ export default class TexturePreviewer
             ele.byId("bgpreviewButtonsContainer").classList.add("hidden");
             ele.byId("bgpreview").classList.add("hidden");
         }
+        if (this._mode == MODE_CORNER)
+        {
+            this._enabled = true;
+            ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
+            ele.byId("bgpreview").classList.remove("hidden");
+        }
+
     }
 
     _initListener()
@@ -113,21 +131,28 @@ export default class TexturePreviewer
         return this._mode == MODE_HOVER;
     }
 
+    /**
+     * @param {ClickedPort} tp
+     * @param {HTMLCanvasElement} element
+     */
     _renderTexture(tp, element)
     {
+        if (!window.gui) return;
         if (!tp && this._lastClickedP)
         {
             tp = this.updateTexturePort(this._lastClickedP);
         }
-        if (!tp || !this._enabled)
+
+        if (!tp) return; // console.log("no tp");
+
+        if (!this._enabled) return;// console.log("not enabled");
+
+        let port = tp.port || this._lastClickedP;
+        if (!port)
         {
+            console.log("no port");
             return;
         }
-
-        if (!window.gui) return;
-
-        let port = tp;
-        if (tp.port)port = tp.port;
 
         const id = tp.id;
         const texSlot = 5;
@@ -136,7 +161,7 @@ export default class TexturePreviewer
         let meta = true;
         if (element)meta = false;
 
-        const previewCanvasEle = element || document.getElementById("preview_img_" + id);
+        const previewCanvasEle = /** @type {HTMLCanvasElement} */(element || document.getElementById("preview_img_" + id));
 
         if (!previewCanvasEle)
         {
@@ -181,6 +206,9 @@ export default class TexturePreviewer
             }
 
             cgl.pushPMatrix();
+
+            cgl.gl.clearColor(0, 0, 0, 0);
+            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             mat4.ortho(cgl.pMatrix, -1, 1, 1, -1, 0.001, 11);
 
@@ -236,6 +264,7 @@ export default class TexturePreviewer
             if (this._currentWidth > 0 && cgl.canvas.width > 0 && cgl.canvas.height > 0 && previewCanvasEle.width != 0 && previewCanvasEle.height > 0)
                 previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
             // }
+            // console.log("jaja draw");
 
             if (this._mode == MODE_HOVER && this._enabled)
             {
@@ -319,18 +348,26 @@ export default class TexturePreviewer
         userSettings.set(UserSettings.PREF_TEXPREVIEW_SIZE, this.scale * 100);
     }
 
+    /**
+     * @param {number} [size]
+     */
     setSize(size)
     {
         if (!size)size = userSettings.get(UserSettings.PREF_TEXPREVIEW_SIZE) || 50;
 
-        if (userSettings.get(UserSettings.PREF_TEXPREVIEW_TRANSPARENT)) this._ele.style.opacity = 0.5;
-        else this._ele.style.opacity = 1;
+        if (userSettings.get(UserSettings.PREF_TEXPREVIEW_TRANSPARENT)) this._ele.style.opacity = "0.5";
+        else this._ele.style.opacity = "1";
 
         this.scale = size / 100;
 
         userSettings.set(UserSettings.PREF_TEXPREVIEW_SIZE, this.scale * 100);
     }
 
+    /**
+     * @param {Port} port
+     * @param {Texture} tex
+     * @param {boolean} meta
+     */
     _getCanvasSize(port, tex, meta)
     {
         let maxWidth = 300;
@@ -358,6 +395,9 @@ export default class TexturePreviewer
         return [w, h];
     }
 
+    /**
+     * @returns {ClickedPort}
+     */
     _htmlDataObject(o)
     {
         if (o.port.get())
@@ -488,14 +528,17 @@ export default class TexturePreviewer
     {
         if (this._hoveringTexPort)
         {
-            if (!this._tempOldTexPort) this.enableBgPreview(false);
-            else this.selectTexturePort(this._tempOldTexPort);
+            // if (!this._tempOldTexPort) this.enableBgPreview(false);
+            // else this.selectTexturePort(this._tempOldTexPort);
             this._hoveringTexPort = false;
             this._tempOldTexPort = null;
             this._lastClickedP = null;
         }
     }
 
+    /**
+     * @param {Port} p
+     */
     selectTexturePort(p)
     {
         if (!userSettings.get(UserSettings.PREF_BGPREVIEW))
@@ -539,6 +582,9 @@ export default class TexturePreviewer
         }
     }
 
+    /**
+     * @param {Port} port
+     */
     updateTexturePort(port)
     {
         let doUpdateHtml = false;
@@ -577,6 +623,9 @@ export default class TexturePreviewer
         return this._texturePorts[idx];
     }
 
+    /**
+     * @param {Texture} tex
+     */
     _showInfo(tex)
     {
         let str = "";

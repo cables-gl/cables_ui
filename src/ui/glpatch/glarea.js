@@ -4,6 +4,7 @@ import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
 import GlOp from "./glop.js";
+import { UiOp } from "../core_extend_op.js";
 
 export default class GlArea
 {
@@ -20,6 +21,13 @@ export default class GlArea
 
     #instancer;
 
+    _w = 300;
+    _h = 200;
+    _visible = true;
+
+    /** @type {GlOp} */
+    #glOpScopeEnd;
+
     /**
      * @param {GlRectInstancer} instancer
      * @param {GlOp} glop
@@ -28,35 +36,11 @@ export default class GlArea
     {
         this.#instancer = instancer;
 
-        /**
-         * @private
-         * @type {GlOp}
-         */
         this.#glop = glop;
 
-        /**
-         * @private
-         * @type {Number}
-         */
-        this._w = 300;
-
-        /**
-         * @private
-         * @type {Number}
-         */
-        this._h = 200;
-
-        /**
-         * @private
-         * @type {Boolean}
-         */
-        this._visible = true;
-
-        /**
-         * @type {GlRect}
-         */
         this.#rectBg = this.#instancer.createRect({ "name": "glarea bg", "interactive": false, "draggable": false });
         this.#rectBg.setSize(this._w, this._h);
+        // this.#rectBg.setBorder(1);
         this._updateColor();
 
         /**
@@ -75,9 +59,19 @@ export default class GlArea
         this.#rectResize.draggable = true;
         this.#rectResize.draggableMove = true;
 
+        this.#rectResize.on(GlRect.EVENT_POINTER_HOVER, (_e) =>
+        {
+            this.#glop.glPatch.hoveringResize = true;
+        });
+
+        this.#rectResize.on(GlRect.EVENT_POINTER_UNHOVER, (_e) =>
+        {
+            this.#glop.glPatch.hoveringResize = false;
+        });
+
         this.#glop.on(GlOp.EVENT_DRAG, () =>
         {
-            this.#update();
+            this.update();
         });
 
         this.#rectResize.on("drag", (_e) =>
@@ -92,7 +86,12 @@ export default class GlArea
             }
 
             gui.savedState.setUnSaved("resizeGlArea", this.#glop.op.getSubPatch());
-            this.#update();
+
+            if (this.#glOpScopeEnd)
+            {
+                this.#glOpScopeEnd.op.setPos(this.#rectBg.x, this.#rectResize.y + this.#rectResize.h / 2 - this.#glOpScopeEnd.h);
+            }
+            this.update();
         });
 
         if (this.#glop.op.uiAttribs.area)
@@ -102,7 +101,7 @@ export default class GlArea
             this._h = this.#glop.op.uiAttribs.area.h;
         }
 
-        this.#update();
+        this.update();
     }
 
     /**
@@ -111,32 +110,120 @@ export default class GlArea
     set visible(v)
     {
         this._visible = v;
-        this.#update();
+        this.update();
     }
 
-    #update()
+    minsize = 20;
+
+    update()
     {
+
         if (this.#rectBg)
         {
-            this.#rectBg.visible = this._visible;
-            this.#rectResize.visible = this._visible;
 
-            if (!this._visible) return;
-            this.#rectBg.setPosition(
-                this.#glop.x,
-                this.#glop.y,
-                0.1);
+            if (this.#glop.op.uiAttribs.areaCollapsed && this._h != this.minsize)
+            {
+                this.#glop.op.uiAttribs.area.origW = this._w;
+                this.#glop.op.uiAttribs.area.origH = this._h;
 
-            this.#rectBg.setSize(this._w, this._h);
+                this._w = this.minsize;
+                this._h = this.minsize;
 
-            this.#rectResize.setPosition(
-                this.#glop.x + this._w - this.#rectResize.w,
-                this.#glop.y + this._h - this.#rectResize.h,
-                -0.1
-            );
+                this.#rectBg.visible = false;
+                this.#rectResize.visible = false;
+            }
+
+            if (!this.#glop.op.uiAttribs.areaCollapsed)
+            {
+
+                if (this._h == this.minsize && !this.#glop.op.uiAttribs.areaCollapsed)
+                {
+                    this.#rectBg.visible = true;
+                    this.#rectResize.visible = true;
+
+                    this._w = this.#glop.op.uiAttribs.area.origW;
+                    this._h = this.#glop.op.uiAttribs.area.origH;
+                }
+
+                this.#rectBg.visible = this._visible;
+                this.#rectResize.visible = this._visible;
+
+                if (!this._visible) return;
+                this.#rectBg.setPosition(
+                    this.#glop.x,
+                    this.#glop.y,
+                    0.1);
+
+                if (this.#glOpScopeEnd)
+                {
+
+                    this._h = this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h;
+                    this.#rectBg.setSize(
+                        this._w,
+                        this._h);
+
+                    this.#rectResize.setPosition(this.#rectResize.x, this.#glOpScopeEnd.y + this.#glOpScopeEnd.h);
+                }
+                else
+                    this.#rectBg.setSize(this._w, this._h);
+
+                this.#rectResize.setPosition(
+                    this.#glop.x + this._w - this.#rectResize.w,
+                    this.#glop.y + this._h - this.#rectResize.h,
+                    -0.1
+                );
+            }
+        }
+        if (!this.#glOpScopeEnd && this.#glop.getUiAttribs().scopeArea)
+        {
+            if (this.#glop.op.tempData.scopeAreaEndOp)
+                this.#glOpScopeEnd = this.#glop.glPatch.getGlOp(this.#glop.op.tempData.scopeAreaEndOp);
         }
 
-        this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+        if (!this.#glop.op.uiAttribs.areaCollapsed)
+        {
+            this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+            this.updateChildOps();
+        }
+
+    }
+
+    updateChildOps()
+    {
+
+        const childs = this.#glop.glPatch._getGlOpsInRect(this.#glop.x, this.#glop.y, this.#glop.x + this._w, this.#glop.y + this._h);
+        const opChilds = [];
+
+        let changed = false;
+        for (let i = 0; i < childs.length; i++)
+        {
+            if (childs[i].op)
+            {
+                opChilds.push(childs[i].op);
+                if (childs[i].op.attribs.area != this.#id)
+                {
+                    childs[i].op.attribs.area = this.#id;
+                    changed = true;
+                }
+            }
+        }
+
+        const currentChilds = gui.corePatch().getOpsByArea(this.#id);
+        for (let i = 0; i < currentChilds.length; i++)
+        {
+            if (opChilds.indexOf(currentChilds[i]) == -1)
+            {
+                delete currentChilds[i].attribs.area;
+                changed = true;
+            }
+
+        }
+        if (changed)
+        {
+            this.#glop?.op.emitEvent("areaChildrenChange", childs);
+            this.#glOpScopeEnd?.op.emitEvent("areaChildrenChange", childs);
+        }
+
     }
 
     /**

@@ -1011,11 +1011,14 @@ export default class PatchSaveServer extends Events
 
         try
         {
-            if (gui.corePatch().cgl)
+            if (gui.corePatch().cgl && gui.corePatch().cgl.gl)
             {
                 const gl = gui.corePatch().cgl.gl;
-                const dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
-                report.glRenderer = (dbgRenderInfo && gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL)) || gl.getParameter(gl.RENDERER);
+                report.glRenderer = gl.getParameter(gl.VERSION);
+            }
+            else
+            {
+                report.glRenderer = "no cgl loaded";
             }
         }
         catch (e)

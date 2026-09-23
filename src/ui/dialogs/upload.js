@@ -147,7 +147,7 @@ export default class FileUploader
         else if (platform.frontendOptions.dragDropLocalFiles)
         {
             const assetPath = platform.getPrefixAssetPath();
-            let filePath = file.path;
+            let filePath = platform.getPathForFile(file);
             let finalPath = "file://" + filePath;
             if (filePath.startsWith(assetPath))
             {

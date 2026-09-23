@@ -888,13 +888,14 @@ export default class Gui extends Events
 
         let canvasContWidth = 0;
         let canvasContHeight = 0;
-        let canvasContRight = "0";
+        let canvasContRightNum = 0;
+        let canvasContRightStr = "";
         let canvasContTop = 0;
 
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            canvasContRight = "initial";
+            canvasContRightStr = "initial";
             this._elCablesCanvasContainer.style.top = "0px";
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
@@ -902,7 +903,7 @@ export default class Gui extends Events
         if (this.canvasManager.mode == this.canvasManager.CANVASMODE_MAXIMIZED)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
-            canvasContRight = "initial";
+            canvasContRightStr = "initial";
 
             canvasContWidth = window.innerWidth;
             canvasContHeight = window.innerHeight;
@@ -923,7 +924,7 @@ export default class Gui extends Events
 
             canvasContWidth = r.width;
             canvasContHeight = r.height;
-            canvasContRight = "initial";
+            canvasContRightStr = "initial";
             this.canvasManager.setSize(r.width, r.height);
 
             this._elCablesCanvasContainer.style["z-index"] = -1;
@@ -948,7 +949,7 @@ export default class Gui extends Events
 
             canvasContWidth = this.rendererWidth;
             canvasContHeight = this.rendererHeight;
-            canvasContRight = String(optionsWidth);
+            canvasContRightNum = optionsWidth;
 
             this._elCablesCanvasContainer.style.left = "initial";
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
@@ -957,18 +958,18 @@ export default class Gui extends Events
 
         this._elCablesCanvasContainer.style.width = canvasContWidth + "px";
         this._elCablesCanvasContainer.style.height = canvasContHeight + "px";
-        this._elCablesCanvasContainer.style.right = canvasContRight + "px";
+        this._elCablesCanvasContainer.style.right = canvasContRightNum + "px";
 
         // flashing canvas overlay when saving
         this._elCanvasFlash.style.width = canvasContWidth + "px";
         this._elCanvasFlash.style.height = canvasContHeight + "px";
-        this._elCanvasFlash.style.right = canvasContRight + "px";
+        this._elCanvasFlash.style.right = (canvasContRightStr || canvasContRightNum) + "px";
         this._elCanvasFlash.style.top = canvasContTop + "px";
 
-        this._elBgPreview.style.right = (this.rendererWidthScaled + 10) + "px";
+        this._elBgPreview.style.right = (this.rendererWidthScaled + canvasContRightNum + 10) + "px";
         this._elBgPreview.style.top = (menubarHeight + 55) + "px";
 
-        this._elBgPreviewButtonContainer.style.right = this.rendererWidthScaled + canvasContRight + "px";
+        this._elBgPreviewButtonContainer.style.right = (this.rendererWidthScaled + canvasContRightNum) + "px";
 
         this.emitEvent("setLayout");
 

@@ -6,12 +6,6 @@ import OpDependencyTab from "../components/tabs/tab_opdependency.js";
 
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
-/**
- * Opens a modal dialog and shows a loading indicator animation
- *
- * @param {String} title
- * @class
- */
 export default class ModalOpDependencies
 {
 

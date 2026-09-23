@@ -134,8 +134,7 @@ export default class GlLink
                         this.#link.remove();
                         this.#glPatch.portDragLine.stop();
 
-                        gui.corePatch().link(
-                            fromOp, fromPort.name, otherPort.op, otherPort.name);
+                        gui.corePatch().link(fromOp, fromPort.name, otherPort.op, otherPort.name);
 
                         return;
                     }
@@ -358,10 +357,7 @@ export default class GlLink
     {
         // const sub = this._glPatch.getCurrentSubPatch();
 
-        if (!this.#glOpIn || !this.#glOpOut)
-        {
-            return;
-        }
+        if (!this.#glOpIn || !this.#glOpOut) return;
 
         if (
             (
@@ -392,6 +388,7 @@ export default class GlLink
     }
 
     /**
+     * @deprecated
      * @param {boolean} _v
      */
     set visible(_v)
@@ -416,11 +413,47 @@ export default class GlLink
                     if (this.#glOpIn.displayType === this.#glOpIn.DISPLAY_REROUTE_DOT) topy += this.#glOpIn.h / 2;
                     if (this.#glOpOut.displayType === this.#glOpOut.DISPLAY_REROUTE_DOT) boty -= this.#glOpOut.h / 2;
 
-                    const pos1x = this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput;
-                    const pos1y = topy;
+                    let pos1x = this.#glOpIn.getUiAttribs().translate.x + this._offsetXInput;
+                    let pos1y = topy;
 
-                    const pos2x = this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput;
-                    const pos2y = boty;
+                    let pos2x = this.#glOpOut.getUiAttribs().translate.x + this._offsetXOutput;
+                    let pos2y = boty;
+
+                    if (!!this.#glOpOut.op.uiAttribs.hidden != !!this.#glOpIn.op.uiAttribs.hidden)
+                    {
+                        let opArea = null;
+                        let opVisi = this.#glOpIn;
+                        let opHidden = this.#glOpOut;
+                        if (opVisi.isHidden)
+                        {
+                            opVisi = this.#glOpOut;
+                            opHidden = this.#glOpIn;
+                        }
+
+                        const ops = gui.corePatch().getOpsByArea(opHidden.op.attribs.area);
+                        for (let i = 0; i < ops.length; i++)
+                        {
+                            if (ops[i].uiAttribs.hasArea)opArea = this.#glPatch.getGlOp(ops[i]);
+                        }
+
+                        // if (opHidden == this.#glOpIn)offYHidden = opHidden.h;
+                        if (opHidden == this.#glOpOut)
+                        {
+
+                            // output is AREA
+                            // pos1x = opArea.getUiAttribs().translate.x;
+                            // pos1y = opArea.getUiAttribs().translate.y,
+                            pos2x = opArea.getUiAttribs().translate.x + opArea.w / 2;
+                            pos2y = opArea.getUiAttribs().translate.y + opArea.h;
+                        }
+                        else
+                        {
+
+                            // input is AREA
+                            pos1x = opArea.getUiAttribs().translate.x + opArea.w / 2;
+                            pos1y = opArea.getUiAttribs().translate.y;
+                        }
+                    }
 
                     this.#cable.setPosition(pos1x, pos1y, pos2x, pos2y);
                 }

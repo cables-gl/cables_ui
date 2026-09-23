@@ -194,6 +194,9 @@ export default class VizLayer extends Events
         }
     }
 
+    /**
+     * @param {boolean} gl
+     */
     renderVizLayer(gl)
     {
         const startTime = performance.now();
@@ -226,13 +229,14 @@ export default class VizLayer extends Events
         {
             const item = this._items[i];
             const port = item.port;
-            if (!port || !item.op || !item.op.uiAttribs || !item.op.uiAttribs.translate) continue;
+            if (!port || !item.op || !item.op.uiAttribs || !item.op.uiAttribs.translate || item.op.uiAttribs.hidden) continue;
 
             item.posX = item.op.uiAttribs.translate.x;
             item.posY = item.op.uiAttribs.translate.y;
 
             const pos = this._glPatch.viewBox.patchToScreenCoords(item.posX, item.posY);
-            pos[1] += paddingY;
+            if (!item.op.uiAttribs.vizLayerFullOpSize)
+                pos[1] += paddingY;
 
             item.screenPosX = pos[0];
             item.screenPosY = pos[1];
@@ -249,6 +253,7 @@ export default class VizLayer extends Events
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(ww, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
             item.w = size[0];
+            if (item.op.uiAttribs.vizLayerFullOpSize) size[1] = sizeOp[1];
             item.h = size[1];
 
             sizeOp[0] *= window.devicePixelRatio;

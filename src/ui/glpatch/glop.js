@@ -1,6 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port, Op } from "cables";
-// @ts-ignore
 import { cloneObject } from "cables/src/core/utils.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
@@ -17,6 +16,7 @@ import { UiOp } from "../core_extend_op.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlLink from "./gllink.js";
 import SuggestionDialog from "../components/suggestiondialog.js";
+import OpDocs from "../components/opdocs.js";
 
 /**
  * rendering of ops on the patchfield {@link GlPatch}
@@ -52,7 +52,7 @@ export default class GlOp extends Events
     #glPatch;
 
     /** @type {GlRect} */
-    _glRectArea = null;
+    #glRectArea = null;
 
     _titleExtPortTimeout = null;
     _titleExtPortLastTime = null;
@@ -118,6 +118,8 @@ export default class GlOp extends Events
 
     /** @type {import("cables/src/core/core_patch.js").OpUiAttribs } */
     opUiAttribs = {};
+
+    /** @type {Object<string,GlLink>} */
     _links = {};
     _visPort = null;
 
@@ -211,12 +213,13 @@ export default class GlOp extends Events
             });
 
             if (this.#op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
-            else if (this.#op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
+            // else if (this.#op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
+            else if (this.#op.uiAttribs.hasArea) this.displayType = this.DISPLAY_UI_AREA;
+
         }
 
         this._initGl();
 
-        // @ts-ignore
         gui.on(Gui.EVENT_MOUSEOVERPORT, () =>
         {
             this._onMouseHover();
@@ -236,8 +239,16 @@ export default class GlOp extends Events
 
     }
 
+    get isHidden()
+    {
+        return this.op.uiAttribs.hidden;
+    }
+
     _storageChanged()
     {
+        if (this.#op.uiAttribs.hasArea)
+            this._rectBorder = 1;
+
         if (this.#op?.isSubPatchOp())
         {
             this.displayType = this.DISPLAY_SUBPATCH;
@@ -342,7 +353,7 @@ export default class GlOp extends Events
             else offX = 0;
 
         for (const i in glOps)
-            glOps[i].setPassiveDragOffset(offX, offY);
+            glOps[i].setPassiveDragOffset(offX, offY, false);
 
         this.#glPatch.opShakeDetector.move(offX);
 
@@ -378,14 +389,14 @@ export default class GlOp extends Events
 
             for (const i in glOps) glOps[i].endPassiveDrag();
 
-            (function (scope, _oldUiAttribs)
+            const undof = (scope, _oldUiAttribs) =>
             {
                 if (!scope.#op) return;
 
                 const newUiAttr = JSON.stringify(scope.#op.uiAttribs);
                 undo.add({
                     "title": "Move op",
-                    "undo": function ()
+                    "undo": () =>
                     {
                         try
                         {
@@ -395,7 +406,7 @@ export default class GlOp extends Events
                         }
                         catch (e) {}
                     },
-                    "redo": function ()
+                    "redo": () =>
                     {
                         const u = JSON.parse(newUiAttr);
                         scope.#glPatch.patchAPI.setOpUiAttribs(scope.#id, "translate", { "x": u.translate.x, "y": u.translate.y });
@@ -406,7 +417,8 @@ export default class GlOp extends Events
                      */
                     }
                 });
-            }(this, this._dragOldUiAttribs + ""));
+            };
+            undof(this, this._dragOldUiAttribs + "");
 
             gui.patchView.testCollision(this.#op);
 
@@ -429,14 +441,16 @@ export default class GlOp extends Events
 
         const perf = gui.uiProfiler.start("[glop] mouseDown");
 
-        if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
+        // if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
+        if (this.#op.uiAttribs.hasArea || this.#op.uiAttribs.scopeArea)
         {
+            const padding = 0;
             if (this.opUiAttribs.translate)
                 this.#glPatch._selectOpsInRect(
-                    this.opUiAttribs.translate.x,
-                    this.opUiAttribs.translate.y,
-                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w,
-                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h
+                    this.opUiAttribs.translate.x - padding,
+                    this.opUiAttribs.translate.y - padding,
+                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w + padding,
+                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h + padding
                 );
         }
 
@@ -620,6 +634,24 @@ export default class GlOp extends Events
             this.updateSize();
         }
 
+        if (newAttribs.hasOwnProperty("areaCollapsed"))
+        {
+            this._resizableArea.update();
+            this._needsUpdate = true;
+
+            this.update();
+            const ops = gui.corePatch().getOpsByArea(this.op.attribs.area);
+
+            for (let i = 0; i < ops.length; i++)
+            {
+                const glop = this.#glPatch.getGlOp(ops[i]);
+                for (const j in glop._links)
+                {
+                    glop._links[j].updateVisible();
+                }
+            }
+        }
+
         perf.finish();
         this._needsUpdate = true;
     }
@@ -742,10 +774,11 @@ export default class GlOp extends Events
                 this.#glRectSelectedBorder = this.#instancer.createRect({ "name": "rectSelected", "parent": this.#glRectBg, "interactive": false });
                 this.#glRectSelectedBorder.setColorArray(gui.theme.colors_patch.selected);
 
+                this.#glRectSelectedBorder.visible = this.#visible;
                 this.updateSize();
                 this.updatePosition();
             }
-            this.#glRectSelectedBorder.visible = true;
+            // this.#glRectSelectedBorder.visible = true;
         }
     }
 
@@ -807,7 +840,7 @@ export default class GlOp extends Events
         if (this._glColorIndicator)
         {
             let h = this._height;
-            if (this._glRectArea)h = this._glRectArea.h;
+            if (this.#glRectArea)h = this.#glRectArea.h;
             if (this.opUiAttribs.area)h = this.opUiAttribs.area.h;
 
             this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0);
@@ -839,13 +872,9 @@ export default class GlOp extends Events
         if (this.#glRectSelectedBorder)
         {
             if (gui.patchView.getNumSelectedOps() > 1)
-            {
                 this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
-            }
             else
-            {
                 this.#glRectSelectedBorder.setSize(0, 0);
-            }
         }
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this.#glRectBg.w);
 
@@ -899,7 +928,7 @@ export default class GlOp extends Events
         this._disposed = true;
 
         if (this.#glRerouteDot) this.#glRerouteDot = this.#glRerouteDot.dispose();
-        if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
+        if (this.#glRectArea) this.#glRectArea = this.#glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this.#glRectSelectedBorder) this.#glRectSelectedBorder = this.#glRectSelectedBorder.dispose();
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
@@ -1019,8 +1048,6 @@ export default class GlOp extends Events
         return ports;
     }
 
-    /**
-     */
     initColorSwatch()
     {
         if (!this.#op) return;
@@ -1064,6 +1091,7 @@ export default class GlOp extends Events
 
                             this.updateSize();
                         }
+
                     });
                     colorPorts[0].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
                     colorPorts[1].on(Port.EVENT_VALUE_CHANGE, updateColorIndicator);
@@ -1134,6 +1162,7 @@ export default class GlOp extends Events
         if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
+        if (this._resizableArea) this._resizableArea.update();
 
         if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
         {
@@ -1177,6 +1206,7 @@ export default class GlOp extends Events
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
+
     }
 
     set visible(v)
@@ -1205,6 +1235,7 @@ export default class GlOp extends Events
      */
     _setVisible(v)
     {
+        // console.log("set visi", v, this.#visible);
         let changed = false;
         if (this.#visible == v) return;
         if (v !== undefined)
@@ -1219,14 +1250,27 @@ export default class GlOp extends Events
 
         if (this.#glRectBg) this.#glRectBg.visible = visi;
         if (this._resizableArea) this._resizableArea.visible = visi;
+        if (this.#rectResize) this.#rectResize.visible = visi;
         if (this.#titleExt) this.#titleExt.visible = visi;
         if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
+        if (this.#glDotHint) this.#glDotHint.visible = visi;
+        if (this.#glDotWarning) this.#glDotWarning.visible = visi;
+        if (this.#glDotError) this.#glDotError.visible = visi;
+
         if (changed) this._updateIndicators();
 
-        if (changed) for (const i in this._links) this._links[i].visible = true;
+        if (changed)
+        {
+            // console.log("chandeg", this._links);
+            for (const i in this._links)
+            {
 
+                // console.log("change visible ");
+                this._links[i].updateVisible();
+            }
+        }
         if (!visi) this._isHovering = false;
     }
 
@@ -1312,6 +1356,7 @@ export default class GlOp extends Events
                 this.#glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
                 this.#glDotHint.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                this.#glDotHint.visible = this.#visible;
             }
 
             if (hasWarnings && !this.#glDotWarning)
@@ -1320,6 +1365,7 @@ export default class GlOp extends Events
                 this.#glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this.#glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);
                 this.#glDotWarning.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+                this.#glDotWarning.visible = this.#visible && hasWarnings;
             }
 
             if (hasErrors && !this.#glDotError)
@@ -1413,8 +1459,41 @@ export default class GlOp extends Events
         if (!this.#wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
 
-        if ((this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
+        if (
+            (
+                this.opUiAttribs.scopeArea || this.opUiAttribs.hasArea || this.displayType == this.DISPLAY_UI_AREA
+            )
+            && !this._resizableArea)
+        {
+
             this._resizableArea = new GlArea(this.#instancer, this);
+            if (this.opUiAttribs.scopeArea)
+            {
+                console.log("scope area");
+                const startScope = this.op.getPortByName("areaScopeBegin");
+                if (startScope && !startScope.isLinked())
+                {
+                    // const parts=
+                    const opdocBegin = gui.opDocs.getOpDocByName(this.op.objName);
+                    console.log("opdoc,", opdocBegin, opdocBegin.nameNoVersion, opdocBegin.version);
+
+                    let endOpName = opdocBegin.nameNoVersion + "End";
+                    if (opdocBegin.version)endOpName += "_v" + opdocBegin.version;
+
+                    console.log("scope area create...", endOpName);
+                    gui.patchView.addOp(endOpName, { "onOpAdd": (endOp) =>
+                    {
+                        endOp.setPos(this.x, this.y + 200);
+                        // const glEndop = this.#glPatch.getGlOp(endOp);
+                        const endScope = endOp.getPortByName("areaScopeEnd");
+                        this.op.patch.link(startScope.op, startScope.name, endScope.op, endScope.name);
+
+                    } });
+
+                }
+
+            }
+        }
 
         // extended title
         if (this.displayType != this.DISPLAY_COMMENT)
@@ -1451,10 +1530,10 @@ export default class GlOp extends Events
             this.updateSize();
         }
 
-        if (this.opUiAttribs.hasArea && this._glRectArea)
+        if (this.opUiAttribs.hasArea && this.#glRectArea)
         {
-            this._glRectArea = this.#instancer.createRect({ "name": "area", "parent": this.#glRectBg, "interactive": false });
-            this._glRectArea.setColor(0, 0, 0, 0.15);
+            this.#glRectArea = this.#instancer.createRect({ "name": "area", "parent": this.#glRectBg, "interactive": false });
+            this.#glRectArea.setColor(0, 0, 0, 0.15);
         }
 
         if (this.opUiAttribs.resizable && !this.#rectResize)
@@ -1475,7 +1554,17 @@ export default class GlOp extends Events
 
             doUpdateSize = true;
 
-            this.#rectResize.on("drag", (_e) =>
+            this.#rectResize.on(GlRect.EVENT_POINTER_HOVER, (_e) =>
+            {
+                this.#glPatch.hoveringResize = true;
+            });
+
+            this.#rectResize.on(GlRect.EVENT_POINTER_UNHOVER, (_e) =>
+            {
+                this.#glPatch.hoveringResize = false;
+            });
+
+            this.#rectResize.on(GlRect.EVENT_DRAG, (_e) =>
             {
                 if (this.#rectResize)
                 {
@@ -1484,8 +1573,18 @@ export default class GlOp extends Events
 
                     w = Math.max(this.minWidth, w);
 
-                    w = this.glPatch.snap.snapX(w);
-                    h = this.glPatch.snap.snapY(h);
+                    if (this.opUiAttribs.forceAspect)
+                    {
+                        h = w * 1 / this.opUiAttribs.forceAspect;
+
+                        console.log("aspect", this.opUiAttribs.forceAspect);
+                    }
+                    else
+                    {
+                        w = this.glPatch.snap.snapX(w);
+                        h = this.glPatch.snap.snapY(h);
+
+                    }
 
                     for (let i = 0; i < this.#glPorts.length; i++)
                         this.#glPorts[i].updateSize();
@@ -1725,7 +1824,6 @@ export default class GlOp extends Events
         }
 
         if (this._hidePorts) for (let i = 0; i < this.#glPorts.length; i++) this.#glPorts[i].rect.setOpacity(0);
-        // if (this._resizableArea) this._resizableArea._updateColor();
 
         if (this._glColorIndicatorSpacing)
         {
@@ -1827,15 +1925,27 @@ export default class GlOp extends Events
     {
         if (!this._passiveDragStartX) this.startPassiveDrag();
 
+        if (gui.patchView.getSelectedOps().length == 1 && this.opUiAttribs.moveableOnlyY)x = 0;
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
         x = this.#glPatch.snap.snapOpX(x, this.#op);
         y = this.#glPatch.snap.snapY(y, this.#glPatch._pressedCtrlKey);
 
+        if (this.op.tempData.scopeAreaStartOp) x = this.op.tempData.scopeAreaStartOp.uiAttribs.translate.x;
+
         this.#glPatch.patchAPI.setOpUiAttribs(this.#id, "translate", { "x": x, "y": y });
         this.emitEvent(GlOp.EVENT_DRAG);
         this.updatePosition();
+
+        if (this.op.tempData.scopeAreaEndOp)
+        {
+            const scopeEndOp = this.op.tempData.scopeAreaEndOp;
+            scopeEndOp.setPos(this.op.uiAttribs.translate.x, scopeEndOp.uiAttribs.translate.y);
+
+            this._resizableArea.update();
+        }
+
     }
 
     /**

@@ -163,7 +163,7 @@ export class patchStructureQuery
                 includeReasons.push("includeColored");
                 included = true;
             }
-            if (this.options.include.areas && ops[i].objName.indexOf(defaultOps.defaultOpNames.uiArea) > -1)
+            if (this.options.include.areas && ops[i].uiAttribs.hasArea)
             {
                 includeReasons.push("includeAreas");
                 included = true;
