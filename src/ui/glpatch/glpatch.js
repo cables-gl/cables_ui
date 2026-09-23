@@ -51,6 +51,16 @@ export default class GlPatch extends Events
     static EVENT_MOUSE_DRAG_LINK = "mouseDragLink";
     static EVENT_MOUSE_UP = "mouseup";
     static EVENT_SELECTED_OPS_CHANGED = "selectedOpsChanged";
+    static EVENT_SPACE_DOWN = "spacedown";
+    static EVENT_SPACE_UP = "spaceup";
+    static EVENT_MOUSE_MOVE = "mousemove";
+    static EVENT_MOUSE_LEAVE = "mouseleave";
+    static EVENT_MOUSE_ENTER = "mouseenter";
+    static EVENT_MOUSE_DOWN = "mousedown";
+    static EVENT_PAUSED = "paused";
+    static EVENT_RESUMED = "resumed";
+    static EVENT_RESIZE = "resize";
+    static EVENT_META_SCROLL = "META_SCROLL";
 
     #cgl = null;
     hoverPort = null;
@@ -322,8 +332,8 @@ export default class GlPatch extends Events
             userSettings.set(UserSettings.PREF_GLFLOWMODE, fm);
         });
 
-        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
-        gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
+        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = true; this.emitEvent(GlPatch.EVENT_SPACE_DOWN); });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this._spacePressed = false; this.emitEvent(GlPatch.EVENT_SPACE_UP); });
 
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdOps.editOp(true); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
@@ -617,7 +627,7 @@ export default class GlPatch extends Events
         if (e.ctrlKey) this._pressedCtrlKey = true;
         else this._pressedCtrlKey = false;
 
-        this.emitEvent("mousemove", e);
+        this.emitEvent(GlPatch.EVENT_MOUSE_MOVE, e);
 
         if (this._dropInCircleRect)
         {
@@ -750,7 +760,7 @@ export default class GlPatch extends Events
 
         this._lastButton = 0;
         this._mouseLeaveButtons = e.buttons;
-        this.emitEvent("mouseleave", e);
+        this.emitEvent(GlPatch.EVENT_MOUSE_LEAVE, e);
     }
 
     /**
@@ -767,7 +777,7 @@ export default class GlPatch extends Events
             return;
         }
 
-        this.emitEvent("mouseenter", e);
+        this.emitEvent(GlPatch.EVENT_MOUSE_ENTER, e);
 
         if (e.buttons == 0 && this._mouseLeaveButtons != e.buttons)
         {
@@ -824,7 +834,7 @@ export default class GlPatch extends Events
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
-        this.emitEvent("mousedown", e);
+        this.emitEvent(GlPatch.EVENT_MOUSE_DOWN, e);
         this.#rectInstancer.mouseDown(e);
         this._canvasMouseDown = true;
         this._canvasMouseDownSelecting = this.mouseState.buttonStateForSelecting;
@@ -2038,14 +2048,14 @@ export default class GlPatch extends Events
     {
         this.#cgl.canvas.style["background-color"] = "rgba(61,61,61,1)";
         this.paused = true;
-        this.emitEvent("paused");
+        this.emitEvent(GlPatch.EVENT_PAUSED);
     }
 
     resume()
     {
         this.#cgl.canvas.style["background-color"] = "transparent";
         this.paused = false;
-        this.emitEvent("resumed");
+        this.emitEvent(GlPatch.EVENT_RESUMED);
     }
 
     /**

@@ -65,8 +65,8 @@ export default class GlViewBox
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
 
-        this.glPatch.addEventListener("spacedown", this._onCanvasSpaceDown.bind(this));
-        this.glPatch.addEventListener("spaceup", this._onCanvasSpaceUp.bind(this));
+        this.glPatch.addEventListener(GlPatch.EVENT_SPACE_DOWN, this._onCanvasSpaceDown.bind(this));
+        this.glPatch.addEventListener(GlPatch.EVENT_SPACE_UP, this._onCanvasSpaceUp.bind(this));
 
         userSettings.on(UserSettings.EVENT_CHANGE, (which, _v) =>
         {
@@ -234,7 +234,7 @@ export default class GlViewBox
     {
         if (event.metaKey)
         {
-            this.glPatch.emitEvent("META_SCROLL", event.deltaY, this.mouseX, this.mouseY);
+            this.glPatch.emitEvent(GlPatch.EVENT_META_SCROLL, event.deltaY, this.mouseX, this.mouseY);
             return;
         }
 

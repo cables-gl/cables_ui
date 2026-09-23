@@ -73,7 +73,7 @@ export default class VizLayer extends Events
             this._updateSize();
         });
 
-        this._glPatch.on("META_SCROLL", (delta, x, y) =>
+        this._glPatch.on(GlPatch.EVENT_META_SCROLL, (delta, x, y) =>
         {
             if (delta > 0)delta = 1;
             else delta = -1;
@@ -95,7 +95,7 @@ export default class VizLayer extends Events
             if (key == "vizlayerpaused") this.paused = value;
         });
 
-        this._glPatch.on("resize", this._updateSize.bind(this));
+        this._glPatch.on(GlPatch.EVENT_RESIZE, this._updateSize.bind(this));
 
         this._eleCanvas = document.createElement("canvas");
 

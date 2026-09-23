@@ -147,7 +147,7 @@ export default class GlCable
         if (this.#visible)
         {
             if (!this._listenerMousemove)
-                this._listenerMousemove = this.#glPatch.on("mousemove", this._checkCollide.bind(this));
+                this._listenerMousemove = this.#glPatch.on(GlPatch.EVENT_MOUSE_MOVE, this._checkCollide.bind(this));
         }
 
         if ((!this.#visible || this.#disposed) && this._listenerMousemove)
