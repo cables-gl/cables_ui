@@ -146,7 +146,7 @@ class OpParampanel extends Events
 
         if (!this.hasExposeListener)
         {
-            this.hasExposeListener = gui.corePatch().on("subpatchExpose",
+            this.hasExposeListener = gui.corePatch().on(Port.EVENT_SUBPATCH_EXPOSE,
                 (subpatchid) =>
                 {
                     if (

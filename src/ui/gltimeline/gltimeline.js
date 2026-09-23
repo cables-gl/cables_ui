@@ -287,7 +287,7 @@ export class GlTimeline extends Events
 
         gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.initSoon(); });
         gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.initSoon(); });
-        gui.corePatch().on("portAnimToggle", () => { this.initSoon(); });
+        gui.corePatch().on(Port.EVENT_ANIM_TOGGLE, () => { this.initSoon(); });
 
         this.#elKeyParamPanel = document.createElement("div");
         this.#elKeyParamPanel.classList.add("keyOverlay");

@@ -258,7 +258,7 @@ export default class GlOp extends Events
             this._updateColors();
             this.refreshPorts();
 
-            this.#op.patch.on("subpatchExpose", (subpatchid) =>
+            this.#op.patch.on(Port.EVENT_SUBPATCH_EXPOSE, (subpatchid) =>
             {
                 if (this.#op && this.#op.patchId && this.#op.patchId.get() === subpatchid) this.refreshPorts();
             });
