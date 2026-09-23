@@ -1,6 +1,5 @@
 import { Logger, Events } from "cables-shared-client";
 import { Port, Op } from "cables";
-// @ts-ignore
 import { cloneObject } from "cables/src/core/utils.js";
 import GlPort from "./glport.js";
 import GlText from "../gldraw/gltext.js";
@@ -1251,6 +1250,7 @@ export default class GlOp extends Events
 
         if (this.#glRectBg) this.#glRectBg.visible = visi;
         if (this._resizableArea) this._resizableArea.visible = visi;
+        if (this.#rectResize) this.#rectResize.visible = visi;
         if (this.#titleExt) this.#titleExt.visible = visi;
         if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
@@ -1344,7 +1344,7 @@ export default class GlOp extends Events
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_HINT) hasHints = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_WARNING) hasWarnings = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_ERROR) hasErrors = true;
-                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_NOTWORKINGlinkTimeListener) notworking = true;
+                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_NOTWORKING) notworking = true;
             }
 
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;

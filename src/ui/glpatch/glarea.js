@@ -119,14 +119,17 @@ export default class GlArea
                 this._w = this.minsize;
                 this._h = this.minsize;
 
-                this.#rectBg.setSize(this._w, this._h);
+                this.#rectBg.visible = false;
+                this.#rectResize.visible = false;
             }
 
             if (!this.#glop.op.uiAttribs.areaCollapsed)
-
             {
+
                 if (this._h == this.minsize && !this.#glop.op.uiAttribs.areaCollapsed)
                 {
+                    this.#rectBg.visible = true;
+                    this.#rectResize.visible = true;
 
                     this._w = this.#glop.op.uiAttribs.area.origW;
                     this._h = this.#glop.op.uiAttribs.area.origH;
