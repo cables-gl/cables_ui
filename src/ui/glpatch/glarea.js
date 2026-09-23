@@ -74,7 +74,7 @@ export default class GlArea
             this.update();
         });
 
-        this.#rectResize.on("drag", (_e) =>
+        this.#rectResize.on(GlRect.EVENT_DRAG, (_e) =>
         {
             this._w = this.#rectResize.x - this.#glop.x + this.#rectResize.w / 2;
             this._h = this.#rectResize.y - this.#glop.y + this.#rectResize.h / 2;

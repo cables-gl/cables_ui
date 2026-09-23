@@ -234,7 +234,7 @@ export default class GlViewBox
     {
         if (event.metaKey)
         {
-            this.glPatch.emitEvent("META_SCROLL", event.deltaY, this.mouseX, this.mouseY);
+            this.glPatch.emitEvent(GlPatch.EVENT_MOUSE_META_SCROLL, event.deltaY, this.mouseX, this.mouseY);
             return;
         }
 

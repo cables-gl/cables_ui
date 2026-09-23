@@ -73,7 +73,7 @@ export default class VizLayer extends Events
             this._updateSize();
         });
 
-        this._glPatch.on("META_SCROLL", (delta, x, y) =>
+        this._glPatch.on(GlPatch.EVENT_MOUSE_META_SCROLL, (delta, x, y) =>
         {
             if (delta > 0)delta = 1;
             else delta = -1;

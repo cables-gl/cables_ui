@@ -29,6 +29,7 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {boolean} isStaff
  * @property {boolean} isAdmin
  * @property {boolean} isSupporter
+ * @property {boolean} hasWriteRights
  */
 
 /**

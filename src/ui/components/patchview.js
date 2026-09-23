@@ -25,6 +25,7 @@ import { platform } from "../platform.js";
 import { UserSettings, userSettings } from "./usersettings.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { UiOp } from "../core_extend_op.js";
+import GlPort from "../glpatch/glport.js";
 
 /**
  * @typedef AddOpOptions
@@ -720,7 +721,7 @@ export default class PatchView extends Events
     }
 
     /**
-     * @param {string | number} subPatch
+     * @param {string} subPatch
      * @param {boolean} [noUnselect]
      */
     selectAllOpsSubPatch(subPatch, noUnselect)
@@ -3092,7 +3093,7 @@ export default class PatchView extends Events
 
         if (gui.opParams.op == exposeOp) gui.opParams.show(this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id);
         exposeOp.emitEvent(Op.EVENT_PORT_ORDER_CHANGE);
-        exposeOp.emitEvent("glportOrderChanged");
+        exposeOp.emitEvent(GlPort.EVENT_GLPORTORDER_CHANGED);
     }
 
     getSubPatchExposedPorts(_subid, _dir)
