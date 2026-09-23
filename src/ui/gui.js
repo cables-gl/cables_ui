@@ -1,5 +1,5 @@
 import { Logger, Events, ele, TalkerAPI } from "cables-shared-client";
-import { Patch, now } from "cables";
+import { Patch, Port, now } from "cables";
 import { CgShader, initCGL } from "cables-corelibs";
 import defaultTheme from "./defaulttheme.json";
 import { platform } from "./platform.js";
@@ -2348,7 +2348,7 @@ export default class Gui extends Events
     initCoreListeners()
     {
 
-        this.#corePatch.on("portAnimToggle", (_options) =>
+        this.#corePatch.on(Port.EVENT_ANIM_TOGGLE, (_options) =>
         {
             this.hasAnims = true;
         });
@@ -2357,7 +2357,7 @@ export default class Gui extends Events
 
         });
 
-        this.#corePatch.on("portAnimUpdated", (_options) =>
+        this.#corePatch.on(Port.EVENT_ANIM_UPDATED, (_options) =>
         {
             if (!this.hasAnims)
             {

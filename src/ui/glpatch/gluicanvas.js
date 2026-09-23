@@ -29,7 +29,7 @@ export default class GlUiCanvas extends GlCanvas
 
         this.cgl.on("resize", () =>
         {
-            this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+            this.glPatch.emitEvent(GlPatch.EVENT_RESIZE, this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
             gui.patchView.centerView();
         });
 
@@ -46,12 +46,12 @@ export default class GlUiCanvas extends GlCanvas
             this.canvas.classList.toggle("gluiPatchBg", mode == gui.canvasManager.CANVASMODE_PATCHBG);
         });
 
-        this.glPatch.on("paused", () =>
+        this.glPatch.on(GlPatch.EVENT_PAUSED, () =>
         {
             // this.patch.pause();
         });
 
-        this.glPatch.on("resumed", () =>
+        this.glPatch.on(GlPatch.EVENT_RESUMED, () =>
         {
             this.cgl.setSize(this.width, this.height);
             // this.patch.resume();
@@ -96,7 +96,7 @@ export default class GlUiCanvas extends GlCanvas
     {
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         this.glPatch.needsRedraw = true;
-        this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
+        this.glPatch.emitEvent(GlPatch.EVENT_RESIZE, this._parentEle.clientWidth, this._parentEle.clientHeight);
         this._lastTime = 0;
     }
 

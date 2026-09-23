@@ -1,5 +1,5 @@
 import { Logger } from "cables-shared-client";
-import { Link } from "cables";
+import { Link, Port } from "cables";
 import { gui } from "../gui.js";
 import PacoConnector from "./sc_paconnector.js";
 
@@ -296,7 +296,7 @@ const PatchConnectionSender = function (patch)
         });
     });
 
-    patch.addEventListener("portSetVariable", (op, port, variableName) =>
+    patch.addEventListener(Port.EVENT_SET_VARIABLE, (op, port, variableName) =>
     {
         const vars = {
             "opId": op.id,
@@ -306,7 +306,7 @@ const PatchConnectionSender = function (patch)
         this.send(PacoConnector.PACO_PORT_SETVARIABLE, vars);
     });
 
-    patch.addEventListener("portAnimUpdated", (op, port, anim) =>
+    patch.addEventListener(Port.EVENT_ANIM_UPDATED, (op, port, anim) =>
     {
         if (op && port && anim)
         {
