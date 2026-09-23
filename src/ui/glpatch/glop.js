@@ -213,13 +213,13 @@ export default class GlOp extends Events
             });
 
             if (this.#op.objName.indexOf("Ops.Ui.Comment") === 0) this.displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
-            else if (this.#op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
+            // else if (this.#op.objName.indexOf("Ops.Ui.Area") === 0) this.displayType = this.DISPLAY_UI_AREA;
+            else if (this.#op.uiAttribs.hasArea) this.displayType = this.DISPLAY_UI_AREA;
 
         }
 
         this._initGl();
 
-        // @ts-ignore
         gui.on(Gui.EVENT_MOUSEOVERPORT, () =>
         {
             this._onMouseHover();
@@ -1554,7 +1554,17 @@ export default class GlOp extends Events
 
             doUpdateSize = true;
 
-            this.#rectResize.on("drag", (_e) =>
+            this.#rectResize.on(GlRect.EVENT_POINTER_HOVER, (_e) =>
+            {
+                this.#glPatch.hoveringResize = true;
+            });
+
+            this.#rectResize.on(GlRect.EVENT_POINTER_UNHOVER, (_e) =>
+            {
+                this.#glPatch.hoveringResize = false;
+            });
+
+            this.#rectResize.on(GlRect.EVENT_DRAG, (_e) =>
             {
                 if (this.#rectResize)
                 {
@@ -1563,8 +1573,18 @@ export default class GlOp extends Events
 
                     w = Math.max(this.minWidth, w);
 
-                    w = this.glPatch.snap.snapX(w);
-                    h = this.glPatch.snap.snapY(h);
+                    if (this.opUiAttribs.forceAspect)
+                    {
+                        h = w * 1 / this.opUiAttribs.forceAspect;
+
+                        console.log("aspect", this.opUiAttribs.forceAspect);
+                    }
+                    else
+                    {
+                        w = this.glPatch.snap.snapX(w);
+                        h = this.glPatch.snap.snapY(h);
+
+                    }
 
                     for (let i = 0; i < this.#glPorts.length; i++)
                         this.#glPorts[i].updateSize();

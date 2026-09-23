@@ -59,6 +59,16 @@ export default class GlArea
         this.#rectResize.draggable = true;
         this.#rectResize.draggableMove = true;
 
+        this.#rectResize.on(GlRect.EVENT_POINTER_HOVER, (_e) =>
+        {
+            this.#glop.glPatch.hoveringResize = true;
+        });
+
+        this.#rectResize.on(GlRect.EVENT_POINTER_UNHOVER, (_e) =>
+        {
+            this.#glop.glPatch.hoveringResize = false;
+        });
+
         this.#glop.on(GlOp.EVENT_DRAG, () =>
         {
             this.update();

@@ -2981,7 +2981,7 @@ export default class PatchView extends Events
         const selectedOps = this.getSelectedOps();
 
         for (let i = 0; i < selectedOps.length; i++)
-            if (selectedOps[i].objName == defaultOps.defaultOpNames.uiArea)
+            if (selectedOps[i].uiAttribs.hasArea)
                 return selectedOps[i].setUiAttrib({ "color": col });
 
         for (let i = 0; i < selectedOps.length; i++)

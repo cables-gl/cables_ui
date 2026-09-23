@@ -60,6 +60,7 @@ export default class GlPatch extends Events
     isAnimated = false;
     #numSelectedGlOps = 0;
 
+    hoveringResize = false;
     _mouseLeaveButtons = 0;
     _cutLine = [];
     cutLineActive = false;
@@ -582,6 +583,7 @@ export default class GlPatch extends Events
             if (this.viewBox.cursor)cur = this.viewBox.cursor;
             else if (this._hoverOps.length > 0 || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) cur = "pointer";
             else if (this._spacePressed) cur = "grabbing";
+            else if (this.hoveringResize) cur = "nwse-resize";
         }
 
         if (this._cursor != cur) this.#cgl.setCursor(cur);
@@ -589,10 +591,10 @@ export default class GlPatch extends Events
         this._cursor = cur;
     }
 
-    setCursor(c)
-    {
-        this._cursor = c;
-    }
+    // setCursor(c)
+    // {
+    //     this._cursor = c;
+    // }
 
     _removeDropInRect()
     {
