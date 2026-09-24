@@ -17,57 +17,57 @@ class CmdRenderer
 
         return [
             {
-                "cmd": "save screenshot",
+                "cmd": "Save screenshot",
                 "category": "canvas",
                 "func": CmdRenderer.screenshot,
                 "icon": "image"
             },
             {
-                "cmd": "maximize canvas",
+                "cmd": "Maximize canvas",
                 "category": "canvas",
                 "func": CmdRenderer.maximizeCanvas,
                 "icon": "canvas_max",
                 "infotext": "renderer_maximize"
             },
             {
-                "cmd": "change canvas size",
+                "cmd": "Change canvas size",
                 "category": "canvas",
                 "func": CmdRenderer.changeSize,
                 "icon": "resize_canvas"
             },
             {
-                "cmd": "reset canvas size",
+                "cmd": "Reset canvas size",
                 "keybindable": true,
                 "category": "canvas",
                 "func": CmdRenderer.resetSize,
                 "icon": "reset_render_size"
             },
             {
-                "cmd": "set canvas aspect ratio",
+                "cmd": "Set canvas aspect ratio",
                 "category": "canvas",
                 "func": CmdRenderer.aspect,
                 "icon": "canvas_max"
             },
             {
-                "cmd": "scale canvas",
+                "cmd": "Scale canvas",
                 "category": "canvas",
                 "func": CmdRenderer.scaleCanvas,
                 "icon": "scale_canvas"
             },
             {
-                "cmd": "canvas magnifier",
+                "cmd": "Canvas magnifier",
                 "category": "canvas",
                 "func": CmdRenderer.canvasMagnifier,
                 "icon": "picker"
             },
             {
-                "cmd": "canvas window",
+                "cmd": "Canvas window",
                 "category": "canvas",
                 "func": CmdRenderer.popoutCanvas,
                 "icon": "external"
             },
             {
-                "cmd": "floading canvas",
+                "cmd": "Floating canvas",
                 "category": "canvas",
                 "func": CmdRenderer.floatCanvas,
                 "icon": "internal"

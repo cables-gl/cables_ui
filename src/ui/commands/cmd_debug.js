@@ -36,7 +36,7 @@ class CmdDebug
                 "icon": "command"
             },
             {
-                "cmd": "timeline debug",
+                "cmd": "Timeline debug",
                 "category": "debug",
                 "func": CmdDebug.debugTimeline,
                 "icon": "command"
