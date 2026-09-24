@@ -329,7 +329,7 @@ class CmdPatch
                 "icon": "op"
             },
             {
-                "cmd": "Reload patch",
+                "cmd": "Reload Editor",
                 "category": "patch",
                 "func": CmdPatch.reload
             },

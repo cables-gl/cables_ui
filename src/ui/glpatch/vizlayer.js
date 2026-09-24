@@ -590,7 +590,7 @@ export default class VizLayer extends Events
             ctx.fillRect(layer.x / layer.scale, layer.y / layer.scale, layer.width, gradHeight);
         }
 
-        if (offset + numLines < lines.length)
+        if ((offset + numLines) < lines.length)
         {
             const radGrad = ctx.createLinearGradient(0, layer.y / layer.scale + layer.height / layer.scale - gradHeight + 5, 0, layer.y / layer.scale + layer.height / layer.scale - gradHeight + gradHeight);
             radGrad.addColorStop(1, gui.theme.colors_vizlayer.colorBackground || "#222");

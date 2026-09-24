@@ -439,12 +439,6 @@ class CmdDebug
         gui.maintabPanel.show(true);
     }
 
-    static saveWithOutObjnames()
-    {
-        gui.corePatch().storeObjNames = false;
-        CmdPatch.save();
-    }
-
     static undoHistory()
     {
         new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true);
