@@ -109,14 +109,14 @@ export default class Bookmarks
 
     set(arr)
     {
-        for (let i = 0; i < this._bookmarks.length; i++) this.setBoookmarkUiAttr(this._bookmarks[i], false);
+        for (let i = 0; i < this._bookmarks.length; i++) this.setBookmarkUiAttr(this._bookmarks[i], false);
 
         if (arr) this._bookmarks = arr;
 
         this.updateDynamicCommands();
     }
 
-    setBoookmarkUiAttr(id, bookmarked)
+    setBookmarkUiAttr(id, bookmarked)
     {
         const op = gui.corePatch().getOpById(id);
         if (op)op.setUiAttrib({ "bookmarked": bookmarked });
@@ -126,7 +126,7 @@ export default class Bookmarks
     {
         if (id)
         {
-            this.setBoookmarkUiAttr(id, false);
+            this.setBookmarkUiAttr(id, false);
             for (const i in this._bookmarks)
             {
                 if (this._bookmarks[i] == id) this._bookmarks[i] = null;
@@ -141,7 +141,7 @@ export default class Bookmarks
     {
         if (id)
         {
-            this.setBoookmarkUiAttr(id, true);
+            this.setBookmarkUiAttr(id, true);
             for (const i in this._bookmarks)
             {
                 if (this._bookmarks[i] == id)
@@ -202,7 +202,7 @@ export default class Bookmarks
 
     updateDynamicCommands()
     {
-        for (let i = 0; i < this._bookmarks.length; i++) this.setBoookmarkUiAttr(this._bookmarks[i], true);
+        for (let i = 0; i < this._bookmarks.length; i++) this.setBookmarkUiAttr(this._bookmarks[i], true);
 
         for (let i = 0; i < this._dynCmds.length; i++)
             gui.cmdPalette.removeDynamic(this._dynCmds[i]);
