@@ -18,7 +18,7 @@ import { CssClassNames } from "../theme.js";
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
  * @property {Boolean} [prompt=false] show an input field to enter a value
  * @property {String} [promptValue]
- * @property {Function} [promptOk]
+ * @property {ModalPromptCallback} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
  * @property {{title: string, checkboxes: ModalDialogCheckbox[]}[]} [checkboxGroups]
  * @property {string[]} [notices]
@@ -47,6 +47,11 @@ import { CssClassNames } from "../theme.js";
 /**
  * @callback ModalDialogSubmitCallback
  * @param {Function} done
+ */
+
+/**
+ * @callback ModalPromptCallback
+ * @param {String} input
  */
 
 /**

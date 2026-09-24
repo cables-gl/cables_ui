@@ -1,4 +1,6 @@
+import { helper } from "cables-shared-client";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
+import ModalDialog from "../dialogs/modaldialog.js";
 import { gui } from "../gui.js";
 
 export { CmdTimeline };
@@ -11,79 +13,93 @@ class CmdTimeline
     {
         return [
             {
-                "cmd": "toggle timeline",
+                "cmd": "Toggle timeline",
                 "category": "timeline",
                 "func": CmdTimeline.toggleTimeline,
                 "keybindable": true,
                 "icon": "timeline"
             },
             {
-                "cmd": "show timeline",
+                "cmd": "Show timeline",
                 "category": "timeline",
                 "func": CmdTimeline.openGlTimeline,
                 "keybindable": true,
                 "icon": "timeline"
             },
             {
-                "cmd": "hide timeline",
+                "cmd": "Hide timeline",
                 "category": "timeline",
                 "func": CmdTimeline.hideTimeline,
                 "keybindable": true,
                 "icon": "timeline"
             },
             {
-                "cmd": "timeline play",
+                "cmd": "Timeline play",
                 "category": "timeline",
                 "func": CmdTimeline.TimelinePlay,
                 "keybindable": true,
                 "icon": "play"
             },
             {
-                "cmd": "timeline pause",
+                "cmd": "Timeline pause",
                 "category": "timeline",
                 "func": CmdTimeline.TimelinePause,
                 "keybindable": true,
                 "icon": "pause"
             },
             {
-                "cmd": "timeline rewind",
+                "cmd": "Timeline rewind",
                 "category": "timeline",
                 "func": CmdTimeline.TimelineRewind,
                 "keybindable": true,
                 "icon": "rewind"
             },
             {
-                "cmd": "timeline forward",
+                "cmd": "Timeline forward",
                 "category": "timeline",
                 "func": CmdTimeline.TimelineForward,
                 "keybindable": true,
                 "icon": "fast-forward"
             },
             {
-                "cmd": "timeline rewind to 0",
+                "cmd": "Timeline rewind to 0",
                 "category": "timeline",
                 "func": CmdTimeline.TimelineRewindStart,
                 "keybindable": true,
                 "icon": "skip-back"
             },
             {
-                "cmd": "add new keyframe at cursor",
+                "cmd": "Add new keyframe at cursor",
                 "keybindable": true,
                 "category": "timeline",
                 "func": CmdTimeline.TimelineCreateKeyAtCursor
             },
             {
-                "cmd": "snap selected keys times to fps",
+                "cmd": "Snap selected keys times to fps",
                 "keybindable": true,
                 "category": "timeline",
                 "func": CmdTimeline.TimelineSnapTimes
             },
             {
-                "cmd": "timeline toggle line/graph layout",
+                "cmd": "Timeline toggle line/graph layout",
                 "keybindable": true,
                 "category": "timeline",
                 "icon": "chart-spline",
                 "func": CmdTimeline.toggleGraph
+            },
+            {
+                "cmd": "Timeline set time",
+                "keybindable": true,
+                "category": "timeline",
+                "icon": "chart-spline",
+                "func": CmdTimeline.setTime
+            },
+            {
+                "cmd": "Timeline set frame",
+                "keybindable": true,
+                "category": "timeline",
+                "icon": "chart-spline",
+                "func": CmdTimeline.setFrame
             }
 
         ];
@@ -128,7 +144,7 @@ class CmdTimeline
 
     static togglePlay()
     {
-        if (gui.corePatch().timer.isPlaying())gui.corePatch().timer.pause();
+        if (gui.corePatch().timer.isPlaying()) gui.corePatch().timer.pause();
         else gui.corePatch().timer.play();
     }
 
@@ -155,6 +171,42 @@ class CmdTimeline
     static showTimeline()
     {
         gui.showTiming();
+    }
+
+    static setTime()
+    {
+        new ModalDialog({
+            "prompt": true,
+            "title": "Timeline - set time",
+            "promptValue": String(gui.corePatch().timer.getTime()),
+            "promptOk": (v) =>
+            {
+                if (v && helper.isNumeric(v))
+                {
+                    const time = parseFloat(v);
+                    gui.corePatch().timer.setTime(time);
+                }
+            }
+        });
+    }
+
+    static setFrame()
+    {
+        const time = gui.corePatch().timer.getTime();
+        const fps = CABLES.timelineConfig?.fps || 30;
+        new ModalDialog({
+            "prompt": true,
+            "title": "Timeline - set frame",
+            "promptValue": time ? String(Math.round(time * fps)) : "0",
+            "promptOk": (v) =>
+            {
+                if (v && helper.isNumeric(v) && fps !== 0)
+                {
+                    const frame = parseInt(v);
+                    gui.corePatch().timer.setTime(frame / parseInt(fps));
+                }
+            }
+        });
     }
 
 }
