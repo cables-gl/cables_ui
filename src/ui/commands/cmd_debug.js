@@ -36,7 +36,7 @@ class CmdDebug
                 "icon": "command"
             },
             {
-                "cmd": "timeline debug",
+                "cmd": "Timeline debug",
                 "category": "debug",
                 "func": CmdDebug.debugTimeline,
                 "icon": "command"
@@ -437,12 +437,6 @@ class CmdDebug
     {
         new OpWatchUiAttribs(gui.mainTabs);
         gui.maintabPanel.show(true);
-    }
-
-    static saveWithOutObjnames()
-    {
-        gui.corePatch().storeObjNames = false;
-        CmdPatch.save();
     }
 
     static undoHistory()

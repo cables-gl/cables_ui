@@ -17,6 +17,7 @@ import { notify } from "../elements/notification.js";
 import { GpuProfiler } from "../components/tabs/tab_profiler_gpu.js";
 import { ProfilerDrawCalls } from "../components/tabs/tab_profiler_drawcalls.js";
 import { TabProfilerMemory } from "../components/tabs/tab_profiler_memory.js";
+import undo from "../utils/undo.js";
 
 export { CmdUi };
 
@@ -273,6 +274,16 @@ class CmdUi
             "cmd": "Show Tips",
             "category": "ui",
             "func": CmdUi.showTips
+        },
+        {
+            "cmd": "Undo",
+            "category": "ui",
+            "func": () => { undo.undo(); }
+        },
+        {
+            "cmd": "Redo",
+            "category": "ui",
+            "func": () => { undo.redo(); }
         },
         {
             "cmd": "Keybindings",

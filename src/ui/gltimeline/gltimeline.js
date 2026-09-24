@@ -269,7 +269,7 @@ export class GlTimeline extends Events
         gui.on(Gui.EVENT_THEMECHANGED, () =>
         {
             this.updateTheme();
-        }),
+        });
 
         cgl.canvas.setAttribute("tabindex", "0");
         cgl.canvas.classList.add("cblgltimelineEle");
