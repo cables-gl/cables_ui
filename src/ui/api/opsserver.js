@@ -1555,12 +1555,6 @@ export default class ServerOps
             return;
         }
 
-        gui.jobs()
-            .start({
-                "id": "load_opcode_" + opname,
-                "title": "loading op code " + opname
-            });
-
         const editorObj = editorSession.rememberOpenEditor("op", opname);
         let editorTab;
 
@@ -1571,6 +1565,12 @@ export default class ServerOps
             gui.maintabPanel.show(true);
             return;
         }
+
+        gui.jobs()
+            .start({
+                "id": "load_opcode_" + opname,
+                "title": "loading op code " + opname
+            });
 
         if (editorObj)
         {
