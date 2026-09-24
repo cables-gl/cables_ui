@@ -1,4 +1,6 @@
+import { helper } from "cables-shared-client";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
+import ModalDialog from "../dialogs/modaldialog.js";
 import { gui } from "../gui.js";
 
 export { CmdTimeline };
@@ -84,6 +86,20 @@ class CmdTimeline
                 "category": "timeline",
                 "icon": "chart-spline",
                 "func": CmdTimeline.toggleGraph
+            },
+            {
+                "cmd": "timeline set time",
+                "keybindable": true,
+                "category": "timeline",
+                "icon": "chart-spline",
+                "func": CmdTimeline.setTime
+            },
+            {
+                "cmd": "timeline set frame",
+                "keybindable": true,
+                "category": "timeline",
+                "icon": "chart-spline",
+                "func": CmdTimeline.setFrame
             }
 
         ];
@@ -128,7 +144,7 @@ class CmdTimeline
 
     static togglePlay()
     {
-        if (gui.corePatch().timer.isPlaying())gui.corePatch().timer.pause();
+        if (gui.corePatch().timer.isPlaying()) gui.corePatch().timer.pause();
         else gui.corePatch().timer.play();
     }
 
@@ -155,6 +171,42 @@ class CmdTimeline
     static showTimeline()
     {
         gui.showTiming();
+    }
+
+    static setTime()
+    {
+        new ModalDialog({
+            "prompt": true,
+            "title": "Timeline - set time",
+            "promptValue": String(gui.corePatch().timer.getTime()),
+            "promptOk": (v) =>
+            {
+                if (v && helper.isNumeric(v))
+                {
+                    const time = parseFloat(v);
+                    gui.corePatch().timer.setTime(time);
+                }
+            }
+        });
+    }
+
+    static setFrame()
+    {
+        const time = gui.corePatch().timer.getTime();
+        const fps = CABLES.timelineConfig?.fps || 30;
+        new ModalDialog({
+            "prompt": true,
+            "title": "Timeline - set frame",
+            "promptValue": time ? String(Math.round(time * fps)) : "0",
+            "promptOk": (v) =>
+            {
+                if (v && helper.isNumeric(v) && fps !== 0)
+                {
+                    const frame = parseInt(v);
+                    gui.corePatch().timer.setTime(frame / parseInt(fps));
+                }
+            }
+        });
     }
 
 }
