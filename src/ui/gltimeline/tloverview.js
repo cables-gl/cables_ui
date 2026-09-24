@@ -41,7 +41,7 @@ export class tlOverview extends Events
         this.#bgRect = this.#glTl.rectsNoScroll.createRect({ "name": "scroll bg", "draggable": false, "interactive": true });
         this.#bgRect.setSize(this.#width, this.height);
 
-        this.#rulerBg = this.#glTl.rectsNoScroll.createRect({ "name": "scroll rulesbg", "draggable": false, "interactive": false });
+        this.#rulerBg = this.#glTl.rectsNoScroll.createRect({ "name": "scroll ruler bg", "draggable": false, "interactive": false });
         this.#rulerBg.setPosition(0, 0, 0.1);
         this.#rulerBg.setSize(this.#width, this.height);
 

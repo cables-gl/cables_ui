@@ -120,7 +120,7 @@ export default class OpSearch extends Events
                 }
             }
 
-            if (this.prefereGApi == CgContext.API_WEBGL)
+            if (this.preferGApi == CgContext.API_WEBGL)
             {
                 if (list[i].name.startsWith(defaultOps.prefixes.webgpu))
                 {
@@ -129,7 +129,7 @@ export default class OpSearch extends Events
                     points -= 5;
                 }
             }
-            else if (this.prefereGApi == CgContext.API_WEBGPU)
+            else if (this.preferGApi == CgContext.API_WEBGPU)
             {
                 if (list[i].name.startsWith(defaultOps.prefixes.webgl))
                 {
@@ -352,7 +352,7 @@ export default class OpSearch extends Events
                             if (!foundPortType)
                             {
                                 points -= 10.0; // seems harsh, but is only used when dragging a port, so it should be fine...
-                                scoreDebug += "-10.0 no comparible port found<br/>";
+                                scoreDebug += "-10.0 no compatible port found<br/>";
                             }
                         }
                     }
@@ -419,7 +419,7 @@ export default class OpSearch extends Events
      */
     search(query, originalSearch)
     {
-        this.prefereGApi = gui.canvasManager.currentContextCg()?.gApi;
+        this.preferGApi = gui.canvasManager.currentContextCg()?.gApi;
 
         document.getElementById("realsearch").innerHTML = "";
         document.getElementById("opOptions").innerHTML = "";
