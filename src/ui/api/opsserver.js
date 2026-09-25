@@ -2325,7 +2325,7 @@ export default class ServerOps
         if (!hideEnvButton)
         {
             modal.on("onSubmit", tryOtherEnvCallback);
-            modal.on("onClose", continueLoadingCallback);
+            modal.on("onClose", () => { continueLoadingCallback(); });
         }
     }
 
