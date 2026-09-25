@@ -78,7 +78,7 @@ export default class GlDragLine
                 }
             }
 
-            if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this.#glPort && this.#glPort.port) // this._button == MouseState.BUTTON_LEFT &&
+            if ((this._button == MouseState.BUTTON_LEFT || e.altKey || e.metaKey) && this.#glPort && this.#glPort.port) // this._button == MouseState.BUTTON_LEFT &&
             {
                 let x = this.#glPatch.viewBox.mousePatchX;
                 let pos =
@@ -127,7 +127,7 @@ export default class GlDragLine
                 this.setPort(glport);
                 const glports = this.#glPatch.getConnectedGlPorts(opid, portName);
 
-                if (!e.altKey && glport) gui.patchView.unlinkPort(opid, glport.id);
+                if (!e.altKey && !e.metaKey && glport) gui.patchView.unlinkPort(opid, glport.id);
 
                 this._startGlPorts = glports;
             }
