@@ -49,7 +49,7 @@ MathParser.prototype.eval = function (e, ig)
 };
 MathParser.prototype.parse = function (e)
 {
-    let p = [], f = [], ag, n, c, a, o = this, v = "0123456789.+-*/^%~(, )";
+    let p = [], f = [], ag, n, c, a, y, o = this, v = "0123456789.+-*/^%~(, )";
     for (var x, i = 0, l = e.length; i < l; i++)
     {
         if (v.indexOf(c = e.charAt(i)) < 0)
@@ -67,7 +67,7 @@ MathParser.prototype.parse = function (e)
     }
     let r = o.eval(e);
 
-    if (isNaN(parseFloat(n)) || isFinite(n))
+    if (isNaN(parseFloat(r)) || !isFinite(r))
     {
         console.warn("non numeric math eval result");
         r = 0;

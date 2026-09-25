@@ -1004,7 +1004,6 @@ class ParamsListener extends Events
                     const keyCode = e.keyCode || e.which;
                     if (keyCode == 13 || keyCode == 8)
                     {
-                        console.log("mathparse");
                         if (isNaN(e.target.value))
                         {
                             let mathParsed = e.target.value;
@@ -1036,10 +1035,8 @@ class ParamsListener extends Events
                 ports[index].uiAttribs.display != "bool" &&
                 (!ports[index].uiAttribs.type || ports[index].uiAttribs.type == "number"))
             {
-                // if (vstr.length >= 3 && (isNaN(vstr) || vstr === ""))
-                if (vstr.length >= 3 && (vstr === ""))
+                if (vstr.length >= 3 && (isNaN(vstr) || vstr === ""))
                 {
-                    console.log("mathparse...", vstr);
                     let mathParsed = vstr;
                     try
                     {
@@ -1048,7 +1045,6 @@ class ParamsListener extends Events
                     catch (ex)
                     {
                         // failed to parse math, use unparsed value
-                        console.log("math parse exp", ex);
                         mathParsed = vstr;
                     }
                     if (!isNaN(mathParsed))
