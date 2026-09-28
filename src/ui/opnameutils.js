@@ -196,10 +196,18 @@ opNames.getRerouteOp = (type) =>
 
 /**
  * @param {string} fullName
+ * @param {Boolean} [removeVersion=false]
  */
-opNames.getShortName = (fullName) =>
+opNames.getShortName = (fullName, removeVersion = false) =>
 {
-    const parts = fullName.split(".");
-    return parts[parts.length - 1];
+    if (!fullName) fullName = "";
+    let parts = fullName.split(".");
+    let shortName = parts[parts.length - 1];
+    if (removeVersion)
+    {
+        parts = shortName.split("_v", 2);
+        shortName = parts[0];
+    }
+    return shortName;
 
 };

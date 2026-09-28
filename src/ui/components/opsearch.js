@@ -63,6 +63,7 @@ export default class OpSearch extends Events
     constructor()
     {
         super();
+
         /** @type {OpSearchListItem[]} */
         this._list = null;
         this._wordsDb = null;
@@ -589,7 +590,7 @@ export default class OpSearch extends Events
             const parts = opName.split(".");
             const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
             const opDoc = gui.opDocs.getOpDocByName(opName);
-            let shortName = parts[parts.length - 1];
+            let shortName = opNames.getShortName(opName, true);
             let hidden = false;
             let opDocHidden = false;
             let opId = null;
