@@ -2,7 +2,7 @@ import { ele } from "cables-shared-client";
 import CanvasLens from "../components/canvas/canvaslens.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import Gui, { gui } from "../gui.js";
-import { notifyError } from "../elements/notification.js";
+import { notify, notifyError } from "../elements/notification.js";
 
 const CABLES_CMD_RENDERER = {};
 
@@ -20,6 +20,12 @@ class CmdRenderer
                 "cmd": "Save screenshot",
                 "category": "canvas",
                 "func": CmdRenderer.screenshot,
+                "icon": "image"
+            },
+            {
+                "cmd": "Screenshot to clipboard",
+                "category": "canvas",
+                "func": CmdRenderer.screenshotToClipboard,
                 "icon": "image"
             },
             {
@@ -96,6 +102,21 @@ class CmdRenderer
         }
         else
             notifyError("screenshot not possible");
+        gui.corePatch().resume();
+    }
+
+    static screenshotToClipboard()
+    {
+        const cg = gui.canvasManager.currentContextCg();
+        if (navigator.clipboard?.write)
+        cg.screenShot((blob) =>
+        {
+            if (!blob) return notifyError("screenshot to clipboard failed");
+
+            navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+                .then(() => { notify("screenshot copied to clipboard"); })
+                .catch((e) => { notifyError("screenshot to clipboard failed", e.message); });
+        });
         gui.corePatch().resume();
     }
 
