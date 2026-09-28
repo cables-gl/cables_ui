@@ -461,7 +461,7 @@ export default class ManageOp
                                 gui.serverOps.removeOpLib(opName, depSrc);
                                 break;
                             case "attachment":
-                                gui.serverOps.deleteAttachment(opName, opDoc.id, depSrc);
+                                gui.serverOps.deleteAttachment(opName, opDoc.id, depSrc, true);
                                 break;
                             case "commonjs":
                             case "module":

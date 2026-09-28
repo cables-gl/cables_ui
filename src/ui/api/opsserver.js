@@ -781,15 +781,16 @@ export default class ServerOps
 
     }
 
-    deleteAttachment(opName, opId, attName)
+    /**
+     * @param {string} opName
+     * @param {string} opId
+     * @param {string} attName
+     */
+    deleteAttachment(opName, opId, attName, userInteraction)
     {
-        const modal = new ModalDialog({
-            "title": "Delete attachment from op?",
-            "text": "Delete " + attName + " from " + opName + "?",
-            "choice": true
-        });
-        modal.on("onSubmit", () =>
+        const doDelete = () =>
         {
+
             platform.talkerAPI.send(TalkerAPI.CMD_REMOVE_OP_ATTACHMENT, {
                 "opname": opId,
                 "name": attName
@@ -817,7 +818,18 @@ export default class ServerOps
                 }
 
             });
-        });
+        };
+
+        if (userInteraction)
+        {
+            const modal = new ModalDialog({
+                "title": "Delete attachment from op?",
+                "text": "Delete " + attName + " from " + opName + "?",
+                "choice": true
+            });
+            modal.on("onSubmit", doDelete);
+        }
+        else doDelete();
     }
 
     /**
