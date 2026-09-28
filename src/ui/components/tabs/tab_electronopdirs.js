@@ -4,9 +4,12 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
+import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
 export default class ElectronOpDirs
 {
+    static TABSESSION_NAME = "opdirs";
+
     constructor(tabs)
     {
         this._log = new Logger("ElectronOpDirsTab");
@@ -17,6 +20,9 @@ export default class ElectronOpDirs
         this._tab = new Tab("op directories", { "icon": "folder", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
         this.show();
+
+        editorSession.rememberOpenEditor(ElectronOpDirs.TABSESSION_NAME, ElectronOpDirs.TABSESSION_NAME, {}, true);
+        this._tab.on(Tab.EVENT_CLOSE, () => { editorSession.remove(ElectronOpDirs.TABSESSION_NAME, ElectronOpDirs.TABSESSION_NAME); });
 
         this._tab.on("onActivate", this.show);
     }
@@ -149,3 +155,5 @@ export default class ElectronOpDirs
         });
     }
 }
+
+editorSession.addListener(ElectronOpDirs.TABSESSION_NAME, () => { platform.openOpDirsTab(); });
