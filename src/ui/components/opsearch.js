@@ -8,6 +8,49 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
 /**
+ * @typedef OpSearchListItem
+ * @property {string|number} opId simpleId if op has no doc
+ * @property {string} name full op name, e.g. Ops.Math.Sum
+ * @property {string} summary
+ * @property {string} [description] collections only
+ * @property {string} [collectionOpNames] lowercase, space separated op names of a collection
+ * @property {string} nscolor namespace css class name
+ * @property {boolean} isOp false for collections
+ * @property {boolean} userOp
+ * @property {boolean} devOp
+ * @property {boolean} extensionOp
+ * @property {boolean} teamOp
+ * @property {boolean} patchOp
+ * @property {boolean} isExtension
+ * @property {boolean} isTeamNamespace
+ * @property {boolean} isCollection
+ * @property {string} shortName
+ * @property {string} nameSpace
+ * @property {string[]} namespaces all parent namespaces, e.g. ["Ops.Math"]
+ * @property {string} oldState "", "OLD" or "DEPREC"
+ * @property {string} lowercasename
+ * @property {string} buttonText
+ * @property {string} type "op", "team", "extension" or "patchop"
+ * @property {number} pop popularity
+ * @property {string} [teamName] collections only
+ * @property {string} [teamLink] collections only
+ * @property {number} [numOps] collections only
+ * @property {string[]} [ops] collections only
+ * @property {number} [id] index in list, set by buildList
+ * @property {boolean} [old] deprecated or outdated version
+ * @property {string} [abbrev] abbreviation of shortName
+ * @property {string} [_summary] lowercase search cache
+ * @property {string} [_shortName] lowercase search cache
+ * @property {string} [_lowerCaseName] lowercase search cache
+ * @property {string} [_nameSpace] lowercase search cache
+ * @property {string} [_nameSpaceFull] lowercase search cache
+ * @property {number} [score] search score
+ * @property {string} [scoreDebug] html explaining the score
+ * @property {HTMLElement} [element] result element in opselect
+ * @property {boolean} [elementHidden]
+ */
+
+/**
  * search through opdocs, e.g. for opselect
  *
  * @export
@@ -20,6 +63,7 @@ export default class OpSearch extends Events
     constructor()
     {
         super();
+        /** @type {OpSearchListItem[]} */
         this._list = null;
         this._wordsDb = null;
         this.numPatchops = 0;
@@ -27,6 +71,7 @@ export default class OpSearch extends Events
         this.hideUserOps = false;
     }
 
+    /** @returns {OpSearchListItem[]} */
     get list()
     {
         return this._list;
@@ -96,6 +141,12 @@ export default class OpSearch extends Events
         CABLES.UI.OPSELECT.maxPop = maxPop;
     }
 
+    /**
+     * @param {number} wordIndex
+     * @param {string} orig
+     * @param {OpSearchListItem[]} list
+     * @param {string} query
+     */
     _searchWord(wordIndex, orig, list, query)
     {
         if (!query || query === " " || query === "") return;
@@ -522,6 +573,11 @@ export default class OpSearch extends Events
         return opnames;
     }
 
+    /**
+     * @param {string[]} _opNames
+     * @param {OpSearchListItem[]} [listItems]
+     * @returns {OpSearchListItem[]}
+     */
     _createListItemsByNames(_opNames, listItems = [])
     {
         if (!_opNames) return;
@@ -581,6 +637,7 @@ export default class OpSearch extends Events
                     if (a && a.length > 0 && a[0].ops) collectionOpNames = a[0].ops.join(" ").toLowerCase();
                 }
 
+                /** @type {OpSearchListItem} */
                 const op = {
                     "opId": opId || utils.simpleId(),
                     "name": opName,
@@ -602,7 +659,8 @@ export default class OpSearch extends Events
                     "isCollection": isCollection,
                     "buttonText": isCollection ? "Load" : "Add",
                     "type": type,
-                    "pop": popularity
+                    "pop": popularity,
+                    "namespaces": []
 
                 };
                 if (namespace.isCollection(opName))
@@ -620,7 +678,6 @@ export default class OpSearch extends Events
                     }
                 }
 
-                op.namespaces = [];
                 let ns = "Ops";
                 for (let j = 1; j < parts.length; j++)
                 {

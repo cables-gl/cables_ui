@@ -174,6 +174,7 @@ export default class OpDocs
 
     /**
      * @param {string} opname
+     * @returns {string}
      */
     getSummary(opname)
     {
@@ -181,7 +182,7 @@ export default class OpDocs
             if (this._opDocs[i].name == opname)
                 return this._opDocs[i].summary || "";
 
-        return 0;
+        return "";
     }
 
     getAll()
