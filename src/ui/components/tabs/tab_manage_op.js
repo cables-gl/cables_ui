@@ -325,7 +325,7 @@ export default class ManageOp
                         }
                 }
 
-                this.canDeleteOp = this.canEditOp && namespace.isPatchOp(opName);
+                this.canDeleteOp = this.canEditOp;// && namespace.isPatchOp(opName);
                 if (platform.frontendOptions.opDeleteInEditor) this.canDeleteOp = this.canEditOp;
 
                 const html = getHandleBarHtml("tab_manage_op", {
