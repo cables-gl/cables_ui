@@ -34,6 +34,13 @@ import { GuiText } from "./text.js";
  */
 
 /**
+ * @typedef PlatformFrontendOptions
+ * @property {boolean} [showLocalOpDirButton]
+ * @property {boolean} [opDeleteInEditor]
+ * @property {boolean} [editOpSummary]
+ */
+
+/**
  * @type {Platform}
  */
 let platform = null;
@@ -59,6 +66,8 @@ export class Platform extends Events
         this._checkOfflineIntervalSeconds = 2000;
 
         this.paths = {};
+
+        /** @type {PlatformFrontendOptions}  */
         this.frontendOptions = {};
 
         if (this._cfg)

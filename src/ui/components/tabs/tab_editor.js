@@ -96,6 +96,11 @@ export default class EditorBase extends Events
 
     }
 
+    save()
+    {
+
+    }
+
     setContent(arg0)
     {
         throw new Error("Method not implemented.");

@@ -843,7 +843,7 @@ export default class GlOp extends Events
             if (this.#glRectArea)h = this.#glRectArea.h;
             if (this.opUiAttribs.area)h = this.opUiAttribs.area.h;
 
-            this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0);
+            this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0.04);
             this._glColorIndicator.setSize(GlOp.COLORINDICATOR_WIDTH, h);
             this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, h);
         }

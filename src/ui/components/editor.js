@@ -19,6 +19,7 @@ import { UserSettings, userSettings } from "./usersettings.js";
  * @property {string} [allowEditReason]
  * @property {string} [content]
  * @property {boolean} [showSaveButton]
+ * @property {boolean} [hideFormatButton]
  * @property {boolean} [loading]
  * @property {boolean} [allowEdit]
  * @property {import("../elements/tabpanel/editor_session.js").EditorSessionOptions} [editorObj]
@@ -75,6 +76,10 @@ export function codeWatcher(port)
     return ed;
 }
 
+/**
+ * @param {import("../elements/tabpanel/tab.js").default} tab
+ * @param {EditorBase} editor
+ */
 export function createOpDocButton(tab, editor)
 {
 
@@ -97,9 +102,9 @@ export function createOpDocButton(tab, editor)
     }
 
     let opname = null;
-    editor._options.editorObj = editor._options.editorObj || {};
-    if (editor._options.editorObj.type === "op") opname = editor._options.editorObj.name;
-    if (editor._options.editorObj.data && editor._options.editorObj.data.opname) opname = editor._options.editorObj.data.opname;
+    editor._options.editorObj = editor._options.editorObj || null;
+    if (editor._options.editorObj?.type === "op") opname = editor._options.editorObj.name;
+    if (editor._options.editorObj?.data && editor._options.editorObj?.data.opname) opname = editor._options.editorObj.data.opname;
 
     if (!opname)
     {

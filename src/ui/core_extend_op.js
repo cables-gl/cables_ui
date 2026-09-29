@@ -871,11 +871,10 @@ class UiOp extends Op
 
     /**
      * @param {string} name
-     * @param {string} opid
+     * @param {import("cables/src/core/core_op.js").OpInstanceId} _opid
      * @param {boolean} [center]
-     * @param {number} [opwidth]
      */
-    getPortPosX(name, opid, center, opwidth)
+    getPortPosX(name, _opid, center)
     {
         let index = 0;
 

@@ -29,7 +29,6 @@ import EditorBase from "./tab_editor.js";
 /**
  * tab panel for editing text and source code using the codemirror editor
  */
-
 export default class EditorTabCodemirror extends EditorBase
 {
     #log = new Logger("editorTabCm");
@@ -564,6 +563,12 @@ export default class EditorTabCodemirror extends EditorBase
         ];
     }
 
+    /**
+     * @param {any[]} lineNumbers
+     * @param {string} r
+     * @param {string} g
+     * @param {string} b
+     */
     highlightLines(lineNumbers, r, g, b)
     {
         if (!this.cmView) return console.log("NO CMWIEW YET");

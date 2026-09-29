@@ -30,7 +30,6 @@ class Commands
 
     static init()
     {
-
         Commands.commands = Commands.commands.concat(CmdDebug.commands);
         Commands.commands = Commands.commands.concat(CmdPatch.commands);
         Commands.commands = Commands.commands.concat(CmdRenderer.commands);
