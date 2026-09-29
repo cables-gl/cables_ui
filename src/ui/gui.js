@@ -13,6 +13,7 @@ import BottomInfoAreaBar from "./elements/bottominfoareabar.js";
 import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay.js";
 import MainTabPanel from "./elements/tabpanel/maintabpanel.js";
 import TabPanel from "./elements/tabpanel/tabpanel.js";
+import Tab from "./elements/tabpanel/tab.js";
 import KeyBindingsManager from "./utils/keybindingsmanager.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal.js";
@@ -64,6 +65,7 @@ import { CmdDebug } from "./commands/cmd_debug.js";
 import { isFocusOnEditor } from "./components/editor.js";
 import { GradientEditor } from "./dialogs/canv_gradienteditor.js";
 import { CommandPalette } from "./dialogs/commandpalette.js";
+import { editorSession } from "./elements/tabpanel/editor_session.js";
 
 /**
  * @type {Gui}
@@ -98,6 +100,7 @@ export default class Gui extends Events
     static PREF_LAYOUT_RIGHT_PANEL_WIDTH = "rightpanelWidth";
     static PREF_LAYOUT_BOTTOM_PANEL_HEIGHT = "bottomPanelHeight";
     static PREF_AUDIO_MUTE = "editorAudioMute";
+    static TABSESSION_NAME_PATCHSETTINGS = "patchsettings";
     hasAnims = false;
     unload = false;
     defaultOps = defaultOps;
@@ -143,6 +146,9 @@ export default class Gui extends Events
         initCGL();
 
         this.editorSessionId = cfg.editorSessionId;
+
+        editorSession.addListener(Gui.TABSESSION_NAME_PATCHSETTINGS, () => { this.showSettings(); });
+        editorSession.addListener(CmdUi.TABSESSION_NAME_BUILDINFO, () => { CmdUi.showBuildInfo(); });
 
         this._log = new Logger("gui");
 
@@ -2101,7 +2107,10 @@ export default class Gui extends Events
         };
 
         const url = platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
+        const tab = gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
+
+        editorSession.rememberOpenEditor(Gui.TABSESSION_NAME_PATCHSETTINGS, Gui.TABSESSION_NAME_PATCHSETTINGS, {}, true);
+        tab.on(Tab.EVENT_CLOSE, () => { editorSession.remove(Gui.TABSESSION_NAME_PATCHSETTINGS, Gui.TABSESSION_NAME_PATCHSETTINGS); });
     }
 
     /**

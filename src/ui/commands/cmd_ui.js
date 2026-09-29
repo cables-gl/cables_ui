@@ -18,11 +18,14 @@ import { GpuProfiler } from "../components/tabs/tab_profiler_gpu.js";
 import { ProfilerDrawCalls } from "../components/tabs/tab_profiler_drawcalls.js";
 import { TabProfilerMemory } from "../components/tabs/tab_profiler_memory.js";
 import undo from "../utils/undo.js";
+import { editorSession } from "../elements/tabpanel/editor_session.js";
+import Tab from "../elements/tabpanel/tab.js";
 
 export { CmdUi };
 
 class CmdUi
 {
+    static TABSESSION_NAME_BUILDINFO = "buildinfo";
 
     /** @type {import("./commands.js").CommandObject[]} */
     static get commands()
@@ -518,7 +521,10 @@ class CmdUi
             }
         }
 
-        new HtmlTab(gui.mainTabs, infoHtml);
+        const htmlTab = new HtmlTab(gui.mainTabs, infoHtml, "Build Info", { "icon": "info" });
+
+        editorSession.rememberOpenEditor(CmdUi.TABSESSION_NAME_BUILDINFO, CmdUi.TABSESSION_NAME_BUILDINFO, {}, true);
+        htmlTab._tab.on(Tab.EVENT_CLOSE, () => { editorSession.remove(CmdUi.TABSESSION_NAME_BUILDINFO, CmdUi.TABSESSION_NAME_BUILDINFO); });
     }
 
     static welcomeTab(userInteraction)

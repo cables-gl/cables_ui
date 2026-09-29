@@ -76,7 +76,7 @@ export default class IconBar
 
         for (let i = 0; i < items.length; i++)
             for (let j = 0; j < Commands.commands.length; j++)
-                if (Commands.commands[j].cmd == items[i])
+                if (Commands.commands[j].cmd.toLowerCase() == items[i].toLowerCase())
                     this.addItem(Commands.commands[j]);
 
         this._buildHtml();

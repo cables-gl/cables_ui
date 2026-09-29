@@ -464,7 +464,7 @@ export default class OpSelect
 
             if (this.#opSearch.list[i].score > 0)
             {
-                this.#opSearch.list[i].element.dataset.score = this.#opSearch.list[i].score;
+                this.#opSearch.list[i].element.dataset.score = String(this.#opSearch.list[i].score);
                 this.#opSearch.list[i].element.dataset.scoreDebug = this.#opSearch.list[i].scoreDebug;
                 this.#opSearch.list[i].elementHidden = false;
                 ele.show(this.#opSearch.list[i].element);
@@ -899,6 +899,7 @@ export default class OpSelect
 
     /**
      * @param {string} opName
+     * @returns {import("../components/opsearch.js").OpSearchListItem}
      */
     getListItemByOpName(opName)
     {
