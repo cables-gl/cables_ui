@@ -1505,13 +1505,13 @@ export default class Gui extends Events
 
                 str += "<li id=\"nav_patch_new\">Create New Empty Patch</li>";
 
-                str += "<li class=\"divide\"></li>";
-
                 if (platform.frontendOptions.showOpenPatch)
                 {
                     let item = "<li><a onclick='CABLES.platform.talkerAPI.send(\"gotoPatch\");' class=\"mine\" target=\"_top\">Open Patch<span class='shortcut'><p><span class='key key_cmd'></span><code>o</code></p></span></a></li>";
                     str += this.bottomInfoArea.replaceShortcuts(item);
                 }
+
+                str += "<li class=\"divide\"></li>";
 
                 if (r)
                     for (let i = 0; i < Math.min(5, r.length); i++)

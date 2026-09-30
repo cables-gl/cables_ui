@@ -3,7 +3,7 @@
     .button-icon .icon
     {
         vertical-align: bottom;
-        margin-right: 0px !important;
+        /* margin-right: 0px !important; */
     }
 
     .button-small.button-icon
@@ -11,13 +11,28 @@
         padding-top:1px !important;
     }
 
-    .button-small,.button,.cblbutton
+    .button,.cblbutton
     {
+
         .icon
         {
             vertical-align: middle;
-            margin-right:5px;
         }
+    }
+    .button-small
+    {
+        .icon
+        {
+            vertical-align: bottom;
+        }
+    }
+
+    .iconbuttontext,.cblbutton
+    {
+    .icon{
+
+        margin-right:7px !important;
+    }
     }
 
     .iconbutton, .iconbutton-small

@@ -29,6 +29,7 @@ export default class Tab extends Events
 
     /** @type {EditorBase} */
     editor = null;
+    editorObj = null;
 
     /**
      * @param {String} title
@@ -111,9 +112,13 @@ export default class Tab extends Events
         return button;
     }
 
+    /** @callback TabAddButtonCallBack
+     * @param {PointerEvent} event
+     */
+
     /**
      * @param {string} title
-     * @param {Function} cb
+     * @param {TabAddButtonCallBack} cb
      * @param {string | any[]} [classes]
      */
     addButton(title, cb, classes)

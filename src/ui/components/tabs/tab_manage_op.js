@@ -37,6 +37,7 @@ export default class ManageOp
     #currentName;
     #currentId;
     #id = utils.shortId();
+    #opId = null;
 
     /** @type {Tab} */
     #tab;
@@ -65,6 +66,8 @@ export default class ManageOp
             if (opDoc) opId = opDoc.id;
             else return;
         }
+
+        this.#opId = opId;
 
         let opObjName = "";
         if (opDoc) opObjName = opDoc.name;
@@ -107,6 +110,7 @@ export default class ManageOp
             {
                 if (name === undefined || this.#currentName == name) this.show();
             }));
+
     }
 
     init()
@@ -197,7 +201,7 @@ export default class ManageOp
 
                 let opFiles = [];
 
-                const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
+                this.canEditOp = gui.serverOps.canEditOp(gui.user, opName);
 
                 if (res.attachmentFiles)
                 {
@@ -211,7 +215,7 @@ export default class ManageOp
                             "readable": displayInfo.readableFilename,
                             "readableType": displayInfo.readableType,
                             "editable": true,
-                            "removable": canEditOp,
+                            "removable": this.canEditOp,
                             "depType": "attachment",
                             "fileType": displayInfo.fileType
                         });
@@ -243,7 +247,7 @@ export default class ManageOp
                         "readable": coreLib.name,
                         "readableType": "Dependency: Corelib",
                         "editable": false,
-                        "removable": canEditOp,
+                        "removable": this.canEditOp,
                         "depType": "corelib",
                         "fileType": "js"
                     });
@@ -257,7 +261,7 @@ export default class ManageOp
                         "readable": lib.name,
                         "readableType": "Dependency: Old Library",
                         "editable": false,
-                        "removable": canEditOp,
+                        "removable": this.canEditOp,
                         "depType": "lib",
                         "fileType": "js"
                     });
@@ -321,8 +325,8 @@ export default class ManageOp
                         }
                 }
 
-                let canDeleteOp = canEditOp && namespace.isPatchOp(opName);
-                if (platform.frontendOptions.opDeleteInEditor) canDeleteOp = canEditOp;
+                this.canDeleteOp = this.canEditOp;// && namespace.isPatchOp(opName);
+                if (platform.frontendOptions.opDeleteInEditor) this.canDeleteOp = this.canEditOp;
 
                 const html = getHandleBarHtml("tab_manage_op", {
                     "layoutUrl": platform.getCablesUrl() + "/api/op/layout/" + opName + ".svg",
@@ -338,9 +342,9 @@ export default class ManageOp
                     "subPatchSaved": gui.savedState.isSavedSubOp(opName),
                     "portJson": portJson,
                     "summary": summary,
-                    "canEditOp": canEditOp,
-                    "canDeleteOp": canDeleteOp,
-                    "readOnly": !canEditOp,
+                    "canEditOp": this.canEditOp,
+                    "canDeleteOp": this.canDeleteOp,
+                    "readOnly": !this.canEditOp,
                     "user": gui.user,
                     "warns": res.warns,
                     "visibilityString": res.visibilityString,
@@ -349,19 +353,94 @@ export default class ManageOp
 
                 this.#tab.html(html);
 
+                ele.clickables(this.#tab.contentEle, ".opthreedot", (e, dataset) =>
+                {
+                    const contextItems = [];
+
+                    let opDoc = gui.opDocs.getOpDocById(this.#opId);
+
+                    if (platform.isElectron())
+                    {
+
+                        contextItems.push({
+                            "title": "Open folder",
+                            // "iconClass": "icon icon-folder",
+                            "func": () =>
+                            {
+                                window.CABLES.CMD.ELECTRON.openOpDir(this.#opId, this.#currentName);
+                            }
+                        });
+                        contextItems.push({
+                            "title": "Copy path",
+                            "func": () =>
+                            {
+                                window.CABLES.CMD.ELECTRON.copyOpDirToClipboard(opDoc.opDirFull);
+                            }
+                        });
+                    }
+
+                    if (opDoc.hasPublicRepo)
+                        contextItems.push({
+                            "title": "View on github",
+                            "func": () =>
+                            {
+                                window.open(platform.getCablesDocsUrl() + "/op/" + this.#currentName + "/github", "_blank");
+
+                            }
+                        });
+                    if (this.canEditOp)
+                        contextItems.push({
+                            "title": "Rename op",
+                            "func": () =>
+                            {
+                                CABLES.CMD.OP.renameOp(this.#currentName);
+                            }
+                        });
+                    if (this.canEditOp)
+                        contextItems.push({
+                            "title": "Set op summary",
+                            "func": () =>
+                            {
+                                CABLES.CMD.PATCH.editOpSummary(opDoc.id, this.#currentName, opDoc.summary);
+
+                            }
+                        });
+                    if (this.canEditOp)
+                        contextItems.push({
+                            "title": "Add Credits",
+                            "func": () =>
+                            {
+                                new ModalOpCredits(opDoc);
+                            }
+                        });
+
+                    if (this.canDeleteOp)
+                        contextItems.push({
+                            "title": "Delete Op",
+                            "func": () =>
+                            {
+                                if (platform.frontendOptions.opDeleteInEditor)
+                                    CABLES.CMD.PATCH.deleteOp(opDoc.name);
+                                else
+                                    window.open(platform.getCablesUrl() + "/op/delete/" + opDoc.name, "_blank");
+                            }
+                        });
+
+                    contextMenu.show({ "items": contextItems }, e.target);
+                });
+
                 ele.clickables(this.#tab.contentEle, ".dependency-add", (e, dataset) =>
                 {
-                    if (canEditOp) new ModalOpDependencies(opDoc);
+                    if (this.canEditOp) new ModalOpDependencies(opDoc);
                 });
 
                 ele.clickables(this.#tab.contentEle, ".attachment-add", (e, dataset) =>
                 {
-                    if (canEditOp) new ModalOpAttachments(opDoc);
+                    if (this.canEditOp) new ModalOpAttachments(opDoc);
                 });
 
                 ele.clickables(this.#tab.contentEle, ".credits-add", (e, dataset) =>
                 {
-                    if (canEditOp) new ModalOpCredits(opDoc);
                 });
 
                 ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>
@@ -523,7 +602,7 @@ export default class ManageOp
 
                 });
 
-                if (canEditOp)
+                if (this.canEditOp)
                 {
                     if (portJson && portJson.ports)
                     {

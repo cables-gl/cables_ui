@@ -2347,6 +2347,7 @@ export default class ServerOps
      */
     addOpSourceDiagnostics(src, diags)
     {
+        src = src || "";
         const lines = src.split("\n");
         for (let i = 0; i < lines.length; i++)
         {

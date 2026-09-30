@@ -11,46 +11,49 @@
         {{/if}}
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
+
+        <br/><b>{{summary}}</b>
+
+        <br/> <br/>
         {{opname}}{{#if visibilityString}}<span class="visibilityString"> - {{{visibilityString}}}</span>{{/if}}
 
-        {{#if opDoc.opDirFull}}
-            <br/>
-            <a class="link" onclick="CABLES.CMD.ELECTRON.openOpDir('{{opDoc.id}}', '{{opname}}')">{{opDoc.opDirFull}}</a>
-        {{/if}}
+        <!-- {{#if opDoc.opDirFull}} -->
+            <!-- <br/> -->
+            <!-- <a class="link" onclick="CABLES.CMD.ELECTRON.openOpDir('{{opDoc.id}}', '{{opname}}')">{{opDoc.opDirFull}}</a> -->
+        <!-- {{/if}} -->
 
-        <br/>
-        <div class="summary selectable">
-            <br/><b>{{summary}}</b>
-            {{#if frontendOptions.editOpSummary}}
-            {{#if canEditOp}}
-            <a class="icon icon-edit iconhover" onclick="CABLES.CMD.PATCH.editOpSummary('{{opDoc.id}}','{{opname}}', '{{summary}}');"></a>
-            {{/if}}
-            {{/if}}
-        </div>
-        <br/>
+            <!-- {{#if frontendOptions.editOpSummary}} -->
+            <!-- {{#if canEditOp}} -->
+            <!-- <a class="icon icon-edit iconhover" onclick="CABLES.CMD.PATCH.editOpSummary('{{opDoc.id}}','{{opname}}', '{{summary}}');"></a> -->
+            <!-- {{/if}} -->
+            <!-- {{/if}} -->
+        <br/> <br/>
 
-        <a class="button-small" target="_blank" href="{{url}}/op/{{opname}}">Op Page / Documentation</a>
+        <a class="button-small button-icon iconbuttontext" target="_blank" href="{{url}}/op/{{opname}}"><span class="icon icon-external"></span>Op Page / Documentation</a>
 
-        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op</span>
-        {{#if canEditOp}}
-            <a class="button-small" target="_blank" onclick="CABLES.CMD.OP.renameOp('{{opname}}')">Rename Op</a>
-        {{/if}}
+        <span class="button-small button-icon iconbuttontext" onclick="gui.serverOps.cloneDialog('{{opname}}');"><span class="icon icon-copy"></span>Clone op</span>
 
-        {{#if canDeleteOp}}
-            {{#if frontendOptions.opDeleteInEditor}}
-                <a class="button-small button-delete" target="_blank" onclick="CABLES.CMD.PATCH.deleteOp('{{opname}}')">Delete Op</a>
-            {{else}}
-                <a class="button-small button-delete" target="_blank" href="{{cablesUrl}}/op/delete/{{opname}}">Delete Op</a>
-            {{/if}}
-        {{/if}}
+        <a class="button-small button-icon tt opthreedot" data-tt="more options" ><span class="icon icon-three-dots"></span></a>
 
-        {{#if frontendOptions.showLocalOpDirButton}}
-            <a class="button-small button-icon tt" data-tt="open folder" onclick="if (event.ctrlKey || event.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard('{{opDoc.id}}'); else CABLES.CMD.ELECTRON.openOpDir('{{opDoc.id}}', '{{opname}}');"><span class="icon icon-folder"></span></a>
-        {{/if}}
+        <!-- {{#if canEditOp}} -->
+            <!-- <a class="button-small" target="_blank" onclick="CABLES.CMD.OP.renameOp('{{opname}}')">Rename Op</a> -->
+        <!-- {{/if}} -->
 
-        {{#if opDoc.hasPublicRepo}}
-            <a class="button-small button-icon tt" href="{{url}}/op/{{opname}}/github" target="_blank"><span class="icon icon-github">open on github</span></a>
-        {{/if}}
+        <!-- {{#if canDeleteOp}} -->
+            <!-- {{#if frontendOptions.opDeleteInEditor}} -->
+                <!-- <a class="button-small button-delete" target="_blank" onclick="CABLES.CMD.PATCH.deleteOp('{{opname}}')">Delete Op</a> -->
+            <!-- {{else}} -->
+                <!-- <a class="button-small button-delete" target="_blank" href="{{cablesUrl}}/op/delete/{{opname}}">Delete Op</a> -->
+            <!-- {{/if}} -->
+        <!-- {{/if}} -->
+
+        <!-- {{#if frontendOptions.showLocalOpDirButton}} -->
+            <!-- <a class="button-small button-icon tt" data-tt="open folder" onclick="if (event.ctrlKey || event.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard('{{opDoc.id}}'); else CABLES.CMD.ELECTRON.openOpDir('{{opDoc.id}}', '{{opname}}');"><span class="icon icon-folder"></span></a> -->
+        <!-- {{/if}} -->
+
+        <!-- {{#if opDoc.hasPublicRepo}} -->
+            <!-- <a class="button-small button-icon tt" href="{{url}}/op/{{opname}}/github" target="_blank"><span class="icon icon-github">open on github</span></a> -->
+        <!-- {{/if}} -->
 
         <br/>
         <br/>
@@ -294,9 +297,9 @@
         </table>
         <br/><br/>
         {{/if}}
-        {{#if canEditOp}}
-            <a class="cblbutton credits-add"><span class="icon icon-plus-circle icon-1_25x"></span>Add credits</a>
-        {{/if}}
+        <!-- {{#if canEditOp}} -->
+            <!-- <a class="cblbutton credits-add"><span class="icon icon-plus-circle icon-1_25x"></span>Add credits</a> -->
+        <!-- {{/if}} -->
     </div>
 
 </script>
