@@ -26,6 +26,41 @@ import { GuiText } from "../../text.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import EditorBase from "./tab_editor.js";
 
+const CURSOR_LINES_STORAGE_KEY = "cables_editor_lines";
+const CURSOR_LINES_MAX_ENTRIES = 200;
+
+function loadCursorLines()
+{
+    try
+    {
+        return JSON.parse(window.localStorage.getItem(CURSOR_LINES_STORAGE_KEY)) || {};
+    }
+    catch (e)
+    {
+        return {};
+    }
+}
+
+/**
+ * @param {string} key
+ * @param {number} line
+ */
+function storeCursorLine(key, line)
+{
+    const lines = loadCursorLines();
+    delete lines[key];
+    lines[key] = line;
+
+    const keys = Object.keys(lines);
+    for (let i = 0; i < keys.length - CURSOR_LINES_MAX_ENTRIES; i++) delete lines[keys[i]];
+
+    try
+    {
+        window.localStorage.setItem(CURSOR_LINES_STORAGE_KEY, JSON.stringify(lines));
+    }
+    catch (e) {}
+}
+
 /**
  * tab panel for editing text and source code using the codemirror editor
  */
@@ -34,6 +69,7 @@ export default class EditorTabCodemirror extends EditorBase
     #log = new Logger("editorTabCm");
     helix = false;
     #highlightCompartment = new Compartment();
+    #lastStoredLine = 0;
 
     /**
      * @param {import("../editor.js").EditorOptions} options
@@ -143,6 +179,10 @@ export default class EditorTabCodemirror extends EditorBase
                         "annotations": Transaction.addToHistory.of(false)
                     });
                 this.cmView.focus();
+
+                const lastLine = loadCursorLines()[this.#cursorLineKey()];
+                if (lastLine) this.gotoLine(lastLine);
+
                 if (this._options.onFinished) this._options.onFinished();
             });
         }
@@ -152,6 +192,25 @@ export default class EditorTabCodemirror extends EditorBase
     {
 
         this.cmView?.focus();
+    }
+
+    #cursorLineKey()
+    {
+        return this._options.dataId || this._options.name;
+    }
+
+    /**
+     * @param {import("@codemirror/view").ViewUpdate} update
+     */
+    #onEditorUpdate(update)
+    {
+        if (!update.selectionSet || !this.#cursorLineKey()) return;
+
+        const line = update.state.doc.lineAt(update.state.selection.main.head).number;
+        if (line == this.#lastStoredLine) return;
+
+        this.#lastStoredLine = line;
+        storeCursorLine(this.#cursorLineKey(), line);
     }
 
     getContent()
@@ -281,6 +340,7 @@ export default class EditorTabCodemirror extends EditorBase
         extensions.push(lintGutter());
         extensions.push(keymap.of([...searchKeymap]));
         extensions.push(highlightSelectionMatches());
+        extensions.push(EditorView.updateListener.of((update) => { this.#onEditorUpdate(update); }));
 
         if (!this.helix)
         {
