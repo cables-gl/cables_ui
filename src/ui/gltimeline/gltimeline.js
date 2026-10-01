@@ -47,6 +47,7 @@ import { GuiText } from "../text.js";
 export class GlTimeline extends Events
 {
     static CLIP_VAR_PREFIX = "_clip";
+    static FIT_PADDING_PIXEL = 20;
 
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
@@ -2111,8 +2112,11 @@ export class GlTimeline extends Events
         }
         else
         {
-            this.view.setZoomLength((bounds.length) + (bounds.length * 0.1));
-            this.view.scrollTo(bounds.min - (bounds.length * 0.05));
+            const widthPixel = this.width / window.devicePixelRatio;
+            const keysWidthPixel = Math.max(1, widthPixel - 2 * GlTimeline.FIT_PADDING_PIXEL);
+            const zoomLength = bounds.length * widthPixel / keysWidthPixel;
+            this.view.setZoomLength(zoomLength);
+            this.view.scrollTo(bounds.min - zoomLength / widthPixel * GlTimeline.FIT_PADDING_PIXEL);
         }
     }
 
