@@ -441,10 +441,6 @@ export default class ManageOp
                     if (this.canEditOp) new ModalOpAttachments(opDoc);
                 });
 
-                ele.clickables(this.#tab.contentEle, ".credits-add", (e, dataset) =>
-                {
-                });
-
                 ele.clickables(this.#tab.contentEle, ".dependency-options", (e, dataset) =>
                 {
                     const depSrc = dataset.depsrc;
@@ -565,37 +561,42 @@ export default class ManageOp
 
                 ele.clickables(this.#tab.contentEle, ".credit-options", (e, dataset) =>
                 {
-                    const creditDate = dataset.creditdate ? parseInt(dataset.creditdate) : null;
-                    const creditTitle = dataset.credittitle;
-                    const creditAuthor = dataset.creditauthor;
+                    const creditIndex = dataset.hasOwnProperty("creditindex") ? dataset.creditindex : -1;
+                    const opCredit = credits[creditIndex];
                     const items = [];
-                    items.push({
-                        "title": "remove",
-                        "iconClass": "icon icon-x",
-                        "func": (ee) =>
-                        {
-                            const opCredit = {
-                                "date": creditDate,
-                                "title": creditTitle,
-                                "author": creditAuthor
-                            };
-                            gui.serverOps.removeOpCredit(opDoc, opCredit, (err, res) =>
+                    if (opCredit)
+                    {
+                        items.push({
+                            "title": "edit",
+                            "iconClass": "icon icon-edit",
+                            "func": (ee) =>
                             {
-                                if (!err)
+                                new ModalOpCredits(opDoc, opCredit);
+                            }
+                        },
+                        {
+                            "title": "remove",
+                            "iconClass": "icon icon-x",
+                            "func": (ee) =>
+                            {
+                                gui.serverOps.removeOpCredit(opDoc, opCredit, (err, res) =>
                                 {
-                                    gui.emitEvent("refreshManageOp", opName);
-                                }
-                                else
-                                {
-                                    new ModalDialog({
-                                        "title": "Failed to remove credit",
-                                        "warning": true,
-                                        "text": err ? err.msg || err : "unknown error"
-                                    });
-                                }
-                            });
-                        }
-                    });
+                                    if (!err)
+                                    {
+                                        gui.emitEvent("refreshManageOp", opName);
+                                    }
+                                    else
+                                    {
+                                        new ModalDialog({
+                                            "title": "Failed to remove credit",
+                                            "warning": true,
+                                            "text": err ? err.msg || err : "unknown error"
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
 
                     if (items.length > 0)
                     {
