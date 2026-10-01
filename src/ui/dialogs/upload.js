@@ -96,6 +96,8 @@ export default class FileUploader
             const reader = new FileReader();
 
             let uploadFileName = filename || file.name;
+            const uploadJobId = "upload" + uploadFileName;
+            gui.jobs().expectUpload(uploadJobId);
             reader.addEventListener("load",
                 () =>
                 {
@@ -108,6 +110,8 @@ export default class FileUploader
                         },
                         (err, res) =>
                         {
+                            gui.jobs().setUploadProgress(uploadJobId, 100);
+
                             let newFilename = uploadFileName;
                             if (res && res.filename) newFilename = res.filename;
 

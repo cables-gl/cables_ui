@@ -10,6 +10,9 @@ export default class Jobs extends Events
         this._log = new Logger("Jobs");
         this._jobs = [];
         this._finishedJobs = [];
+        this._uploadBatch = [];
+        this._elUploadProgressBar = null;
+        this._removeUploadProgressBarTimeout = null;
         this._lastIndicator = null;
         this._jobsEle = ele.byId("jobs");
         this._listenerStarted = false;
@@ -183,7 +186,11 @@ export default class Jobs extends Events
         let avgCount = 0;
         for (const i in this._jobs)
         {
-            if (this._jobs[i].id == jobId) this._jobs[i].progress = progress;
+            if (this._jobs[i].id == jobId)
+            {
+                this._jobs[i].progress = progress;
+                this.setUploadProgress(jobId, progress);
+            }
 
             if (this._jobs[i].progress)
             {
@@ -200,6 +207,79 @@ export default class Jobs extends Events
         this._updateVisibility();
     }
 
+    expectUpload(jobId)
+    {
+        if (!this._findUpload(jobId)) this._uploadBatch.push({ "id": jobId, "progress": 0 });
+        this._updateUploadProgress();
+    }
+
+    _findUpload(jobId)
+    {
+        for (let i = 0; i < this._uploadBatch.length; i++)
+        {
+            if (this._uploadBatch[i].id == jobId) return this._uploadBatch[i];
+        }
+        return null;
+    }
+
+    setUploadProgress(jobId, progress)
+    {
+        let upload = this._findUpload(jobId);
+        if (!upload && progress == 100) return;
+        if (!upload)
+        {
+            upload = { "id": jobId, "progress": 0 };
+            this._uploadBatch.push(upload);
+        }
+        upload.progress = Math.max(upload.progress, progress);
+        this._updateUploadProgress();
+    }
+
+    _updateUploadProgress()
+    {
+        let numFinished = 0;
+        let sum = 0;
+        for (let i = 0; i < this._uploadBatch.length; i++)
+        {
+            if (this._uploadBatch[i].progress == 100) numFinished++;
+            sum += this._uploadBatch[i].progress;
+        }
+
+        this._setUploadProgressBar(sum / this._uploadBatch.length);
+
+        if (numFinished == this._uploadBatch.length)
+        {
+            this._uploadBatch = [];
+            this._removeUploadProgressBarTimeout = setTimeout(this._removeUploadProgressBar.bind(this), 300);
+        }
+    }
+
+    _setUploadProgressBar(percent)
+    {
+        clearTimeout(this._removeUploadProgressBarTimeout);
+
+        const elMenubar = ele.byId("menubar");
+        if (!elMenubar) return;
+
+        if (!this._elUploadProgressBar)
+        {
+            this._elUploadProgressBar = document.createElement("div");
+            this._elUploadProgressBar.id = "menubaruploadprogress";
+            document.body.appendChild(this._elUploadProgressBar);
+        }
+
+        const rect = elMenubar.getBoundingClientRect();
+        this._elUploadProgressBar.style.left = rect.left + "px";
+        this._elUploadProgressBar.style.top = rect.top + "px";
+        this._elUploadProgressBar.style.width = (rect.width * percent / 100) + "px";
+    }
+
+    _removeUploadProgressBar()
+    {
+        if (this._elUploadProgressBar) this._elUploadProgressBar.remove();
+        this._elUploadProgressBar = null;
+    }
+
     finish(jobId)
     {
         setTimeout(() =>
@@ -210,6 +290,8 @@ export default class Jobs extends Events
                 {
                     this._jobs[i].finished = true;
                     this._jobs[i].timeEnd = Date.now();
+
+                    if (this._findUpload(jobId)) this.setUploadProgress(jobId, 100);
 
                     this._finishedJobs.push(this._jobs[i]);
                     this._jobs.splice(i, 1);

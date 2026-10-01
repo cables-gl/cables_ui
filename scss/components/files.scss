@@ -19,6 +19,15 @@
     height:100%;
 }
 
+#menubaruploadprogress
+{
+    position:absolute;
+    z-index:$zindex_highest;
+    height:2px;
+    background-color:var(--color-10);
+    pointer-events:none;
+}
+
 #library
 {
     display:none;
