@@ -318,25 +318,64 @@ class CmdDebug
 
     static testAllOps()
     {
-        function load(opname)
+        let y = 0;
+        let ops = [];
+        function deleteOps()
         {
-            gui.serverOps.loadOpDependencies(opname, function ()
+
+            while (ops.length)
             {
-                gui.corePatch().addOp(opname);
-            });
+                const opdel = ops[0];
+                ops.shift();
+                if (!opdel) console.warn("no op to del? ");
+                else opdel.patch.deleteOp(opdel.id);
+
+            }
+
+            y = 0;
         }
 
-        const ops = gui.opDocs.getAll();
-
-        log.log(ops);
-
-        for (const i in ops)
+        function load(opname)
         {
-            log.log(ops[i].name);
-            const opname = ops[i].name;
+
+            requestIdleCallback(() =>
+            {
+                y += 30;
+                gui.serverOps.loadOpDependencies(opname, () =>
+                {
+                    let op;
+                    try
+                    {
+                        op = gui.corePatch().addOp(opname, { "translate": { "y": y, "x": 0 } });
+                    }
+                    catch (e)
+                    {
+                        console.log("OP ", opname);
+                        console.log("exception", e);
+                    }
+
+                    ops.push(op);
+                    if (ops.length > 10) deleteOps();
+
+                });
+            });
+
+        }
+
+        const allOps = gui.opDocs.getAll();
+
+        for (const i in allOps)
+        {
+            log.log("creating " + allOps[i].name);
+            const opname = allOps[i].name;
 
             load(opname);
         }
+
+        requestIdleCallback(() =>
+        {
+            deleteOps();
+        });
     }
 
     static focusOpAnim()

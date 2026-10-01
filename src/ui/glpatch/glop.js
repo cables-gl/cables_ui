@@ -1164,12 +1164,13 @@ export default class GlOp extends Events
         this._updateIndicators();
         if (this._resizableArea) this._resizableArea.update();
 
-        if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
-        {
-            this._oldPosx = this.opUiAttribs.translate.x;
-            this._oldPosy = this.opUiAttribs.translate.y;
-            this.emitEvent(GlOp.EVENT_MOVE);
-        }
+        if (this.opUiAttribs.translate)
+            if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
+            {
+                this._oldPosx = this.opUiAttribs.translate.x;
+                this._oldPosy = this.opUiAttribs.translate.y;
+                this.emitEvent(GlOp.EVENT_MOVE);
+            }
     }
 
     getUiAttribs()

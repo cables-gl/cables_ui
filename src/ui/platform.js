@@ -37,7 +37,18 @@ import { GuiText } from "./text.js";
  * @typedef PlatformFrontendOptions
  * @property {boolean} [showLocalOpDirButton]
  * @property {boolean} [opDeleteInEditor]
- * @property {boolean} [editOpSummary]
+ * @property {boolean} [showExport]
+ * @property {boolean} [showExportPatch]
+ * @property {boolean} [showPatchBackups]
+ * @property {boolean} [showMyLinks]
+ * @property {boolean} [showAssetUpload]
+ * @property {boolean} [showPatchSettings]
+ * @property {boolean} [showPatchViewPage]
+ * @property {boolean} [showChangeLogLink]
+ * @property {boolean} [showBuildInfoMenuLink]
+ * @property {boolean} [hasOpDirectories]
+ * @property {boolean} [showWelcome]
+ * @property {boolean} [showOpenPatch]
  */
 
 /**
