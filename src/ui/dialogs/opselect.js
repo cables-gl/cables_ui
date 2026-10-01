@@ -741,7 +741,7 @@ export default class OpSelect
             }
         }
 
-        if (userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS))
+        if (userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS) && !this._newOpOptions.linkNewOpToPort && !this._newOpOptions.linkNewLink)
         {
             const currentOps = gui.patchView.getSelectedOps();
 

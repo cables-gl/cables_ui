@@ -846,7 +846,7 @@ export default class GlPatch extends Events
         // gui.longPressConnector.longPressCancel();
         this.#rectInstancer.interactive = true;
 
-        if (!this.#selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
+        if (!this.#selectionArea.active && !this.portDragLine.isActive && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
         {
             if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
             {

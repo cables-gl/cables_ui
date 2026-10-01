@@ -40,7 +40,10 @@ class OpParampanel extends Events
         /** @type {Op} */
         this._currentOp = null;
         this._eventPrefix = utils.shortId();
-        this._isPortLineDragDown = false;
+
+        /** @type {Port} */
+        this._portLineDragPort = null;
+        this._portLineDragListening = false;
 
         /** @type {Array<Port>} */
         this._portsIn = [];
@@ -54,6 +57,29 @@ class OpParampanel extends Events
         this._startedGlobalListeners = false;
 
         this.reloadListener = null;
+    }
+
+    _startPortLineDragListeners()
+    {
+        if (this._portLineDragListening) return;
+        const elPatchViews = document.getElementById("patchviews");
+        if (!elPatchViews) return;
+        this._portLineDragListening = true;
+
+        document.addEventListener("pointerup", () => { this._portLineDragPort = null; });
+        elPatchViews.addEventListener("pointerenter", (e) =>
+        {
+            const port = this._portLineDragPort;
+            if (!port) return;
+            this._portLineDragPort = null;
+
+            if (!gui.patchView._patchRenderer.getOp) return;
+            const glOp = gui.patchView._patchRenderer.getOp(port.op.id);
+            if (!glOp) return;
+
+            const glPort = glOp.getGlPort(port.name);
+            if (glPort) gui.patchView._patchRenderer.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, glPort, glOp.id, port.name, e);
+        });
     }
 
     get op()
@@ -435,36 +461,8 @@ class OpParampanel extends Events
                 }
             }
 
-            const f = (e) =>
-            {
-                if (!this._isPortLineDragDown) return;
-
-                if (gui.patchView._patchRenderer.getOp)
-                {
-                    const glOp = gui.patchView._patchRenderer.getOp(op.id);
-
-                    if (glOp && this._portsIn[i])
-                    {
-                        const glPort = glOp.getGlPort(this._portsIn[i].name);
-
-                        if (this._portsIn[i].name == this._portLineDraggedName)
-                            gui.patchView._patchRenderer.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, glPort, glOp.id, this._portsIn[i].name, e);
-                    }
-                }
-            };
-
-            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () =>
-            {
-                console.log("jajajaja");
-                this._isPortLineDragDown = false; this._portLineDraggedName = null;
-            }, { "passive": false });
-
-            ele.on(document.getElementById("portLineTitle_in_" + i), "pointerdown", (_e, target) =>
-            {
-                this._isPortLineDragDown = true; this._portLineDraggedName = target.dataset.portname;
-            }, { "passive": false });
-
-            if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
+            const portIn = this._portsIn[i];
+            ele.on(document.getElementById("portLineTitle_in_" + i), "pointerdown", () => { this._portLineDragPort = portIn; }, { "passive": false });
         }
 
         for (let ipo = 0; ipo < this._portsOut.length; ipo++)
@@ -484,24 +482,11 @@ class OpParampanel extends Events
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
 
-            document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerup", () => { this._isPortLineDragDown = false; this._portLineDraggedName = null; }, { "passive": false });
-            ele.on(document.getElementById("portLineTitle_out_" + ipo), "pointerdown", (e, target) => { this._isPortLineDragDown = true; this._portLineDraggedName = target.dataset.portname; }, { "passive": false });
-
-            if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", (e) =>
-            {
-                if (!this._isPortLineDragDown) return;
-                if (gui.patchView._patchRenderer.getOp)
-                {
-                    const glOp = gui.patchView._patchRenderer.getOp(op.id);
-                    if (glOp && this._portsOut[ipo])
-                    {
-                        const glPort = glOp.getGlPort(this._portsOut[ipo].name);
-                        if (this._portsOut[ipo].name == this._portLineDraggedName)
-                            gui.patchView._patchRenderer.emitEvent(GlPatch.EVENT_MOUSE_DOWN_OVER_PORT, glPort, glOp.id, this._portsOut[ipo].name, e);
-                    }
-                }
-            }, { "passive": false });
+            const portOut = this._portsOut[ipo];
+            ele.on(document.getElementById("portLineTitle_out_" + ipo), "pointerdown", () => { this._portLineDragPort = portOut; }, { "passive": false });
         }
+
+        this._startPortLineDragListeners();
 
         ele.clickable(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
         ele.clickable(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);

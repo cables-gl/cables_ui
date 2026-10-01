@@ -59,8 +59,9 @@ export default class GlDragLine
             {
             }
 
-            const ele = /** @type {HTMLElement} */ (document.elementFromPoint(e.x, e.y));
-            if (!ele) return;
+            const elePoint = document.elementFromPoint(e.x, e.y);
+            if (!elePoint) return;
+            const ele = /** @type {HTMLElement} */ (elePoint.closest("[data-opid][data-portname]") || elePoint);
 
             if (ele.dataset.opid && ele.dataset.portname)
             {
