@@ -146,11 +146,6 @@ export default class ModalOpCredits
                 }
                 break;
             case "author":
-                if (!value)
-                {
-                    errors.push("Please enter an author");
-                    valid = false;
-                }
                 break;
             case "url":
                 if (value)
