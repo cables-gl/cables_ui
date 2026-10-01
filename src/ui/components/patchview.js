@@ -1861,6 +1861,97 @@ export default class PatchView extends Events
         this.unselectOpsFromOtherSubpatches();
     }
 
+    duplicateSelectedOps()
+    {
+        const selectedOps = this.getSelectedOps();
+        if (selectedOps.length == 0) return;
+
+        const externalLinks = [];
+        for (let i = 0; i < selectedOps.length; i++)
+        {
+            const ports = selectedOps[i].portsIn.concat(selectedOps[i].portsOut);
+            for (let j = 0; j < ports.length; j++)
+            {
+                for (let k = 0; k < ports[j].links.length; k++)
+                {
+                    const otherPort = ports[j].links[k].getOtherPort(ports[j]);
+                    if (!otherPort || selectedOps.includes(otherPort.op)) continue;
+                    if (otherPort.direction == Port.DIR_IN && otherPort.type != Port.TYPE_TRIGGER) continue;
+
+                    externalLinks.push({ "opId": selectedOps[i].id, "portName": ports[j].name, "otherPort": otherPort });
+                }
+            }
+        }
+
+        const bounds = this.getSelectionBounds(0);
+        const offsetX = this.patchRenderer.viewBox.mousePatchX - bounds.minX;
+        const offsetY = this.patchRenderer.viewBox.mousePatchY - bounds.minY;
+
+        const ser = this.serializeOps(selectedOps);
+        const oldIds = [];
+        for (let i = 0; i < ser.ops.length; i++)
+        {
+            ser.ops[i].objName = gui.serverOps.getOpNameByIdentifier(ser.ops[i].opId);
+            oldIds.push(ser.ops[i].id);
+        }
+
+        Patch.replaceOpIds(ser, { "parentSubPatchId": this.getCurrentSubPatch() });
+
+        const newIds = {};
+        for (let i = 0; i < ser.ops.length; i++)
+        {
+            newIds[oldIds[i]] = ser.ops[i].id;
+            ser.ops[i].uiAttribs.pasted = true;
+            if (ser.ops[i].uiAttribs.translate)
+            {
+                let x = ser.ops[i].uiAttribs.translate.x + offsetX;
+                let y = ser.ops[i].uiAttribs.translate.y + offsetY;
+                if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
+                {
+                    x = Snap.snapOpPosX(x);
+                    y = Snap.snapOpPosY(y);
+                }
+                ser.ops[i].uiAttribs.translate.x = x;
+                ser.ops[i].uiAttribs.translate.y = y;
+            }
+        }
+
+        const undoGroup = undo.startGroup();
+
+        this._p.deSerialize(ser);
+
+        for (let i = 0; i < externalLinks.length; i++)
+        {
+            const newOp = this._p.getOpById(newIds[externalLinks[i].opId]);
+            const otherPort = externalLinks[i].otherPort;
+            if (newOp) this._p.link(newOp, externalLinks[i].portName, otherPort.op, otherPort.name);
+        }
+
+        const originalIds = [];
+        for (let i = 0; i < selectedOps.length; i++) originalIds.push(selectedOps[i].id);
+
+        undo.add({
+            "title": "duplicate ops",
+            "undo": () =>
+            {
+                for (const oldId in newIds) this._p.deleteOp(newIds[oldId], true);
+            },
+            "redo": () =>
+            {
+                this.patchRenderer.unselectAll();
+                for (let i = 0; i < originalIds.length; i++) this.patchRenderer.selectOpId(originalIds[i]);
+                this.duplicateSelectedOps();
+            }
+        });
+
+        undo.endGroup(undoGroup, "Duplicate");
+
+        this.patchRenderer.unselectAll();
+        for (const oldId in newIds) this.patchRenderer.selectOpId(newIds[oldId]);
+
+        notify("Duplicated " + ser.ops.length + " ops");
+    }
+
     addSpaceBetweenOpsX()
     {
         const bounds = this.getSelectionBounds(0);

@@ -394,6 +394,7 @@ export default class GlPatch extends Events
         // gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.toggleOpsEnable(); });
+        gui.keys.key("d", "Duplicate selected ops", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (_e) => { gui.patchView.duplicateSelectedOps(); });
         // gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.patchView.tempUnlinkOp(); });
 
         gui.keys.key("!", "debug", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { this._cycleDebug(); });
