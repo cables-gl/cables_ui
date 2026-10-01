@@ -1519,19 +1519,23 @@ class CmdPatch
         });
     }
 
-    static deleteOp(opName = null)
+    /**
+     *
+     * @param {String} [opId]
+     */
+    static deleteOp(opId = null)
     {
-        if (!opName)
+        if (!opId)
         {
             const ops = gui.patchView.getSelectedOps();
             if (!ops.length) return;
             const op = gui.patchView.getSelectedOps()[0];
-            opName = op.objName;
+            opId = op.opId;
         }
 
         if (platform.frontendOptions.opDeleteInEditor)
         {
-            gui.serverOps.deleteDialog(opName);
+            gui.serverOps.deleteDialog(opId);
         }
     }
 

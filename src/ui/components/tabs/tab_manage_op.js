@@ -420,7 +420,7 @@ export default class ManageOp
                             "func": () =>
                             {
                                 if (platform.frontendOptions.opDeleteInEditor)
-                                    CABLES.CMD.PATCH.deleteOp(opDoc.name);
+                                    CABLES.CMD.PATCH.deleteOp(opDoc.id);
                                 else
                                     window.open(platform.getCablesUrl() + "/op/delete/" + opDoc.name, "_blank");
                             }
