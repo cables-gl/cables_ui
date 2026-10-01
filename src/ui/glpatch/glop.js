@@ -588,6 +588,7 @@ export default class GlOp extends Events
 
         if (newAttribs && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
+        if (newAttribs && newAttribs.hasOwnProperty("selected") && newAttribs.selected != this.opUiAttribs.selected) this.#glPatch.selectionChanged();
 
         this.opUiAttribs = cloneObject(attr);
 

@@ -11,6 +11,7 @@ import { GuiText } from "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import undo from "../utils/undo.js";
 import opCleaner from "./cleanops.js";
+import PatchLayout from "./patchlayout.js";
 import { convertPorts, getConverters } from "./converterops.js";
 import SuggestionDialog from "./suggestiondialog.js";
 import SuggestPortDialog from "./suggestionportdialog.js";
@@ -1904,6 +1905,37 @@ export default class PatchView extends Events
         this.cleanOps(ops);
 
         undo.endGroup(undoGroup, "Compress Ops");
+    }
+
+    /**
+     * @param {UiOp[]} ops
+     */
+    tidyUpOps(ops)
+    {
+        if (!ops || ops.length === 0) ops = gui.corePatch().getSubPatchOps(this.getCurrentSubPatch());
+
+        const layoutOps = [];
+        for (const op of ops)
+            if (op.uiAttribs.translate && this.patchRenderer.getGlOp(op)) layoutOps.push(op);
+        if (layoutOps.length === 0) return;
+
+        const layout = new PatchLayout(this.patchRenderer);
+        const pos = layout.layout(layoutOps, gui.corePatch().getSubPatchOps(this.getCurrentSubPatch()));
+        if (typeof pos == "string") return notifyWarn("Could not tidy up ops", pos);
+
+        this.patchRenderer.subPatchOpAnimStart(this.getOpBounds(layoutOps), () =>
+        {
+            const undoGroup = undo.startGroup();
+            for (const op of pos.keys())
+            {
+                const p = pos.get(op);
+                if (op.uiAttribs.translate.x != p.x || op.uiAttribs.translate.y != p.y) this.setOpPos(op, p.x, p.y);
+            }
+            undo.endGroup(undoGroup, "Tidy up ops");
+
+            this.patchRenderer.subPatchOpAnimEndBounds(this.getOpBounds(layoutOps));
+            this.centerView();
+        });
     }
 
     /**
