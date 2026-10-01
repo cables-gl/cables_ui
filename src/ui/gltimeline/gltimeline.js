@@ -787,6 +787,7 @@ export class GlTimeline extends Events
 
     updateIcons()
     {
+        if (!ele.byId("timelineplay")) return;
 
         if (this.keyframeAutoCreate)
         {

@@ -159,7 +159,7 @@ export default class GlTimelineTab
 
         });
 
-        this.#tab.addButton("<span id=\"autokeyframe\" class=\"nomargin icon info icon-minimize2\" data-info=\"tlfit\"></span>", () =>
+        this.#tab.addButton("<span id=\"tlfit\" class=\"nomargin icon info icon-minimize2\" data-info=\"tlfit\"></span>", () =>
         {
             this.tlCanvas.glTimeline.fit();
         });
