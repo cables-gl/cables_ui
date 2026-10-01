@@ -277,6 +277,8 @@ export default class ManageOp
                         let readable = dep.readable;
                         let readableType = "Dependency: Common JS";
                         if (dep.type === "module") readableType = "Dependency: Module exported as: " + dep.export;
+                        if (dep.type === "npm") readableType = "Dependency: NPM";
+
                         if (dep.type === "op")
                         {
                             readable = dep.opName;
