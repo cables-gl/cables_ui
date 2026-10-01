@@ -446,6 +446,17 @@ export default class GlViewBox
         gui.patchView.emitEvent("viewBoxChange");
     }
 
+    #uncoveredSize()
+    {
+        let w = this.#viewResX - gui.getLeftPanelsMaxWidth() - gui.getRightPanelsMaxWidth();
+        let h = this.#viewResY;
+        if (gui.bottomTabPanel.isVisible()) h -= gui.bottomTabPanel.height;
+
+        if (!(w > 0)) w = this.#viewResX;
+        if (!(h > 0)) h = this.#viewResY;
+        return { "w": w, "h": h };
+    }
+
     /**
      * @param {boolean} [noAnim]
      * @param {boolean} [zoom]
@@ -497,14 +508,20 @@ export default class GlViewBox
         bb.size[0] *= padding;
         bb.size[1] *= padding;
 
-        const zx = bb.size[0] / 2; // zoom on x
-        const zy = (bb.size[1]) / 2 * (this.#viewResX / this.#viewResY);
+        const uncovered = this.#uncoveredSize();
+        const zx = bb.size[0] / 2 * (this.#viewResX / uncovered.w); // zoom on x
+        const zy = bb.size[1] / 2 * (this.#viewResX / uncovered.h);
         let z = Math.max(defaultZoom, Math.max(zy, zx));
         if (z > 99999)z = defaultZoom;
 
         if (zoom)
         {
-            if (noAnim) this._zoom = z;
+            if (noAnim)
+            {
+                this._animZoom.clear();
+                this._animZoom.setValue(this.glPatch.time, z);
+                this._zoom = z;
+            }
             else this.animateZoom(z);
         }
 
