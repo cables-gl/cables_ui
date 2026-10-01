@@ -1078,7 +1078,7 @@ export default class ServerOps
         });
         modal.on("onSubmit", () =>
         {
-            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opName": opDoc.name }, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opId": opDoc.id }, (err, res) =>
             {
                 if (err)
                 {
