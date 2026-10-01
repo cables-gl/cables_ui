@@ -48,6 +48,7 @@ export class GlTimeline extends Events
 {
     static CLIP_VAR_PREFIX = "_clip";
     static FIT_PADDING_PIXEL = 20;
+    static DRAGAREA_SAME_TIME_WIDTH_PIXEL = 20;
 
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
@@ -1367,7 +1368,14 @@ export class GlTimeline extends Events
                 timeBounds.max != this.timeBounds.max;
 
         this.timeBounds = timeBounds;
-        const newX = this.view.timeToPixelScreen(timeBounds.min);
+        let newX = this.view.timeToPixelScreen(timeBounds.min);
+        let width = this.view.timeToPixel(timeBounds.max - timeBounds.min);
+
+        if (timeBounds.max == timeBounds.min)
+        {
+            newX -= GlTimeline.DRAGAREA_SAME_TIME_WIDTH_PIXEL / 2;
+            width = GlTimeline.DRAGAREA_SAME_TIME_WIDTH_PIXEL;
+        }
 
         if (changed || newX != this.selectedKeysDragArea.x)
             if (this.getNumSelectedKeys() == 0) this.selectedKeysDragArea.set(0, 0, 0, 0, 0);
@@ -1376,7 +1384,7 @@ export class GlTimeline extends Events
                     newX,
                     (this.height - 15) / window.devicePixelRatio,
                     -0.9,
-                    this.view.timeToPixel(timeBounds.max - timeBounds.min) + 20,
+                    width,
                     15 * window.devicePixelRatio);
     }
 
