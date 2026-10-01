@@ -89,7 +89,7 @@ export const GuiText =
     "patch": "## Patchfield \n\n|| `ESC` Add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+`/`-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
     "canvas": "## Canvas\n\n|| Visual output of your patch || [cmd_ctrl][enter] || Maximize canvas",
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
-    "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Berlin and have a coffee with us! ",
+    "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Cologne and have a coffee with us! ",
 
     "minimize_tabpanel": "## [cmd_ctrl]`b` - Toggle left tab panel",
 
