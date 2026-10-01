@@ -1,10 +1,10 @@
 import ele from "cables-shared-client/src/ele.js";
 import ModalDialog from "./modaldialog.js";
-import OpAttachmentTabPanel from "../elements/tabpanel/opattachmenttabpanel.js";
 import { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
+/** @typedef {import("cables-shared-client").OpCredit} OpCredit */
 
 /**
  * Opens a modal dialog and shows a loading indicator animation
@@ -21,23 +21,28 @@ export default class ModalOpCredits
     /** @type {OpDoc} */
     #opDoc;
 
+    /** @type {OpCredit} */
+    #opCredit;
+
     /** @type {boolean} */
     #canEdit;
 
     /**
      *
      * @param {OpDoc} opDoc
+     * @param {OpCredit} opCredit
      */
-    constructor(opDoc)
+    constructor(opDoc, opCredit = null)
     {
 
         this.#opDoc = opDoc;
+        this.#opCredit = opCredit;
         this.#canEdit = gui.serverOps.canEditOp(gui.user, this.#opDoc.name);
 
         /** @type {import("./modaldialog.js").ModalDialogOptions} */
         const modalOptions = {
             "title": "Add credits to " + this.#opDoc.name,
-            "html": this.getHtml()
+            "html": this.getHtml(opCredit)
         };
 
         if (this.#canEdit)
@@ -51,11 +56,12 @@ export default class ModalOpCredits
                     const dialogElement = this.#dialog.getElement();
                     const inputs = dialogElement.querySelectorAll("input");
                     const credit = {
-                        "title": "",
-                        "author": "",
-                        "url": "",
-                        "licence": "",
-                        "version": ""
+                        "date": null,
+                        "title": null,
+                        "author": null,
+                        "url": null,
+                        "licence": null,
+                        "version": null
                     };
                     inputs.forEach((input) =>
                     {
@@ -97,13 +103,16 @@ export default class ModalOpCredits
     }
 
     /**
+     * @param {OpCredit} opCredit
      * @returns {string}
      */
-    getHtml()
+    getHtml(opCredit)
     {
         if (this.#canEdit)
         {
-            const templateOptions = {};
+            const templateOptions = {
+                "credit": opCredit
+            };
             return getHandleBarHtml("op_add_credits", templateOptions);
         }
         else

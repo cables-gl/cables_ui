@@ -2,18 +2,19 @@
     <div id="addopcredits" class="addopcredits" style="width: 95%; padding-top: 15px; padding-bottom: 15px;">
         <div class="highlightBlock error hidden"></div>
         Title*:<br/>
-        <input class="src" type="text" name="title"><br/><br/>
+        <input class="src" type="text" name="title" value="{{credit.title}}"><br/><br/>
         Author:<br/>
-        <input class="src" type="text" name="author"><br/><br/>
+        <input class="src" type="text" name="author" value="{{credit.author}}"><br/><br/>
         URL:<br/>
-        <input class="src" type="text" name="url"><br/><br/>
+        <input class="src" type="text" name="url" value="{{credit.url}}"><br/><br/>
         <div style="width: 45%; float: left;">
             Version:<br/>
-            <input class="src" type="text" name="version"><br/><br/>
+            <input class="src" type="text" name="version" value="{{credit.version}}"><br/><br/>
         </div>
         <div style="width: 45%; float: right;">
             Licence:<br/>
-            <input class="src" type="text" name="licence"><br/><br/><br/><br/>
+            <input class="src" type="text" name="licence" value="{{credit.licence}}"><br/><br/><br/><br/>
         </div>
+        <input type="hidden" name="date" value="{{credit.date}}">
     </div>
 </script>
