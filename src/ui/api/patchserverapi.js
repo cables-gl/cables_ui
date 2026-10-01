@@ -510,6 +510,7 @@ export default class PatchSaveServer extends Events
                     {
                         this.saveCurrentProject(() =>
                         {
+                            this.opCrashed = false;
                             done();
                         }, true);
                     }
@@ -517,6 +518,7 @@ export default class PatchSaveServer extends Events
             });
             modal.on("onSubmit", () =>
             {
+                this.opCrashed = false;
                 modal.close();
                 this.saveCurrentProject(cb, true);
 

@@ -1064,20 +1064,21 @@ export default class ServerOps
         });
     }
 
-    deleteDialog(opName)
+    deleteDialog(opId)
     {
         if (!platform.frontendOptions.opDeleteInEditor) return;
 
         if (gui.showGuestWarning()) return;
 
+        const opDoc = gui.opDocs.getOpDocById(opId);
         const modal = new ModalDialog({
             "title": "Really delete op?",
-            "text": "Delete " + opName + "?",
+            "text": "Delete " + opDoc.name + "?",
             "choice": true
         });
         modal.on("onSubmit", () =>
         {
-            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opName": opName }, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opName": opDoc.name }, (err, res) =>
             {
                 if (err)
                 {
@@ -1089,11 +1090,23 @@ export default class ServerOps
                 else
                 {
                     const patch = gui.corePatch();
-                    const ops = patch.getOpsByObjName(opName);
+
+                    const ops = patch.getOpsByObjName(opDoc.name);
                     ops.forEach((op) =>
                     {
                         patch.deleteOp(op.id, true);
                     });
+
+                    // remove the op class from code, opsearch also lists all ops found in the Ops namespace
+                    const path = opDoc.name.split(".");
+                    path.shift();
+                    this._deletePropertyByPath(Ops, path);
+                    delete CABLES.OPS[opDoc.id];
+
+                    gui.opDocs.removeOpDoc(opDoc);
+                    gui.opSelect().reload();
+                    gui.opSelect().prepare();
+
                 }
             });
         });
