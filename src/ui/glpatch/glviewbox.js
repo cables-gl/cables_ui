@@ -584,6 +584,7 @@ export default class GlViewBox
      */
     screenToPatchCoord(x, y, aspect)
     {
+        if (this.#viewResX == 0 || this.#viewResY == 0) return [0, 0];
         if (this._scrollY != this._scrollY) this._scrollY = 0;
         const zx = 1 / ((this.#viewResX / 2) / this.zoom);
         let zy = zx;
@@ -608,6 +609,7 @@ export default class GlViewBox
         this.storeCurrentSubPatch();
 
         dataui.viewBoxesGl = this._subPatchViewBoxes;
+        dataui.currentSubPatch = String(this._currentSubPatchId);
     }
 
     /**

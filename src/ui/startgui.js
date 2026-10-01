@@ -1,4 +1,5 @@
 import { ele, HandlebarsHelper, TalkerAPI } from "cables-shared-client";
+import { Patch } from "cables";
 import ServerOps from "./api/opsserver.js";
 import NoPatchEditor from "./components/nopatcheditor.js";
 import Gui from "./gui.js";
@@ -131,7 +132,18 @@ export default function startUi(cfg)
 
                     gui.patchView.checkPatchErrors();
 
-                    gui.patchView.setCurrentSubPatch(0);
+                    const selectedOpIds = [];
+                    const selected = gui.patchView.getSelectedOps();
+                    for (let i = 0; i < selected.length; i++) selectedOpIds.push(selected[i].id);
+
+                    let startSubPatch = Patch.DEFAULT_SUBPATCHID;
+                    const savedSubPatch = gui.project()?.ui?.currentSubPatch;
+                    if (savedSubPatch && gui.patchView.getSubPatchOuterOp(savedSubPatch)) startSubPatch = savedSubPatch;
+
+                    gui.patchView.setCurrentSubPatch(startSubPatch, () =>
+                    {
+                        for (let i = 0; i < selectedOpIds.length; i++) gui.patchView.selectOpId(selectedOpIds[i]);
+                    });
 
                     ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
                     ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
@@ -171,7 +183,9 @@ export default function startUi(cfg)
 
                     // for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
-                    gui.patchParamPanel.show();
+                    const selectedOps = gui.patchView.getSelectedOps();
+                    if (selectedOps.length == 1) gui.opParams.show(selectedOps[0]);
+                    else gui.patchParamPanel.show();
 
                     gui.corePatch().loading.on("finishedAll", () =>
                     {

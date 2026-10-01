@@ -30,7 +30,6 @@ export default class GlUiCanvas extends GlCanvas
         this.cgl.on("resize", () =>
         {
             this.glPatch.emitEvent(GlPatch.EVENT_RESIZE, this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
-            gui.patchView.centerView();
         });
 
         this.cgl.on("beginFrame", () =>
