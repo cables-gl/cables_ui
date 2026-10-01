@@ -241,6 +241,13 @@ export default class OpSearch extends Events
                 scoreDebug += "+2 query startswith shortname<br/>";
             }
 
+            if (list[i]._shortName.endsWith(query))
+            {
+                found = true;
+                points += 2;
+                scoreDebug += "+2 query endsWith shortname<br/>";
+            }
+
             if (orig.length > 1 && list[i]._lowerCaseName.indexOf(orig) > -1)
             {
                 found = true;
