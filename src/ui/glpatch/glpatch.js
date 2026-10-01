@@ -30,8 +30,10 @@ import { InputBindings } from "../inputbindings.js";
 import GlPatchAPI from "./patchapi.js";
 import { UiOp } from "../core_extend_op.js";
 import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
+import undo from "../utils/undo.js";
 
 let idleSoon = null;
+const SELECTION_UNDO_DELAY_MS = 300;
 let lastUpdate = 0;
 
 /**
@@ -64,6 +66,13 @@ export default class GlPatch extends Events
     static EVENT_META_SCROLL = "META_SCROLL";
 
     #cgl = null;
+
+    /** @type {string[]} */
+    #selectionUndoIds = [];
+    #selectionUndoTimeout = null;
+    #selectionUndoIndex = -1;
+    #selectionUndoLength = 0;
+
     hoverPort = null;
     paused = false;
     pauseTimeOut = null;
@@ -1181,6 +1190,11 @@ export default class GlPatch extends Events
     render(resX, resY)
     {
         if (!gui || !gui.canvasManager) return;
+        if (!this.#selectionUndoTimeout)
+        {
+            this.#selectionUndoIndex = undo.getIndex();
+            this.#selectionUndoLength = undo.getCommands().length;
+        }
         if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
         {
             this.#cgl.gl.clearColor(0, 0, 0, 0);
@@ -1649,6 +1663,38 @@ export default class GlPatch extends Events
         }
     }
 
+    selectionChanged()
+    {
+        clearTimeout(this.#selectionUndoTimeout);
+        this.#selectionUndoTimeout = setTimeout(() => { this.#recordSelectionUndo(); }, SELECTION_UNDO_DELAY_MS);
+    }
+
+    #recordSelectionUndo()
+    {
+        this.#selectionUndoTimeout = null;
+        const before = this.#selectionUndoIds;
+        const after = gui.patchView.getSelectedOps().map((op) => op.id).sort();
+        const changedByOtherAction = undo.getIndex() != this.#selectionUndoIndex || undo.getCommands().length != this.#selectionUndoLength;
+        this.#selectionUndoIds = after;
+
+        if (changedByOtherAction || before.join() == after.join()) return;
+        undo.add({
+            "title": "Select ops",
+            "undo": () => { this.#restoreSelection(before); },
+            "redo": () => { this.#restoreSelection(after); }
+        });
+    }
+
+    /**
+     * @param {string[]} ids
+     */
+    #restoreSelection(ids)
+    {
+        gui.patchView.unselectAllOps();
+        for (const id of ids) gui.patchView.selectOpId(id);
+        this.#selectionUndoIds = ids;
+    }
+
     updateSubPatchOpAnim()
     {
         if (this._subpatchoprect)
@@ -1708,26 +1754,49 @@ export default class GlPatch extends Events
      */
     subPatchOpAnimEnd(opid)
     {
+        const glop = this._glOpz[opid];
+        this.#subPatchOpAnimEndRect(glop.op.uiAttribs.translate.x, glop.op.uiAttribs.translate.y, glop.w, glop.h);
+    }
+
+    /**
+     * @param {BoundingBox} bounds
+     */
+    subPatchOpAnimEndBounds(bounds)
+    {
+        this.#subPatchOpAnimEndRect(
+            bounds.minX - gui.theme.patch.selectedOpBorderX / 2,
+            bounds.minY - gui.theme.patch.selectedOpBorderY / 2,
+            bounds.size[0] + gui.theme.patch.selectedOpBorderX,
+            bounds.size[1] + gui.theme.patch.selectedOpBorderY);
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} w
+     * @param {number} h
+     */
+    #subPatchOpAnimEndRect(x, y, w, h)
+    {
         // clearTimeout(this.pauseTimeOut);
         this.paused = false;
         const dur = 0.25;
-        const glop = this._glOpz[opid];
 
         this._subpatchAnimOutX.clear();
         this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
-        this._subpatchAnimOutX.setValue(this._time + dur, glop.op.uiAttribs.translate.x);
+        this._subpatchAnimOutX.setValue(this._time + dur, x);
 
         this._subpatchAnimOutY.clear();
         this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
-        this._subpatchAnimOutY.setValue(this._time + dur, glop.op.uiAttribs.translate.y);
+        this._subpatchAnimOutY.setValue(this._time + dur, y);
 
         this._subpatchAnimOutW.clear();
         this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
-        this._subpatchAnimOutW.setValue(this._time + dur, glop.w);
+        this._subpatchAnimOutW.setValue(this._time + dur, w);
 
         this._subpatchAnimOutH.clear();
         this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
-        this._subpatchAnimOutH.setValue(this._time + dur, glop.h);
+        this._subpatchAnimOutH.setValue(this._time + dur, h);
 
         this._subpatchAnimFade.clear();
         this._subpatchAnimFade.setValue(this._time, 1);

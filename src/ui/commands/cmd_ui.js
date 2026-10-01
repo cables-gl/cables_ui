@@ -467,18 +467,21 @@ class CmdUi
      */
     static showChangelog(since)
     {
-        (new ChangelogToast()).show(since);
+        (new ChangelogToast()).show();
     }
 
     static showBuildInfo()
     {
         let infoHtml = "no info available";
-        if (CABLESUILOADER.buildInfo)
+
+        /** @type {import("cables-shared-client").BuildInfo} */
+        const buildInfo = CABLESUILOADER.buildInfo;
+        if (buildInfo)
         {
             infoHtml = "";
-            const uiBuild = CABLESUILOADER.buildInfo.ui;
-            const coreBuild = CABLESUILOADER.buildInfo.core;
-            const apiBuild = CABLESUILOADER.buildInfo.api;
+            const uiBuild = buildInfo.ui;
+            const coreBuild = buildInfo.core;
+            const apiBuild = buildInfo.api;
 
             if (coreBuild)
             {
@@ -527,6 +530,9 @@ class CmdUi
         htmlTab._tab.on(Tab.EVENT_CLOSE, () => { editorSession.remove(CmdUi.TABSESSION_NAME_BUILDINFO, CmdUi.TABSESSION_NAME_BUILDINFO); });
     }
 
+    /**
+     * @param {boolean} userInteraction
+     */
     static welcomeTab(userInteraction)
     {
         platform.talkerAPI.send(TalkerAPI.CMD_GET_RECENT_PATCHES, {}, (err, r) =>

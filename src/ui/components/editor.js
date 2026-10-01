@@ -63,7 +63,6 @@ export function codeWatcher(port)
 
     function setContent()
     {
-
         ed.setContent(port.get());
         if (port.uiAttribs.editorDiagnostics) ed.setDiags(port.uiAttribs.editorDiagnostics);
     }

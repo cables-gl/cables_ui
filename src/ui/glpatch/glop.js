@@ -588,6 +588,7 @@ export default class GlOp extends Events
 
         if (newAttribs && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
+        if (newAttribs && newAttribs.hasOwnProperty("selected") && newAttribs.selected != this.opUiAttribs.selected) this.#glPatch.selectionChanged();
 
         this.opUiAttribs = cloneObject(attr);
 
@@ -1164,12 +1165,13 @@ export default class GlOp extends Events
         this._updateIndicators();
         if (this._resizableArea) this._resizableArea.update();
 
-        if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
-        {
-            this._oldPosx = this.opUiAttribs.translate.x;
-            this._oldPosy = this.opUiAttribs.translate.y;
-            this.emitEvent(GlOp.EVENT_MOVE);
-        }
+        if (this.opUiAttribs.translate)
+            if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
+            {
+                this._oldPosx = this.opUiAttribs.translate.x;
+                this._oldPosy = this.opUiAttribs.translate.y;
+                this.emitEvent(GlOp.EVENT_MOVE);
+            }
     }
 
     getUiAttribs()
