@@ -97,7 +97,6 @@ export default class GlTimelineTab
         this.#tab.addButton("<span id=\"timelineplay\" class=\"nomargin icon icon-play info\" data-info=\"tlplay\"></span>", () =>
         {
             gui.corePatch().timer.togglePlay();
-            this.tlCanvas.glTimeline.updateIcons();
         }, ["button-middle"]);
 
         this.#tab.addButton("<span class=\"nomargin icon icon-step-forward\"></span>", () =>

@@ -264,6 +264,7 @@ export class GlTimeline extends Events
         gui.corePatch().timer.on(Timer.EVENT_PLAY_PAUSE, () =>
         {
             gui.corePatch().timer.setTime(this.snapTime(gui.corePatch().timer.getTime()));
+            this.updateIcons();
         });
 
         gui.on(Gui.EVENT_THEMECHANGED, () =>
