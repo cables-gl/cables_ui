@@ -75,7 +75,7 @@ export class UiProfilerTab extends Events
             for (let j = 0; j < gui.uiProfiler._measures[i].times.length; j++)
             {
                 avg += gui.uiProfiler._measures[i].times[j];
-                max = Math.max(gui.uiProfiler._measures[i].times[j]);
+                max = Math.max(max, gui.uiProfiler._measures[i].times[j]);
             }
 
             avg /= gui.uiProfiler._measures[i].times.length;
