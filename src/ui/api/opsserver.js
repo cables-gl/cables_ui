@@ -1,5 +1,6 @@
 import { Logger, TalkerAPI } from "cables-shared-client";
 import { Op, Patch, Port, utils } from "cables";
+import EditorBase from "../components/tabs/tab_editor.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
 import { notifyError } from "../elements/notification.js";
@@ -1547,6 +1548,13 @@ export default class ServerOps
         return "Op " + parts[parts.length - 1];
     }
 
+    /**
+     * @callback EditorOnSaveCallback
+     * @param {Function} setStatus
+     * @param {String} content
+     * @param {EditorBase} editor
+     */
+
     // Shows the editor and displays the code of an op in it
     /**
      * @param {string} opname
@@ -1638,7 +1646,7 @@ export default class ServerOps
                 if (!readOnly && editorTab)
                 {
 
-                    editorTab.on("save", (setStatus, content, editor) =>
+                    editorTab.on("save", /** @type EditorOnSaveCallback */ (setStatus, content, editor) =>
                     {
                         gui.savingTitleAnimStart("Saving Op...");
                         this.saveOpsInProgress[opname] = true;
