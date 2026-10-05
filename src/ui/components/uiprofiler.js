@@ -5,6 +5,7 @@ export default class UiProfiler
     {
         this._measures = {};
         this.ignore = undefined;
+        this.maxTimes = 100;
 
     }
 
@@ -67,8 +68,8 @@ export default class UiProfiler
 
                 try
                 {
-                    if (perf._measures[name].times.length > 1000000)perf._measures[name].times.length = 0;
                     perf._measures[name].times.push(time);
+                    if (perf._measures[name].times.length > perf.maxTimes) perf._measures[name].times.shift();
                 }
                 catch (e)
                 {
