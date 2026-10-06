@@ -1475,14 +1475,12 @@ export default class GlOp extends Events
                 const startScope = this.op.getPortByName("areaScopeBegin");
                 if (startScope && !startScope.isLinked())
                 {
-                    // const parts=
                     const opdocBegin = gui.opDocs.getOpDocByName(this.op.objName);
-                    console.log("opdoc,", opdocBegin, opdocBegin.nameNoVersion, opdocBegin.version);
 
                     let endOpName = opdocBegin.nameNoVersion + "End";
                     if (opdocBegin.version)endOpName += "_v" + opdocBegin.version;
 
-                    console.log("scope area create...", endOpName);
+                    // console.log("scope area create...", endOpName);
                     gui.patchView.addOp(endOpName, { "onOpAdd": (endOp) =>
                     {
                         endOp.setPos(this.x, this.y + 200);

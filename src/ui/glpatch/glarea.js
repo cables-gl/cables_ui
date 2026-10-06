@@ -152,7 +152,7 @@ export default class GlArea
                 this.#rectBg.setPosition(
                     this.#glop.x,
                     this.#glop.y,
-                    -0.5);
+                    0.2);
 
                 if (this.#glOpScopeEnd)
                 {
