@@ -85,7 +85,7 @@ export default class PatchSaveServer extends Events
 
     checkUpdated(cb = null, fromSave = false, forceRequest = false)
     {
-        if (!gui.project()) return;
+        if (!gui || !gui.project()) return;
         if (platform.isOffline() && !forceRequest)
         {
             if (cb)cb();
@@ -920,7 +920,7 @@ export default class PatchSaveServer extends Events
         /** @type {import("cables-shared-client").ErrorReport} */
         const report = {};
         report.title = title;
-        report.patchTitle = gui.project().name;
+        if (gui && gui.project)report.patchTitle = gui.project().name;
 
         const log = [];
         for (let i = logFilter.logs.length - 1; i >= 0; i--)
@@ -1001,11 +1001,11 @@ export default class PatchSaveServer extends Events
 
         report.cablesUrl = platform.getCablesUrl();
         report.platformVersion = platform.getCablesVersion();
-        if (gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
+        if (gui && gui.isRemoteClient) report.platformVersion += " REMOTE CLIENT";
         report.browserDescription = platform.description;
 
-        if (gui.project()) report.projectId = gui.project()._id;
-        if (gui.user)
+        if (gui && gui.project && gui.project()) report.projectId = gui.project()._id;
+        if (gui && gui.user)
         {
             report.username = gui.user.username;
             report.userId = gui.user.id;
@@ -1013,7 +1013,7 @@ export default class PatchSaveServer extends Events
 
         try
         {
-            if (gui.corePatch().cgl && gui.corePatch().cgl.gl)
+            if (gui && gui.corePatch().cgl && gui.corePatch().cgl.gl)
             {
                 const gl = gui.corePatch().cgl.gl;
                 report.glRenderer = gl.getParameter(gl.VERSION);
