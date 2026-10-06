@@ -920,7 +920,7 @@ export default class PatchSaveServer extends Events
         /** @type {import("cables-shared-client").ErrorReport} */
         const report = {};
         report.title = title;
-        if (gui && gui.project)report.patchTitle = gui.project().name;
+        if (gui && gui.project && gui.project())report.patchTitle = gui.project().name;
 
         const log = [];
         for (let i = logFilter.logs.length - 1; i >= 0; i--)
