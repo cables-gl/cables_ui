@@ -62,6 +62,7 @@ export default function startUi(cfg)
                 incrementStartup();
                 platform.initRouting(() =>
                 {
+                    if (!gui.project()) return;
                     incrementStartup();
                     gui.opSelect().prepare();
                     gui.setPatchSummary(summary.data);

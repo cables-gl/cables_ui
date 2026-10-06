@@ -690,6 +690,7 @@ export class Platform extends Events
 
     getPatchOpsNamespace()
     {
+        if (!gui.project()) return;
         const PATCHOPS_ID_REPLACEMENTS = {
             "-": "___"
         };

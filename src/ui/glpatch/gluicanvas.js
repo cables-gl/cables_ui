@@ -22,6 +22,7 @@ export default class GlUiCanvas extends GlCanvas
     {
         super(_patch, parentEle);
 
+        if (!this.cgl || !this.cgl.gl) return;
         this.cgl.name = "ui";
         this.glPatch = new GlPatch(this.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
@@ -82,6 +83,7 @@ export default class GlUiCanvas extends GlCanvas
 
         this.parentResized();
         this.activityHigh();
+
         requestAnimationFrame(() =>
         {
             // if (gui.corePatch().cgl) this.cgl.doGlQueryTiming = gui.corePatch().cgl.doGlQueryTiming;
@@ -93,6 +95,7 @@ export default class GlUiCanvas extends GlCanvas
 
     parentResized()
     {
+        if (!this.glPatch) return;
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         this.glPatch.needsRedraw = true;
         this.glPatch.emitEvent(GlPatch.EVENT_RESIZE, this._parentEle.clientWidth, this._parentEle.clientHeight);
