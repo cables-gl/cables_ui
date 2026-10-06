@@ -1,5 +1,6 @@
 import { Logger, TalkerAPI } from "cables-shared-client";
 import { Port } from "cables";
+import { shuffleArray } from "cables/src/core/utils.js";
 import GlDebugTab from "../components/tabs/tab_debugglui.js";
 import MetaHistory from "../components/tabs/tab_history.js";
 import LoggingTab from "../components/tabs/tab_logfilter.js";
@@ -341,30 +342,33 @@ class CmdDebug
             requestIdleCallback(() =>
             {
                 y += 30;
-                gui.serverOps.loadOpDependencies(opname, () =>
-                {
-                    let op;
-                    try
+                if (!opname.startsWith("Ops.User"))
+                    gui.serverOps.loadOpDependencies(opname, () =>
                     {
-                        op = gui.corePatch().addOp(opname, { "translate": { "y": y, "x": 0 } });
-                    }
-                    catch (e)
-                    {
-                        console.log("OP ", opname);
-                        console.log("exception", e);
-                    }
+                        let op;
+                        try
+                        {
+                            op = gui.corePatch().addOp(opname, { "translate": { "y": y, "x": 0 } });
+                        }
+                        catch (e)
+                        {
+                            console.log("OP ", opname);
+                            console.log("exception", e);
+                        }
 
-                    ops.push(op);
-                    if (ops.length > 10) deleteOps();
+                        ops.push(op);
+                        if (ops.length > 10) deleteOps();
 
-                });
+                    });
             });
 
         }
 
-        const allOps = gui.opDocs.getAll();
+        Math.randomSeed = 0;
+        let allOps = gui.opDocs.getAll();
+        allOps = shuffleArray(allOps);
 
-        for (const i in allOps)
+        for (let i = 0; i < allOps.length; i++)
         {
             log.log("creating " + allOps[i].name);
             const opname = allOps[i].name;

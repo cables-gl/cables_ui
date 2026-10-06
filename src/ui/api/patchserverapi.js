@@ -914,6 +914,9 @@ export default class PatchSaveServer extends Events
         }, 200);
     }
 
+    /**
+     * @param {string} title
+     */
     createErrorReport(title)
     {
 
