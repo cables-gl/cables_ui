@@ -395,7 +395,7 @@ export default class OpSelect
                     {
                         html += "<a class=\"button-small button-icon\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"gui.serverOps.edit('" + opName + "', false,null,true);gui.pressedEscape();\"><span class=\"icon icon-edit\"></span></a>";
                         if (platform.frontendOptions.hasOpDirectories && docs.opDirFull)
-                            html += "<a class=\"button-small\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.ELECTRON.openOpDir('', '" + opName + "');gui.pressedEscape();\"><span class=\"icon icon-folder\"></span></a>";
+                            html += "<a class=\"button-small\" onkeypress=\"ele.keyClick(event,this)\" tabindex=\"0\" onclick=\"CABLES.CMD.ELECTRON.openOpDir('" + opName + "');gui.pressedEscape();\"><span class=\"icon icon-folder\"></span></a>";
 
                     }
 

@@ -178,7 +178,7 @@ export function createOpDocButton(tab, editor)
             (e) =>
             {
                 if (e.ctrlKey || e.metaKey) CABLES.CMD.ELECTRON.copyOpDirToClipboard(opId);
-                else CABLES.CMD.ELECTRON.openOpDir(opId, opname);
+                else CABLES.CMD.ELECTRON.openOpDir(opname);
             });
     }
 }

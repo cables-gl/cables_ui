@@ -1454,7 +1454,7 @@ class CmdPatch
             "promptOk": (summary) =>
             {
                 gui.savingTitleAnimStart("Updating Op...");
-                platform.talkerAPI.send(TalkerAPI.CMD_SET_OP_SUMMARY, { "opId": opId, "name": opName, "summary": summary }, (err, res) =>
+                platform.talkerAPI.send(TalkerAPI.CMD_SET_OP_SUMMARY, { "opId": opId, "summary": summary }, (err, res) =>
                 {
                     if (!err)
                     {
