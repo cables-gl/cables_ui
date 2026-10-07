@@ -464,6 +464,19 @@ export default class OpDocs
             return "rgb(" + r + ", " + g + ", " + b + ")";
         }
 
+        /**
+         * @param {object} port
+         * @param {number} x
+         * @param {number} y
+         */
+        function objPortInfill(port, x, y)
+        {
+            const infillHeight = gluiconfig.portHeight * 0.75;
+            const inset = gluiconfig.portHeight - infillHeight;
+            const col = gui.theme.colors_objtypes[port.objType] || gui.theme.colors_objtypes.default;
+            return "<rect x=\"" + (x + inset) + "\" y=\"" + (y + inset / 2) + "\" width=\"" + (gluiconfig.portWidth - 2 * inset) + "\" height=\"" + infillHeight + "\" fill=\"" + glColorToHtml(col) + "\"/>";
+        }
+
         let svgStr = "";
 
         const doc = this.getOpDocByName(opname);
@@ -496,6 +509,7 @@ export default class OpDocs
                     }
 
                     svgStr += "<rect x=\"" + posx + "\" width=\"" + gluiconfig.portWidth + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\"/>";
+                    if (doc.layout.portsIn[i].type == Port.TYPE_OBJECT) svgStr += objPortInfill(doc.layout.portsIn[i], posx, 0);
                 }
 
             svgStr += svgOver;
@@ -517,6 +531,7 @@ export default class OpDocs
                     }
 
                     svgStr += "<rect y=\"" + (gluiconfig.opHeight - gluiconfig.portHeight) + "\" x=\"" + posx + "\" width=\"" + gluiconfig.portWidth + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\"/>";
+                    if (doc.layout.portsOut[i].type == Port.TYPE_OBJECT) svgStr += objPortInfill(doc.layout.portsOut[i], posx, gluiconfig.opHeight - gluiconfig.portHeight);
                 }
 
             svgStr += svgOver;
