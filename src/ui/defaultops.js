@@ -101,7 +101,7 @@ const defaultOpNames =
 
     "GreaterThan": "Ops.Math.Compare.GreaterThan",
     "LessThan": "Ops.Math.Compare.LessThan",
-    "Sum": "Ops.Math.Sum_v2",
+    "Sum": "Ops.Math.Sum",
     "Subtract": "Ops.Math.Subtract",
     "Divide": "Ops.Math.Divide",
     "Multiply": "Ops.Math.Multiply",
