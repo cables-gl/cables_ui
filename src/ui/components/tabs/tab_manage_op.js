@@ -1,6 +1,8 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
+import { CmdOps } from "../../commands/cmd_op.js";
+import { CmdPatch } from "../../commands/cmd_patch.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
@@ -395,7 +397,7 @@ export default class ManageOp
                             "title": "Rename op",
                             "func": () =>
                             {
-                                CABLES.CMD.OP.renameOp(this.#currentName);
+                                CmdOps.renameOp(this.#currentName);
                             }
                         });
                     if (this.canEditOp)
@@ -403,7 +405,7 @@ export default class ManageOp
                             "title": "Set op summary",
                             "func": () =>
                             {
-                                CABLES.CMD.PATCH.editOpSummary(opDoc.id, this.#currentName, opDoc.summary);
+                                CmdPatch.editOpSummary(opDoc.id, this.#currentName, opDoc.summary);
 
                             }
                         });
@@ -422,7 +424,7 @@ export default class ManageOp
                             "func": () =>
                             {
                                 if (platform.frontendOptions.opDeleteInEditor)
-                                    CABLES.CMD.PATCH.deleteOp(opDoc.id);
+                                    CmdPatch.deleteOp(opDoc.id);
                                 else
                                     window.open(platform.getCablesUrl() + "/op/delete/" + opDoc.name, "_blank");
                             }

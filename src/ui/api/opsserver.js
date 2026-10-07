@@ -1819,7 +1819,7 @@ export default class ServerOps
     }
 
     /**
-     * @param {String} opIdentifier
+     * @param {import("cables/src/core/core_op.js").OpId|import("cables/src/core/core_op.js").OpName} opIdentifier
      * @param {Function} _next
      */
     loadOpDependencies(opIdentifier, _next, reload = false)
