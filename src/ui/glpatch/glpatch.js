@@ -74,7 +74,8 @@ export default class GlPatch extends Events
     isAnimated = false;
     #numSelectedGlOps = 0;
 
-    hoveringResize = false;
+    /** @type {import("../gldraw/glrect.js").default} */
+    hoverResizeRect = null;
     _mouseLeaveButtons = 0;
 
     /** @type {number[]} */
@@ -574,14 +575,31 @@ export default class GlPatch extends Events
         else
         {
             if (this.viewBox.cursor)cur = this.viewBox.cursor;
-            else if (this._hoverOps.length > 0 || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) cur = "pointer";
+            else if (this.#isHoveringResize()) cur = "nwse-resize";
+            else if (this.#isHoveringPort() || this.#isHoveringLinkButton() || this._hoverOps.length > 0) cur = "pointer";
             else if (this._spacePressed) cur = "grabbing";
-            else if (this.hoveringResize) cur = "nwse-resize";
         }
 
-        if (this._cursor != cur) this.#cgl.setCursor(cur);
-
+        this.#cgl.setCursor(cur);
         this._cursor = cur;
+    }
+
+    #isHoveringResize()
+    {
+        const rect = this.hoverResizeRect;
+        if (!rect || rect.disposed || !rect.visible) return false;
+        return rect.isHovering() || rect.isDragging;
+    }
+
+    #isHoveringPort()
+    {
+        return this.hoverPort && !this.hoverPort.disposed && this.hoverPort.hovering;
+    }
+
+    #isHoveringLinkButton()
+    {
+        const rect = this._cablesHoverButtonRect;
+        return rect && !rect.disposed && rect.visible;
     }
 
     // setCursor(c)

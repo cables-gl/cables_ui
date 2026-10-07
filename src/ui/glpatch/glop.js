@@ -1548,14 +1548,14 @@ export default class GlOp extends Events
 
             doUpdateSize = true;
 
-            this.#rectResize.on(GlRect.EVENT_POINTER_HOVER, (_e) =>
+            this.#rectResize.on(GlRect.EVENT_POINTER_HOVER, (rect) =>
             {
-                this.#glPatch.hoveringResize = true;
+                this.#glPatch.hoverResizeRect = rect;
             });
 
-            this.#rectResize.on(GlRect.EVENT_POINTER_UNHOVER, (_e) =>
+            this.#rectResize.on(GlRect.EVENT_POINTER_UNHOVER, (rect) =>
             {
-                this.#glPatch.hoveringResize = false;
+                if (this.#glPatch.hoverResizeRect == rect) this.#glPatch.hoverResizeRect = null;
             });
 
             this.#rectResize.on(GlRect.EVENT_DRAG, (_e) =>

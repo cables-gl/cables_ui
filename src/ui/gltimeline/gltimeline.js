@@ -175,7 +175,6 @@ export class GlTimeline extends Events
     tlTimeScrollContainer;
     #clipboardKeys;
     #spacePressed = false;
-    #cursor;
 
     /** @type {HTMLElement} */
     #elInfoOverlay;
@@ -1858,9 +1857,7 @@ export class GlTimeline extends Events
         let cur = "auto";
         if (this.#spacePressed) cur = "grabbing";
 
-        if (this.#cursor != cur) this.#cgl.setCursor(cur);
-
-        this.#cursor = cur;
+        this.#cgl.setCursor(cur);
     }
 
     updateCursor()
