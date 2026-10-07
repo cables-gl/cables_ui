@@ -368,7 +368,7 @@ export default class TabManageOp
                             // "iconClass": "icon icon-folder",
                             "func": () =>
                             {
-                                window.CABLES.CMD.ELECTRON.openOpDir(this.#opId, this.#currentName);
+                                window.CABLES.CMD.ELECTRON.openOpDir(this.#currentName);
                             }
                         });
                         contextItems.push({
