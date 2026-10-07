@@ -16,13 +16,7 @@ import GlUiCanvas from "../glpatch/gluicanvas.js";
  * @property {boolean} [hoverWhenButton]
  */
 
-/**
- * draw many rectangles quickly using GPU instancing (e.g. patchfield: ops,ports,text)
- *
- * @export
- * @class GlRectInstancer
- * @extends {Events}
- */
+/** Draws many rectangles quickly using GPU instancing (e.g. patchfield ops, ports, text). */
 export default class GlRectInstancer extends Events
 {
     #counter = 0;

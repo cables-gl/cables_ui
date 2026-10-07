@@ -6,12 +6,7 @@ import ModalDialog from "./modaldialog.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 
-/**
- * file upload dialog
- *
- * @export
- * @class FileUploader
- */
+/** File upload dialog. */
 export default class FileUploader
 {
     constructor()

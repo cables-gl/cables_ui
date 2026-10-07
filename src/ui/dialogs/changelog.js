@@ -3,12 +3,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
 
-/**
- * show a toast when cables changelog is new
- *
- * @export
- * @class ChangelogToast
- */
+/** Shows a toast when there is a new cables changelog entry. */
 export default class ChangelogToast
 {
     constructor()

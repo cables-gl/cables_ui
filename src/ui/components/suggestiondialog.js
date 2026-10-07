@@ -22,12 +22,7 @@ import { DomEvents } from "../theme.js";
  * @property {Boolean} [createSpOpPort]
 */
 
-/**
- * show suggestion dialog (rotary mouse select menu)
- *
- * @export
- * @class SuggestionDialog
- */
+/** Suggestion dialog (rotary mouse select menu). */
 export default class SuggestionDialog
 {
     #eleDialog;

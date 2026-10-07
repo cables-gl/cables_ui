@@ -4,12 +4,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
-/**
- * show user editor preferences, stored in {@link UserSettings}
- *
- * @export
- * @class Preferences
- */
+/** Debug tab that lists all stored user settings, see {@link UserSettings}. */
 export default class tab_PreferencesDebug
 {
 

@@ -10,12 +10,7 @@ import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
 import GlLink from "./gllink.js";
 
-/**
- * rendering cables for links
- *
- * @export
- * @class GlCable
- */
+/** Renders the cable of a link. */
 export default class GlCable
 {
     LINETYPE_CURVED = 0;

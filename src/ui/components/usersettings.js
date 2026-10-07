@@ -2,12 +2,7 @@ import { Events, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { platform } from "../platform.js";
 
-/**
- * storing/loading user settings/ sending to the user and in localstorage etc.
- *
- * @class UserSettings
- * @extends {Events}
- */
+/** Loads and stores user settings, in localStorage and on the server. */
 export class UserSettings extends Events
 {
 

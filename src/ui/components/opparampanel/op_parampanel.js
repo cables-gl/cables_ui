@@ -16,12 +16,7 @@ import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdOps } from "../../commands/cmd_op.js";
 import uiconfig from "../../uiconfig.js";
 
-/**
- * op parameter panel
- *
- * @class OpParampanel
- * @extends {Events}
- */
+/** Panel showing the parameters (ports) of the selected op. */
 class OpParampanel extends Events
 {
 

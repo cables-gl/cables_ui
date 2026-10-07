@@ -41,13 +41,7 @@ import { UiOp } from "../core_extend_op.js";
  * @property {Object} highlightLines
  */
 
-/**
- * managing data vizualizations on the patchfield (e.g. viztexture/vizgraph/vizString ops)
- *
- * @export
- * @class VizLayer
- * @extends {Events}
- */
+/** Draws data visualizations on the patchfield (e.g. VizTexture, VizGraph, VizString ops). */
 export default class VizLayer extends Events
 {
 

@@ -37,12 +37,12 @@ import { UiOp } from "../core_extend_op.js";
  * - op: will add an "edit op" button
  * - opname: will show opname
  * - exception: will show stacktrace and exception message. etc.
- *
- * @param {ModalErrorOptions} options option object
- * @class
  */
 export default class ModalError
 {
+    /**
+     * @param {ModalErrorOptions} options
+     */
     constructor(options)
     {
         this._options = options;

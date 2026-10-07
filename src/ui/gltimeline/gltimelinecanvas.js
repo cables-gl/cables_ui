@@ -5,13 +5,7 @@ import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 
-/**
- * canvas for the timeline {@link GlTimeline}
- *
- * @export
- * @class glTimelineCanvas
- * @extends {GlCanvas}
- */
+/** Canvas of the timeline ({@link GlTimeline}). */
 export class glTimelineCanvas extends GlCanvas
 {
 

@@ -11,12 +11,7 @@ import GlOp from "./glop.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { UiOp } from "../core_extend_op.js";
 
-/**
- * rendering ports on {@link GlOp} on  {@link GlPatch}
- *
- * @export
- * @class GlPort
- */
+/** Renders a port of a {@link GlOp} on the {@link GlPatch}. */
 export default class GlPort
 {
     static EVENT_GLPORTORDER_CHANGED = "glportOrderChanged";

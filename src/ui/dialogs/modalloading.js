@@ -1,13 +1,11 @@
 import ModalDialog from "./modaldialog.js";
 
-/**
- * Opens a modal dialog and shows a loading indicator animation
- *
- * @param {String} title
- * @class
- */
+/** Modal dialog showing a loading indicator animation. */
 export default class ModalLoading
 {
+    /**
+     * @param {string} title
+     */
     constructor(title)
     {
         this._tasks = [];

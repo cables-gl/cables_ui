@@ -10,13 +10,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
-/**
- * tab to manage op dependencies like libs or npm-modules
- *
- * @export
- * @class OpDependencyTab
- * @extends {Tab}
- */
+/** Tab to manage op dependencies like libs or npm modules. */
 export default class OpDependencyTab extends Tab
 {
 

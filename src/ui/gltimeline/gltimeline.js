@@ -37,13 +37,7 @@ import { GuiText } from "../text.js";
  * @property {Boolean} [restrictToFrames]
  */
 
-/**
- * gl timeline
- *
- * @export
- * @class GlTimeline
- * @extends {Events}
- */
+/** WebGL timeline. */
 export class GlTimeline extends Events
 {
     static CLIP_VAR_PREFIX = "_clip";

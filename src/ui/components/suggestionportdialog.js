@@ -5,12 +5,7 @@ import SuggestionDialog from "./suggestiondialog.js";
 import { getConverters } from "./converterops.js";
 import { UiOp } from "../core_extend_op.js";
 
-/**
- * show suggestions for linking a port
- *
- * @export
- * @class SuggestPortDialog
- */
+/** Shows suggestions for linking a port. */
 export default class SuggestPortDialog
 {
 

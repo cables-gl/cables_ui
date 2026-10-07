@@ -17,12 +17,7 @@ Commands.init();
  * @property {import("../commands/commands.js").CommandObject[]} [commands]
  */
 
-/**
- * show a searchable command palette (cmd/ctrl+p)
- *
- * @export
- * @class CommandPallete
- */
+/** Searchable command palette (cmd/ctrl+p). */
 export class CommandPalette
 {
     #id = uuid();

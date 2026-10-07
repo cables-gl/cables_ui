@@ -1,11 +1,6 @@
 import { UserSettings, userSettings } from "./usersettings.js";
 
-/**
- * Show intro and explain gui elements
- *
- * @export
- * @class Introduction
- */
+/** Shows the introduction that explains the gui elements. */
 export default class Introduction
 {
     constructor()

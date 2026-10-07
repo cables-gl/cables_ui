@@ -3,12 +3,7 @@ import { UserSettings, userSettings } from "../components/usersettings.js";
 import { GuiText } from "../text.js";
 import ModalDialog from "./modaldialog.js";
 
-/**
- * tips and tricks dialog with animated tips
- *
- * @export
- * @class Tips
- */
+/** Tips and tricks dialog with animated tips. */
 export default class Tips
 {
     constructor()

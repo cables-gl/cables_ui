@@ -12,13 +12,7 @@ import { hideToolTip, showToolTip } from "../elements/tooltips.js";
 import { TlKey } from "./tlkey.js";
 import { GlSplineDrawer } from "../gldraw/glsplinedrawer.js";
 
-/**
- * gltl key rendering
- *
- * @export
- * @class glTlKeys
- * @extends {Events}
- */
+/** Renders the keys of an animation in the timeline. */
 export class TlKeys extends Events
 {
     static ZPOS_BEZIER = -0.6;

@@ -11,12 +11,7 @@ import { gui } from "../../gui.js";
 import { UiOp } from "../../core_extend_op.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
-/**
- * tab panel for searching through the patch
- *
- * @export
- * @class FindTab
- */
+/** Tab for searching through the patch. */
 export default class FindTab
 {
     static TABSESSION_NAME = "find";

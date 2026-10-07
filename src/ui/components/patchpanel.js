@@ -6,13 +6,7 @@ import { platform } from "../platform.js";
 import { CmdUi } from "../commands/cmd_ui.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 
-/**
- * default panel when clicking into the pach background, shows patch summary and tree view
- *
- * @export
- * @class PatchPanel
- * @extends {Events}
- */
+/** Default panel when clicking the patch background, shows the patch summary and tree view. */
 export default class PatchPanel extends Events
 {
     constructor()

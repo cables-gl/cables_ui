@@ -54,13 +54,7 @@ import GlPort from "../glpatch/glport.js";
  * @property {boolean} [unselectAll]
  */
 
-/**
- * manage patch view and helper functions
- *
- * @export
- * @class PatchView
- * @extends {Events}
- */
+/** Manages the patch view and provides helper functions for editing the patch. */
 export default class PatchView extends Events
 {
 

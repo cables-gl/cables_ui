@@ -5,12 +5,7 @@ import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
-/**
- * tab panel to welcome users of the electron editor
- *
- * @export
- * @class WelcomeTab
- */
+/** Welcome tab of the standalone (electron) editor. */
 export default class WelcomeTab
 {
     constructor(tabs)

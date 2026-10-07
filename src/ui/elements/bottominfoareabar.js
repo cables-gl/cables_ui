@@ -3,13 +3,7 @@ import { GuiText } from "../text.js";
 import uiconfig from "../uiconfig.js";
 import { userSettings } from "../components/usersettings.js";
 
-/**
- * info bar at the bottom of the window, showing context sensitive shortcuts etc.
- *
- * @export
- * @class BottomInfoAreaBar
- * @extends {Events}
- */
+/** Info bar at the bottom of the window, shows context sensitive shortcuts etc. */
 export default class BottomInfoAreaBar extends Events
 {
     constructor()

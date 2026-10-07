@@ -6,12 +6,7 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 /** @typedef {import("cables-shared-client").OpCredit} OpCredit */
 
-/**
- * Opens a modal dialog and shows a loading indicator animation
- *
- * @param {String} title
- * @class
- */
+/** Modal dialog to show and edit the credits of an op. */
 export default class ModalOpCredits
 {
 

@@ -6,13 +6,7 @@ import { gui } from "../../gui.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 import { logFilter } from "../../utils/logfilter.js";
 
-/**
- * Tab panel to display logging of cables logger
- *
- * @export
- * @class LogTab
- * @extends {Events}
- */
+/** Tab that shows the output of the cables logger. */
 export default class LogTab extends Events
 {
 

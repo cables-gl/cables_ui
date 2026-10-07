@@ -5,13 +5,7 @@ import { notify, notifyError } from "./elements/notification.js";
 import { gui } from "./gui.js";
 import { GuiText } from "./text.js";
 
-/**
- * platform for standalone / electron version
- *
- * @export
- * @class PlatformElectron
- * @extends {Platform}
- */
+/** Platform implementation for the standalone (electron) version. */
 export default class PlatformElectron extends Platform
 {
 

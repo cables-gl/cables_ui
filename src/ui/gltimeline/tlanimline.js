@@ -19,13 +19,7 @@ import { GuiText } from "../text.js";
  * @property {HTMLElement} [parentEle]
  */
 
-/**
- * gltimeline anim
- *
- * @export
- * @class glTlAnim
- * @extends {Events}
- */
+/** Timeline line showing the animation of a port. */
 export class TlAnimLine extends Events
 {
     static SIZES = [30, 50, 100];

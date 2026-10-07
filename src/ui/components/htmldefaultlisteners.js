@@ -5,11 +5,7 @@ import { fileUploader } from "../dialogs/upload.js";
 
 let pageshowcount = 0;
 
-/**
- * handle global html events like uncaught exceptions, contextmenu, resize etc
- *
- * @export
- */
+/** Sets up global html event listeners like uncaught exceptions, contextmenu, resize etc. */
 export default function setHtmlDefaultListeners()
 {
     const _log = new Logger("errorListener");

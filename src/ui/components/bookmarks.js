@@ -4,12 +4,7 @@ import opNames from "../opnameutils.js";
 import { GuiText } from  "../text.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
-/**
- * Managing bookmarks of a patch. bookmarks will be displayed in the param panel when no op is selected
- *
- * @export
- * @class Bookmarks
- */
+/** Manages the bookmarks of a patch. Bookmarks are shown in the param panel when no op is selected. */
 export default class Bookmarks
 {
     constructor()

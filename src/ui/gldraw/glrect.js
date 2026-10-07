@@ -10,13 +10,7 @@ import GlRectInstancer from "./glrectinstancer.js";
  * @property {Boolean} [draggable]
  * @property {GlRect} [parent]
  */
-/**
- * rectangle data structure for {@link GlRectInstancer}
- *
- * @export
- * @class GlRect
- * @extends {Events}
- */
+/** Rectangle data for {@link GlRectInstancer}. */
 export default class GlRect extends Events
 {
     static EVENT_POINTER_HOVER = "hover";

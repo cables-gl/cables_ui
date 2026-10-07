@@ -9,13 +9,7 @@ import ModalDialog from "../../dialogs/modaldialog.js";
 
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 
-/**
- * tab to manage op dependencies like libs or npm-modules
- *
- * @export
- * @class OpDependencyTab
- * @extends {Tab}
- */
+/** Tab to edit an attachment of an op. */
 export default class OpAttachmentTab extends Tab
 {
 

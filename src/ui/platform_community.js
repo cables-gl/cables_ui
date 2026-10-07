@@ -1,13 +1,7 @@
 import { gui } from "./gui.js";
 import { Platform } from "./platform.js";
 
-/**
- * platform implementation for community (https://cables.gl)
- *
- * @export
- * @class PlatformCommunity
- * @extends {Platform}
- */
+/** Platform implementation for the community version (https://cables.gl). */
 export default class PlatformCommunity extends Platform
 {
 

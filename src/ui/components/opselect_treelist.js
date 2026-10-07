@@ -1,12 +1,7 @@
 import GlPatch from "../glpatch/glpatch.js";
 import { gui } from "../gui.js";
 
-/**
- * tree view for namespaces in op select dialog
- *
- * @export
- * @class OpTreeList
- */
+/** Tree view of namespaces in the op select dialog. */
 export default class OpTreeList
 {
     constructor()

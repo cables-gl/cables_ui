@@ -14,13 +14,7 @@ import { getHandleBarHtml } from "./handlebars.js";
  * @property {boolean} [ignoreInput]
 */
 
-/**
- * manage keybindings for hotkeys/shortcuts
- *
- * @export
- * @class KeyBindingsManager
- * @extends {Events}
- */
+/** Manages keybindings for hotkeys/shortcuts. */
 export default class KeyBindingsManager extends Events
 {
     constructor()

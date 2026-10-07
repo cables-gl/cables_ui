@@ -1,11 +1,6 @@
 import { ele } from "cables-shared-client";
 
-/**
- * gui restrictions,e.g. show an editor to the user, the user can  make changes etc.
- *
- * @export
- * @class GuiRestrictions
- */
+/** Restricts what the user can do in the editor, e.g. view only or follow another user. */
 export default class GuiRestrictions
 {
     constructor()

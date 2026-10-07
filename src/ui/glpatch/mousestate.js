@@ -3,13 +3,7 @@ import { gui } from "../gui.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
 import { DomEvents } from "../theme.js";
 
-/**
- * managing mouse states buttons/position/dragging etc
- *
- * @export
- * @class MouseState
- * @extends {Events}
- */
+/** Mouse state: buttons, position, dragging etc. */
 export default class MouseState extends Events
 {
 

@@ -14,12 +14,7 @@ import GlOp from "./glop.js";
 import { UiOp } from "../core_extend_op.js";
 import GlPort from "./glport.js";
 
-/**
- * drawing gl links {@link GlCable}
- *
- * @export
- * @class GlLink
- */
+/** A link on the patchfield, drawn with {@link GlCable}. */
 export default class GlLink
 {
 

@@ -5,11 +5,7 @@ import { fileUploader } from "../dialogs/upload.js";
 
 const log = new Logger("dragndrop");
 
-/**
- * filemanager - dragging and dropping files handler/listener
- *
- * @export
- */
+/** Handles dragging and dropping files onto the editor to upload them. */
 export default function DragNDrop()
 {
     this.internal = false;

@@ -7,12 +7,7 @@ import GlRectInstancer from "./glrectinstancer.js";
  * @property {Number} [initNum]
  */
 
-/**
- * draw text using msdf font texture, using {@link GlRectInstancer}
- *
- * @export
- * @class GlTextWriter
- */
+/** Writes text with an msdf font texture, using {@link GlRectInstancer}. */
 export default class GlTextWriter
 {
 

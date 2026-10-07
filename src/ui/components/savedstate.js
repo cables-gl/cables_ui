@@ -4,13 +4,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 
-/**
- * saved state of patch and subpatches, set orange icon if unsaved
- *
- * @export
- * @class SavedState
- * @extends {Events}
- */
+/** Saved state of the patch and its subpatches, shows the orange icon when there are unsaved changes. */
 export default class SavedState extends Events
 {
     #log = new Logger("SavedState");

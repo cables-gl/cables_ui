@@ -21,12 +21,7 @@ const MODE_HOVER = 1;
  * @property {String} size
  */
 
-/**
- * texturepreview floating over the patchfield
- *
- * @export
- * @class TexturePreviewer
- */
+/** Texture preview floating over the patchfield. */
 export default class TexturePreviewer
 {
     _showing = false;

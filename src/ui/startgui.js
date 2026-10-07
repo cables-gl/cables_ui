@@ -16,9 +16,8 @@ import { GuiText } from "./text.js";
 import { CmdUi } from "./commands/cmd_ui.js";
 
 /**
- * manage the start of the ui/editor
+ * Starts the ui/editor.
  *
- * @export
  * @param {*} cfg
  */
 export default function startUi(cfg)

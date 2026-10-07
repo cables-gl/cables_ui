@@ -17,12 +17,7 @@ import { GradientEditor } from "../../dialogs/canv_gradienteditor.js";
 import { CurveEditor } from "../../dialogs/canv_curveeditor.js";
 import paramsHelper, { ParamInputListeners } from "./params_helper.js";
 
-/**
- *listen to user interactions with ports in {@link OpParampanel}
- *
- * @class ParamsListener
- * @extends {Events}
- */
+/** Listens to user interactions with ports in {@link OpParampanel}. */
 class ParamsListener extends Events
 {
     _log = new Logger("Paramslistener");

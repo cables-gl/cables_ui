@@ -17,13 +17,7 @@ import { DomEvents } from "../../theme.js";
  * @property {boolean} [noUserSetting] - does not store last opened tab in userSettings
  */
 
-/**
- * a tab panel, that can contain tabs
- *
- * @export
- * @class TabPanel
- * @extends {Events}
- */
+/** Tab panel that contains tabs. */
 export default class TabPanel extends Events
 {
     static EVENT_RESIZE = "resize";

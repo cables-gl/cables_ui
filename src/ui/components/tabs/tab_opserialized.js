@@ -2,13 +2,7 @@ import { ele, Events } from "cables-shared-client";
 import { utils } from "cables";
 import { gui } from "../../gui.js";
 
-/**
- * debug: show current op in serialized form
- *
- * @export
- * @class OpSerialized
- * @extends {Events}
- */
+/** Debug tab that shows the selected op in serialized form. */
 export default class OpSerialized extends Events
 {
     constructor(tabs)

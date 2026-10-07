@@ -2,14 +2,16 @@ import { utils } from "cables";
 import { escapeHTML } from "../utils/helper.js";
 import ModalDialog from "./modaldialog.js";
 
-/**
- * Opens a modal dialog and shows a loading indicator animation
- *
- * @param {String} title
- * @class
- */
+/** Modal dialog showing a snippet of a source file around a given line. */
 export default class ModalSourceCode
 {
+    /**
+     * @param {object} options
+     * @param {string} [options.title]
+     * @param {string} options.url url of the source file
+     * @param {number} options.line line to highlight
+     * @param {string} [options.lang] defaults to javascript
+     */
     constructor(options)
     {
         this._tasks = [];

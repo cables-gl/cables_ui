@@ -9,13 +9,7 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlPatch from "./glpatch.js";
 
-/**
- * snapping of ops/ports etc to an invisible grid
- *
- * @export
- * @class Snap
- * @extends {Events}
- */
+/** Snaps ops, ports etc. to an invisible grid. */
 export default class Snap extends Events
 {
 

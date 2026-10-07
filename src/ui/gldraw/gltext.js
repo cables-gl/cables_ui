@@ -4,12 +4,7 @@ import font from "../glpatch/sdf_font.json";
 import GlRect from "./glrect.js";
 import GlTextWriter from "./gltextwriter.js";
 
-/**
- * draw text using msdf font texture, using {@link GlRectInstancer}
- *
- * @export
- * @class GlText
- */
+/** Draws text with an msdf font texture, using {@link GlRectInstancer}. */
 export default class GlText
 {
     #textWriter;

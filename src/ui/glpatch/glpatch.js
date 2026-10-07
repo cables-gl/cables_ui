@@ -36,13 +36,7 @@ let idleSoon = null;
 const SELECTION_UNDO_DELAY_MS = 300;
 let lastUpdate = 0;
 
-/**
- * rendering the patchfield
- *
- * @export
- * @class GlPatch
- * @extends {Events}
- */
+/** Renders the patchfield. */
 export default class GlPatch extends Events
 {
     static USERPREF_GLPATCH_CABLE_WIDTH = "glcablewidth";

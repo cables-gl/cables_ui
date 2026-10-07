@@ -9,12 +9,7 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import GlPatch from "../../glpatch/glpatch.js";
 
-/**
- * show user editor preferences, stored in {@link UserSettings}
- *
- * @export
- * @class Preferences
- */
+/** Tab for the user's editor preferences, stored in {@link UserSettings}. */
 export default class Preferences
 {
     static TABSESSION_NAME = "userprefs";

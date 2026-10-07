@@ -11,12 +11,7 @@ import { platform } from "../platform.js";
 import { UserSettings, userSettings } from "./usersettings.js";
 import DragNDrop from "./filemanager_dragdrop.js";
 
-/**
- * manage files/assets of the patch
- *
- * @export
- * @class FileManager
- */
+/** Manages the files/assets of the patch. */
 export default class FileManager
 {
 

@@ -18,13 +18,7 @@ import GlLink from "./gllink.js";
 import SuggestionDialog from "../components/suggestiondialog.js";
 import OpDocs from "../components/opdocs.js";
 
-/**
- * rendering of ops on the patchfield {@link GlPatch}
- *
- * @export
- * @class GlOp
- * @extends {Events}
- */
+/** Renders an op on the patchfield ({@link GlPatch}). */
 export default class GlOp extends Events
 {
 

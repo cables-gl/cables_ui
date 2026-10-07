@@ -4,13 +4,7 @@ import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import { glTlRuler } from "./tlruler.js";
 
-/**
- * gltl ruler display
- *
- * @export
- * @class glTlRuler
- * @extends {Events}
- */
+/** Time head (current time marker) of the timeline. */
 export class tlHead extends Events
 {
 

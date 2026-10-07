@@ -2,13 +2,7 @@ import { ele, Events, Logger } from "cables-shared-client";
 import { Port, utils } from "cables";
 import { Texture } from "cables-corelibs";
 
-/**
- * debug: show content of an array in a tab
- *
- * @export
- * @class WatchArrayTab
- * @extends {Events}
- */
+/** Debug tab that shows the content of an array port. */
 export default class WatchArrayTab extends Events
 {
     constructor(tabs, op, port, options)

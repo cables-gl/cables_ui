@@ -9,12 +9,7 @@ import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
 
-/**
- * op documentation loading
- *
- * @export
- * @class OpDocs
- */
+/** Loads and stores the documentation of all ops. */
 export default class OpDocs
 {
     #log = new Logger("OpDocs");

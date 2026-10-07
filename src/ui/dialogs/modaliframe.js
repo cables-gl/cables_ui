@@ -1,14 +1,14 @@
 import { ele } from "cables-shared-client";
 import ModalDialog from "./modaldialog.js";
 
-/**
- * Opens a modal dialog and shows a loading indicator animation
- *
- * @param {String} title
- * @class
- */
+/** Modal dialog showing a page in an iframe. */
 export default class ModalIframe
 {
+    /**
+     * @param {object} options
+     * @param {string} [options.title]
+     * @param {string} options.src url of the iframe
+     */
     constructor(options)
     {
         this._options = {

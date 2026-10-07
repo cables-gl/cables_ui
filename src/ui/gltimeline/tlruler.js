@@ -8,13 +8,7 @@ import { GlTimeline } from "./gltimeline.js";
 import { tlView } from "./tlview.js";
 import { GuiText } from "../text.js";
 
-/**
- * gltl ruler display
- *
- * @export
- * @class glTlRuler
- * @extends {Events}
- */
+/** Time ruler of the timeline. */
 export class glTlRuler extends Events
 {
     static COLOR_MARK_OUTRANGE = [0, 0, 0, 0.5];

@@ -3,13 +3,7 @@ import { utils } from "cables";
 import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
-/**
- * debug: showing uiattribs of currently selected op
- *
- * @export
- * @class OpWatchUiAttribs
- * @extends {Events}
- */
+/** Debug tab that shows the uiAttribs of the selected op. */
 export default class OpWatchUiAttribs extends Events
 {
     static TABSESSION_NAME = "watchuiattr";

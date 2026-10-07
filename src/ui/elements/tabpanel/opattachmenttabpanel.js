@@ -5,13 +5,7 @@ import Tab from "./tab.js";
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
 /** @typedef {import("./tab.js").TabOptions} TabOptions */
 
-/**
- * a tab panel, that can contain tabs
- *
- * @export
- * @class OpDependencyTabPanel
- * @extends {TabPanel}
- */
+/** Tab panel for the attachments of an op. */
 export default class OpAttachmentTabPanel extends TabPanel
 {
 

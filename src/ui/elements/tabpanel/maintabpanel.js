@@ -3,13 +3,7 @@ import { gui } from "../../gui.js";
 import { UserSettings, userSettings } from "../../components/usersettings.js";
 import TabPanel from "./tabpanel.js";
 
-/**
- * the maintabpanel on the left side of the patchfield, can be minimized
- *
- * @export
- * @class MainTabPanel
- * @extends {Events}
- */
+/** Main tab panel left of the patchfield, can be minimized. */
 export default class MainTabPanel extends Events
 {
 

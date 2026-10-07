@@ -50,13 +50,7 @@ import { platform } from "../platform.js";
  * @property {boolean} [elementHidden]
  */
 
-/**
- * search through opdocs, e.g. for opselect
- *
- * @export
- * @class OpSearch
- * @extends {Events}
- */
+/** Searches through the op docs, e.g. for the op select dialog. */
 export default class OpSearch extends Events
 {
     newOpOptions = {};

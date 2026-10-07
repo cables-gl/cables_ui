@@ -1,12 +1,6 @@
 import { Events, ele } from "cables-shared-client";
 
-/**
- * treeview, e.g. for patch outline
- *
- * @export
- * @class TreeView
- * @extends {Events}
- */
+/** Tree view, e.g. for the patch outline. */
 export default class TreeView extends Events
 {
     constructor()

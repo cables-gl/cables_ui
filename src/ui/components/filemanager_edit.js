@@ -5,12 +5,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { createEditor } from "./editor.js";
 
-/**
- * edit text files directly from the filemanager
- *
- * @export
- * @class FileManagerEditor
- */
+/** Editor for text files, opened from the file manager. */
 export default class FileManagerEditor
 {
     constructor()

@@ -6,12 +6,7 @@ import { gui } from "../../gui.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 
-/**
- * cpu profile the running patch, what is most expensive?
- *
- * @export
- * @class Profiler
- */
+/** CPU profiler for the running patch, shows which ops are most expensive. */
 export default class Profiler
 {
     static TABSESSION_NAME = "profiler";

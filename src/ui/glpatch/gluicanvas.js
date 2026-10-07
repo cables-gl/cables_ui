@@ -5,12 +5,7 @@ import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
 import { UiPatch } from "../core_extend_patch.js";
 
-/**
- * canvas for the patchfield {@link GlPatch}
- *
- * @export
- * @class GlUiCanvas
- */
+/** Canvas of the patchfield ({@link GlPatch}). */
 export default class GlUiCanvas extends GlCanvas
 {
 

@@ -1,12 +1,7 @@
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
 
-/**
- * selection area, when dragging the mouse on the patchfield
- *
- * @export
- * @class GlSelectionArea
- */
+/** Selection area, shown when dragging the mouse on the patchfield. */
 export default class GlSelectionArea
 {
 
