@@ -62,6 +62,7 @@ export default class ServerOps
     opIdsChangedOnServer = {};
     loaded = false;
     saveOpsInProgress = {};
+    libLoader = new LibLoader();
 
     /**
      * @param {string} patchId
@@ -667,7 +668,7 @@ export default class ServerOps
 
         let talkerCmd = TalkerAPI.CMD_ADD_OP_DEPENDENCY;
 
-        /** @type {any} */
+        /** @type {OpDependency} */
         let talkerPayload = {
             "opName": opId,
             "src": depSrc,
@@ -1903,7 +1904,7 @@ export default class ServerOps
             const opDeps = this.getOpDeps(op);
             opDeps.forEach((lib) => { depsToLoad[lib.src] = lib; });
         });
-        new LibLoader(Object.values(depsToLoad), finishedCb);
+        this.libLoader.loadLibs(Object.values(depsToLoad), finishedCb);
     }
 
     finished()
