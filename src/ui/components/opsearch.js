@@ -291,6 +291,14 @@ export default class OpSearch extends Events
                     /// ////////////////////
                     // namespace similarity
 
+                    let linkPortIn = null;
+                    let linkPortOut = null;
+                    if (this.newOpOptions.linkNewLink)
+                    {
+                        linkPortIn = this.newOpOptions.linkNewLink.portIn;
+                        linkPortOut = this.newOpOptions.linkNewLink.portOut;
+                    }
+
                     let nspoints = 0;
                     if (this.newOpOptions.linkNewOpToPort)
                     {
@@ -300,23 +308,19 @@ export default class OpSearch extends Events
                             nspoints++;
                         }
                     }
-                    if (this.newOpOptions.linkNewLink)
-                    {
-                        if (this.newOpOptions.linkNewLink.portIn)
-                            for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
-                            {
-                                if (!this.newOpOptions.linkNewLink.portIn.op.objName.startsWith(list[i].namespaces[nsi])) break;
-                                nspoints++;
-                            }
+                    if (linkPortIn)
+                        for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
+                        {
+                            if (!linkPortIn.op.objName.startsWith(list[i].namespaces[nsi])) break;
+                            nspoints++;
+                        }
 
-                        if (this.newOpOptions.linkNewLink.portIn)
-                            for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
-                            {
-                                if (!this.newOpOptions.linkNewLink.portOut.op.objName.startsWith(list[i].namespaces[nsi])) break;
-                                nspoints++;
-                            }
-
-                    }
+                    if (linkPortOut)
+                        for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
+                        {
+                            if (!linkPortOut.op.objName.startsWith(list[i].namespaces[nsi])) break;
+                            nspoints++;
+                        }
 
                     if (nspoints > 0)
                     {
@@ -329,14 +333,12 @@ export default class OpSearch extends Events
                     {
 
                         // when inserting into link - find fitting ports
-                        if (this.newOpOptions.linkNewLink)
+                        if (linkPortIn && linkPortOut)
                         {
                             let foundPortTypeIn = false;
                             for (let j = 0; j < docs.layout.portsIn.length; j++)
                             {
-                                if (docs.layout.portsIn[j] &&
-                                    this.newOpOptions.linkNewLink.portIn &&
-                                    docs.layout.portsIn[j].type == this.newOpOptions.linkNewLink.portIn.type)
+                                if (docs.layout.portsIn[j] && docs.layout.portsIn[j].type == linkPortIn.type)
                                 {
                                     foundPortTypeIn = true;
                                     break;
@@ -346,7 +348,7 @@ export default class OpSearch extends Events
                             let foundPortTypeOut = false;
                             for (let j = 0; j < docs.layout.portsOut.length; j++)
                             {
-                                if (docs.layout.portsOut[j].type == this.newOpOptions.linkNewLink.portOut.type)
+                                if (docs.layout.portsOut[j] && docs.layout.portsOut[j].type == linkPortOut.type)
                                 {
                                     foundPortTypeOut = true;
                                     break;
@@ -354,8 +356,9 @@ export default class OpSearch extends Events
                             }
 
                             if (
-                                docs.layout.portsIn[0].type == this.newOpOptions.linkNewLink.portOut.type &&
-                                docs.layout.portsOut[0].type == this.newOpOptions.linkNewLink.portIn.type
+                                docs.layout.portsIn[0] && docs.layout.portsOut[0] &&
+                                docs.layout.portsIn[0].type == linkPortOut.type &&
+                                docs.layout.portsOut[0].type == linkPortIn.type
                             )
                             {
                                 points += firstportfitspoints;
@@ -375,7 +378,7 @@ export default class OpSearch extends Events
                             let foundPortType = false;
                             if (this.newOpOptions.linkNewOpToPort.direction === Port.DIR_OUT)
                             {
-                                if (docs.layout.portsIn[0].type == this.newOpOptions.linkNewOpToPort.type)
+                                if (docs.layout.portsIn[0] && docs.layout.portsIn[0].type == this.newOpOptions.linkNewOpToPort.type)
                                 {
                                     points += firstportfitspoints;
                                     scoreDebug += firstportfitsText;
@@ -383,7 +386,7 @@ export default class OpSearch extends Events
 
                                 for (let j = 0; j < docs.layout.portsIn.length; j++)
                                 {
-                                    if (docs.layout.portsIn[j].type == this.newOpOptions.linkNewOpToPort.type)
+                                    if (docs.layout.portsIn[j] && docs.layout.portsIn[j].type == this.newOpOptions.linkNewOpToPort.type)
                                     {
                                         foundPortType = true;
                                         break;
@@ -392,7 +395,7 @@ export default class OpSearch extends Events
                             }
                             else
                             {
-                                if (docs.layout.portsOut[0].type == this.newOpOptions.linkNewOpToPort.type)
+                                if (docs.layout.portsOut[0] && docs.layout.portsOut[0].type == this.newOpOptions.linkNewOpToPort.type)
                                 {
                                     points += firstportfitspoints;
                                     scoreDebug += firstportfitsText;
@@ -400,7 +403,7 @@ export default class OpSearch extends Events
 
                                 for (let j = 0; j < docs.layout.portsOut.length; j++)
                                 {
-                                    if (docs.layout.portsOut[j].type == this.newOpOptions.linkNewOpToPort.type)
+                                    if (docs.layout.portsOut[j] && docs.layout.portsOut[j].type == this.newOpOptions.linkNewOpToPort.type)
                                     {
                                         foundPortType = true;
                                         break;
