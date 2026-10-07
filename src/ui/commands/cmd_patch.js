@@ -1438,6 +1438,10 @@ class CmdPatch
         });
     }
 
+    /**
+     * @param {import("cables/src/core/core_op.js").OpId} opId
+     * @param {string} opName
+     */
     static editOpSummary(opId, opName, oldSummary = "")
     {
         if (!platform.frontendOptions.editOpSummary) return;

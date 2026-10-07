@@ -1039,7 +1039,7 @@ export default class PatchSaveServer extends Events
      */
     sendErrorReport(report, manualSend = true)
     {
-        const doneCallback = (res) =>
+        const doneCallback = (err, res) =>
         {
             if (manualSend)
             {
@@ -1052,7 +1052,7 @@ export default class PatchSaveServer extends Events
             }
 
             if (res && res.data && res.data.url)
-                this._log.log("sent error report: ", res.data.url);
+                this._log.warn("sent error report: ", res.data.url);
 
             CABLES.lastError = null;
         };
@@ -1071,6 +1071,7 @@ export default class PatchSaveServer extends Events
         {
             this._lastErrorReport = performance.now();
             report.browserInfo = platformLib;
+            report.buildInfo = CABLESUILOADER.buildInfo;
             try
             {
                 const stringReport = JSON.stringify(report);
