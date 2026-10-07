@@ -1,6 +1,6 @@
 import ele from "cables-shared-client/src/ele.js";
 import ModalDialog from "./modaldialog.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
 /** @typedef {import("cables-shared-client").OpDoc} OpDoc */
@@ -76,7 +76,7 @@ export default class ModalOpCredits
                     {
                         if (!err)
                         {
-                            gui.emitEvent("refreshManageOp", this.#opDoc.name);
+                            gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, this.#opDoc.name);
                             if (done) done();
                         }
                         else

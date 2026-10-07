@@ -6,7 +6,7 @@ import { GuiText } from "../text.js";
 import EditorBase from "./tabs/tab_editor.js";
 import EditorTabCodemirror from "./tabs/tab_editor_codemirror.js";
 import EditorTabTextArea from "./tabs/tab_editor_textarea.js";
-import ManageOp from "./tabs/tab_manage_op.js";
+import TabManageOp from "./tabs/tab_manage_op.js";
 import { UserSettings, userSettings } from "./usersettings.js";
 
 /**
@@ -124,7 +124,7 @@ export function createOpDocButton(tab, editor)
             this._log.warn("could not get opdoc:" + opname);
         }
 
-        tab.addButton("<span class=\"icon icon-op\"></span> Manage Op", () => { new ManageOp(gui.mainTabs, opId); });
+        tab.addButton("<span class=\"icon icon-op\"></span> Manage Op", () => { new TabManageOp(gui.mainTabs, opId); });
 
         if (opdoc && opdoc.attachmentFiles && opdoc.attachmentFiles.length)
         {
@@ -145,7 +145,7 @@ export function createOpDocButton(tab, editor)
                 for (let i = 0; i < opdoc.attachmentFiles.length; i++)
                 {
                     const fn = opdoc.attachmentFiles[i];
-                    let displayInfo = ManageOp.getAttachmentDisplayInfo(fn);
+                    let displayInfo = TabManageOp.getAttachmentDisplayInfo(fn);
                     items.push({
                         "iconClass": "fileTypeColor_" + displayInfo.fileType,
                         "iconText": displayInfo.fileType,

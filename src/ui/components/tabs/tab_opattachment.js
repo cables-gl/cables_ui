@@ -1,6 +1,6 @@
 import { CablesConstants, ele, TalkerAPI } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { fileUploader } from "../../dialogs/upload.js";
 import { platform } from "../../platform.js";
@@ -190,7 +190,7 @@ export default class OpAttachmentTab extends Tab
                 {
                     gui.serverOps.loadOpDependencies(opName, (op) =>
                     {
-                        gui.emitEvent("refreshManageOp", opName);
+                        gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                         if (cb) cb();
                     }, true);
                 }
@@ -221,7 +221,7 @@ export default class OpAttachmentTab extends Tab
                     }
 
                     gui.serverOps.editAttachment(opName, "att_" + filename);
-                    gui.emitEvent("refreshManageOp", opName);
+                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                     if (cb) cb();
                 }
                 else

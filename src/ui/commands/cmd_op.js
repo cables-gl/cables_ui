@@ -1,5 +1,5 @@
 import { Op } from "cables";
-import ManageOp from "../components/tabs/tab_manage_op.js";
+import TabManageOp from "../components/tabs/tab_manage_op.js";
 import { notify } from "../elements/notification.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -158,7 +158,7 @@ class CmdOps
         const oldSubPatchId = gui.patchView.getCurrentSubPatch();
         const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
-        new ManageOp(gui.mainTabs, subOuter.opId);
+        new TabManageOp(gui.mainTabs, subOuter.opId);
     }
 
     /**
@@ -171,7 +171,7 @@ class CmdOps
             const ops = gui.patchView.getSelectedOps();
             if (ops.length > 0) opid = ops[0].opId;
         }
-        new ManageOp(gui.mainTabs, opid);
+        new TabManageOp(gui.mainTabs, opid);
     }
 
     /**

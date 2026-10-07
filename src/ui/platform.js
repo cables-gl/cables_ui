@@ -5,7 +5,7 @@ import { notify, notifyError } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
-import { gui } from "./gui.js";
+import Gui, { gui } from "./gui.js";
 import { UserSettings, userSettings } from "./components/usersettings.js";
 import { GuiText } from "./text.js";
 
@@ -434,7 +434,7 @@ export class Platform extends Events
                         if (libIndex !== -1)
                         {
                             gui.opDocs.libs.splice(libIndex, 1);
-                            gui.emitEvent("refreshManageOp");
+                            gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP);
                         }
                     }
                 }
@@ -506,7 +506,7 @@ export class Platform extends Events
             )
             {
                 gui.opDocs.libs.push(libUrl);
-                gui.emitEvent("refreshManageOp");
+                gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP);
             }
         }
     }

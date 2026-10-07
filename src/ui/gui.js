@@ -88,6 +88,7 @@ export default class Gui extends Events
 
     static EVENT_OP_SELECTIONCHANGED = "opSelectChange";
     static EVENT_THEMECHANGED = "themeChanged";
+    static EVENT_REFRESH_MANAGE_OP = "refreshManageOp";
 
     static RESTRICT_MODE_LOADING = 0;
     static RESTRICT_MODE_BLUEPRINT = 5;

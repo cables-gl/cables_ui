@@ -1461,7 +1461,7 @@ class CmdPatch
                         gui.serverOps.loadOpDependencies(opName, () =>
                         {
                             gui.savingTitleAnimEnd();
-                            gui.emitEvent("refreshManageOp", opName);
+                            gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                         }, true);
                     }
                 });

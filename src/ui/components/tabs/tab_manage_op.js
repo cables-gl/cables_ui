@@ -8,7 +8,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import namespace from "../../namespaceutils.js";
@@ -20,15 +20,12 @@ import ModalDialog from "../../dialogs/modaldialog.js";
 
 /**
  * tab panel for managing ops: attachments,libs etc.
- *
- * @export
- * @class ManageOp
  */
-export default class ManageOp
+export default class TabManageOp
 {
     static TABSESSION_NAME = "manageOp";
 
-    #log = new Logger("ManageOp");
+    #log = new Logger("TabManageOp");
     #initialized = false;
 
     /** @type {EventListener[]} */
@@ -56,7 +53,7 @@ export default class ManageOp
 
         if (!opId)
         {
-            editorSession.remove(ManageOp.TABSESSION_NAME, opId);
+            editorSession.remove(TabManageOp.TABSESSION_NAME, opId);
             return;
         }
 
@@ -89,7 +86,7 @@ export default class ManageOp
 
         this.#tab.on("close", () =>
         {
-            editorSession.remove(ManageOp.TABSESSION_NAME, this.#currentId);
+            editorSession.remove(TabManageOp.TABSESSION_NAME, this.#currentId);
 
             for (let i in this.#refreshListener)
                 gui.off(this.#refreshListener[i]);
@@ -102,7 +99,7 @@ export default class ManageOp
         gui.maintabPanel.show(true);
 
         this.#refreshListener.push(
-            gui.on("refreshManageOp", (name) =>
+            gui.on(Gui.EVENT_REFRESH_MANAGE_OP, (name) =>
             {
                 if (name === undefined || this.#currentName == name) this.show();
             }));
@@ -166,8 +163,8 @@ export default class ManageOp
 
     show()
     {
-        editorSession.remove(ManageOp.TABSESSION_NAME, this.#currentId);
-        editorSession.rememberOpenEditor(ManageOp.TABSESSION_NAME, this.#currentId, {
+        editorSession.remove(TabManageOp.TABSESSION_NAME, this.#currentId);
+        editorSession.rememberOpenEditor(TabManageOp.TABSESSION_NAME, this.#currentId, {
             "opname": this.#currentName,
             "opid": this.#currentId
         }, true);
@@ -210,7 +207,7 @@ export default class ManageOp
                     for (let i = 0; i < res.attachmentFiles.length; i++)
                     {
                         const filename = res.attachmentFiles[i];
-                        let displayInfo = ManageOp.getAttachmentDisplayInfo(filename);
+                        let displayInfo = TabManageOp.getAttachmentDisplayInfo(filename);
                         opFiles.push({
                             "src": filename,
                             "type": "attachment",
@@ -518,7 +515,7 @@ export default class ManageOp
                                     {
                                         gui.serverOps.removeOpDependency(opDoc.id, depSrc, depType, () =>
                                         {
-                                            gui.emitEvent("refreshManageOp", opName);
+                                            gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                                         }, true);
                                     });
                                 }
@@ -547,7 +544,7 @@ export default class ManageOp
                             default:
                                 gui.serverOps.removeOpDependency(opDoc.id, depSrc, depType, () =>
                                 {
-                                    gui.emitEvent("refreshManageOp", opName);
+                                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                                 });
                                 break;
                             }
@@ -585,7 +582,7 @@ export default class ManageOp
                                 {
                                     if (!err)
                                     {
-                                        gui.emitEvent("refreshManageOp", opName);
+                                        gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                                     }
                                     else
                                     {
@@ -750,8 +747,8 @@ export default class ManageOp
 
 window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
 {
-    editorSession.addListener(ManageOp.TABSESSION_NAME, (id, data) =>
+    editorSession.addListener(TabManageOp.TABSESSION_NAME, (id, data) =>
     {
-        new ManageOp(gui.mainTabs, id);
+        new TabManageOp(gui.mainTabs, id);
     });
 });

@@ -1,6 +1,6 @@
 import { CablesConstants, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { fileUploader } from "../../dialogs/upload.js";
 import namespace from "../../namespaceutils.js";
@@ -163,7 +163,7 @@ export default class OpDependencyTab extends Tab
                         {
                             if (!addErr)
                             {
-                                gui.emitEvent("refreshManageOp", opName);
+                                gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                                 if (done) done();
                             }
                             else
@@ -190,7 +190,7 @@ export default class OpDependencyTab extends Tab
             {
                 if (!addErr)
                 {
-                    gui.emitEvent("refreshManageOp", opName);
+                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                     if (done) done();
                 }
                 else
@@ -205,7 +205,7 @@ export default class OpDependencyTab extends Tab
             {
                 if (!addErr)
                 {
-                    gui.emitEvent("refreshManageOp", opName);
+                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                     if (done) done();
                 }
                 else

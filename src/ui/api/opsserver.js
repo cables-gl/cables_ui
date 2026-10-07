@@ -10,7 +10,7 @@ import subPatchOpUtil from "../subpatchop_util.js";
 import ModalIframe from "../dialogs/modaliframe.js";
 import LibLoader from "./libloader.js";
 import namespace from "../namespaceutils.js";
-import { gui } from "../gui.js";
+import Gui, { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { editorSession } from "../elements/tabpanel/editor_session.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
@@ -349,7 +349,7 @@ export default class ServerOps
             else
             {
                 if (l) l.layout = opObj;
-                gui.emitEvent("refreshManageOp", op.objName);
+                gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, op.objName);
             }
         });
         return true; // has changed
@@ -537,7 +537,7 @@ export default class ServerOps
                 gui.serverOps.loadOpDependencies(opName, () =>
                 {
                     this.#log.log("lib added!", opName, libName);
-                    gui.emitEvent("refreshManageOp", opName);
+                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                     if (next) next();
                 }, true);
             }
@@ -571,7 +571,7 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this.#log.log("lib removed!", opName, libName);
-                        gui.emitEvent("refreshManageOp", opName);
+                        gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                         if (next) next();
                     }, true);
                 }
@@ -618,7 +618,7 @@ export default class ServerOps
                 {
                     this.#log.log("corelib added!", opName, libName);
 
-                    gui.emitEvent("refreshManageOp", opName);
+                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                     if (next) next();
                 }, true);
             }
@@ -652,7 +652,7 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this.#log.log("corelib removed!", opName, libName);
-                        gui.emitEvent("refreshManageOp", opName);
+                        gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
 
                         if (next) next();
                     }, true);
@@ -746,7 +746,7 @@ export default class ServerOps
                 if (err)
                 {
                     this.#log.warn("unable to remove op-dependency: " + err.msg);
-                    gui.emitEvent("refreshManageOp", opId);
+                    gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opId);
                 }
                 else
                 {
@@ -809,7 +809,7 @@ export default class ServerOps
                     }
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
-                        gui.emitEvent("refreshManageOp", opName);
+                        gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                     }, true);
 
                 }
