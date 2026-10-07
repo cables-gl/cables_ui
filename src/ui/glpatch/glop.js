@@ -1923,6 +1923,7 @@ export default class GlOp extends Events
      */
     setPassiveDragOffset(x, y)
     {
+        if (!this.#op) return;
         if (!this._passiveDragStartX) this.startPassiveDrag();
 
         if (gui.patchView.getSelectedOps().length == 1 && this.opUiAttribs.moveableOnlyY)x = 0;

@@ -965,6 +965,7 @@ export default class GlPatch extends Events
             return;
         }
 
+        if (this._selectedGlOps[opid]) this.unSelectOpId(opid);
         delete this._glOpz[opid];
         glop.dispose();
     }
