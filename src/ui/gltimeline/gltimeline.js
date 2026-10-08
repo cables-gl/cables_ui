@@ -43,6 +43,7 @@ export class GlTimeline extends Events
     static CLIP_VAR_PREFIX = "_clip";
     static FIT_PADDING_PIXEL = 20;
     static DRAGAREA_SAME_TIME_WIDTH_PIXEL = 20;
+    static FRAME_EPSILON = 0.0001;
 
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
@@ -188,8 +189,6 @@ export class GlTimeline extends Events
     {
         super();
 
-        GlTimeline.COLOR_BEZ_HANDLE = gui.theme.colors_types.num;
-
         this.#cgl = cgl;
         this.view = new tlView(this);
 
@@ -232,7 +231,7 @@ export class GlTimeline extends Events
         this.cursorNewKeyVis.setPosition(0, 0, -1);
         this.cursorNewKeyVis.setColor(0, 0, 0);
 
-        this.#cursorTextBgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": false, "name": "cursorTextBg" });
+        this.#cursorTextBgRect = this.#rectsNoScroll.createRect({ "draggable": false, "interactive": false, "name": "cursorTextBg" });
         this.#cursorTextBgRect.setSize(40, 20);
         this.#cursorTextBgRect.setParent(this.cursorVertLineRect);
         this.#cursorTextBgRect.setColor(0.2, 0.2, 0.2, 1);
@@ -753,8 +752,16 @@ export class GlTimeline extends Events
      */
     snapTime(time)
     {
-        if (this.cfg.restrictToFrames) time = Math.floor(time * this.fps) / this.fps;
+        if (this.cfg.restrictToFrames) time = this.timeToFrame(time) / this.fps;
         return time;
+    }
+
+    /**
+     * @param {number} time
+     */
+    timeToFrame(time)
+    {
+        return Math.floor(time * this.fps + GlTimeline.FRAME_EPSILON);
     }
 
     /**
@@ -1882,11 +1889,11 @@ export class GlTimeline extends Events
         parts[1] = parts[1] || "000";
         while (parts[1].length < 3) parts[1] += "0";
         const secondss = parts[0] + "." + parts[1];
-        const frame = String(Math.floor(this.cursorTime * this.fps));
+        const frame = String(this.timeToFrame(this.cursorTime));
         const padd = 14;
         const w = this.#cursorText.width + padd;
 
-        this.#cursorText.setPosition(-w / 2 + padd / 2, -3, -0.1);
+        this.#cursorText.setPosition(-w / 2 + padd / 2, -5, -0.1);
         this.#cursorTextBgRect.setPosition(-w / 2, 0, -0.01);
         this.#cursorTextBgRect.setSize(w, 20);
 

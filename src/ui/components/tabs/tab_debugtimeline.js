@@ -16,12 +16,11 @@ export default class GlTimelineDebugTab
 
     show()
     {
-        this._count++;
-
-        let html = "<div class=\"tabContentScrollContainer\">";
-
         const tl = gui.glTimeline;
+        if (!tl) return;
 
+        this._count++;
+        let html = "<div class=\"tabContentScrollContainer\">";
         html = "<table>";
         const keys = tl.getSelectedKeys();
         for (let i = 0; i < keys.length; i++)
