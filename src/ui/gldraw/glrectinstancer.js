@@ -400,7 +400,7 @@ export default class GlRectInstancer extends Events
     setPosition(idx, x, y, z)
     {
         const buffIdx = idx * 3;
-        if (this._float32Diff(this._attrBuffPos[buffIdx + 0], x) || this._float32Diff(this._attrBuffPos[buffIdx + 1], y) || this._float32Diff(this._attrBuffPos[buffIdx + 2], z))
+        if (this._float32Diff(this._attrBuffPos[buffIdx + 0], x) || this._float32Diff(this._attrBuffPos[buffIdx + 1], y) || this._attrBuffPos[buffIdx + 2] != Math.fround(z / GlUiCanvas.ZPOSDIV))
         {
             // this._needsRebuild = true;
             // this._needsRebuildReason = "pos change";

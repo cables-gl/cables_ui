@@ -351,11 +351,7 @@ export default class GlOp extends Events
 
         this.#glPatch.opShakeDetector.move(offX);
 
-        if (gui.patchView.getSelectedOps().length == 1)
-        {
-            this.#glRectBg.setOpacity(0.8, false);
-            this.updatePosition();
-        }
+        if (gui.patchView.getSelectedOps().length == 1) this.#glRectBg.setOpacity(0.8, false);
     }
 
     getPosZ()
@@ -580,6 +576,14 @@ export default class GlOp extends Events
     {
         const perf = gui.uiProfiler.start("[glop] setuiattribs");
 
+        if (newAttribs && this.#isOnlyTranslate(newAttribs))
+        {
+            this.opUiAttribs.translate = { "x": attr.translate.x, "y": attr.translate.y };
+            this.updatePosition();
+            perf.finish();
+            return;
+        }
+
         if (newAttribs && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && newAttribs.hasOwnProperty("selected") && newAttribs.selected != this.opUiAttribs.selected) this.#glPatch.selectionChanged();
@@ -649,6 +653,17 @@ export default class GlOp extends Events
 
         perf.finish();
         this._needsUpdate = true;
+    }
+
+    /**
+     * @param {object} newAttribs
+     */
+    #isOnlyTranslate(newAttribs)
+    {
+        if (!newAttribs.translate || !this.opUiAttribs) return false;
+        for (const i in newAttribs)
+            if (i != "translate") return false;
+        return true;
     }
 
     get uiAttribs()
@@ -1881,6 +1896,8 @@ export default class GlOp extends Events
         if (this._passiveDragStartX !== null && this._passiveDragStartY !== null)
             if (this._passiveDragStartX != this.x || this._passiveDragStartY != this.y)
             {
+                this.#commitDragPosition();
+
                 (function (scope, newX, newY, oldX, oldY)
                 {
                     undo.add({
@@ -1907,6 +1924,14 @@ export default class GlOp extends Events
         this._passiveDragStartY = null;
     }
 
+    #commitDragPosition()
+    {
+        const x = this.x;
+        const y = this.y;
+        this.#op.uiAttribs.translate = { "x": this._passiveDragStartX, "y": this._passiveDragStartY };
+        this.#op.setUiAttrib({ "translate": { "x": x, "y": y } });
+    }
+
     startPassiveDrag()
     {
         this._passiveDragStartX = this.x;
@@ -1931,9 +1956,13 @@ export default class GlOp extends Events
 
         if (this.op.tempData.scopeAreaStartOp) x = this.op.tempData.scopeAreaStartOp.uiAttribs.translate.x;
 
-        this.#glPatch.patchAPI.setOpUiAttribs(this.#id, "translate", { "x": x, "y": y });
+        if (x != this.x || y != this.y)
+        {
+            this.#op.uiAttribs.translate = { "x": x, "y": y };
+            this.opUiAttribs.translate = { "x": x, "y": y };
+            this.updatePosition();
+        }
         this.emitEvent(GlOp.EVENT_DRAG);
-        this.updatePosition();
 
         if (!this.#op) return;
         if (this.op.tempData.scopeAreaEndOp)

@@ -15,6 +15,14 @@ export default class GlText
 
     /** @type {GlRect[]} */
     #rects = [];
+    #rectCount = 0;
+
+    #builtString = null;
+    #builtScale = 0;
+    #builtAlign = 0;
+    #originX = 0;
+    #originY = 0;
+    #originZ = 0;
     _width = 0;
     _height = 0;
     _color = [1, 1, 1, 1];
@@ -39,7 +47,7 @@ export default class GlText
         this._string = string || "";
 
         this._font = font;
-        if (this._font && this._font.chars)
+        if (this._font && this._font.chars && !this._font.characters)
         {
             this._font.characters = {};
 
@@ -176,6 +184,45 @@ export default class GlText
     rebuild()
     {
         if (this.disposed) return;
+
+        let originX = this.#x;
+        let originY = this.#y;
+        let originZ = this.#z;
+        if (this._parentRect)
+        {
+            originX += this._parentRect.absX;
+            originY += this._parentRect.absY;
+            originZ += this._parentRect.absZ;
+        }
+
+        if (this._string === this.#builtString && this._scale === this.#builtScale && this._align === this.#builtAlign)
+        {
+            this.#translate(originX - this.#originX, originY - this.#originY, originZ - this.#originZ);
+        }
+        else this.#layout();
+
+        this.#originX = originX;
+        this.#originY = originY;
+        this.#originZ = originZ;
+    }
+
+    /**
+     * @param {number} dx
+     * @param {number} dy
+     * @param {number} dz
+     */
+    #translate(dx, dy, dz)
+    {
+        if (dx == 0 && dy == 0 && dz == 0) return;
+        for (let i = 1; i <= this.#rectCount; i++)
+        {
+            const rect = this.#rects[i];
+            rect.setPosition(rect.x + dx, rect.y + dy, rect.z + dz);
+        }
+    }
+
+    #layout()
+    {
         let w = 0;
         for (let i = 0; i < this._string.length; i++)
         {
@@ -241,6 +288,10 @@ export default class GlText
         }
 
         this._height = countLines * lineHeight;
+        this.#rectCount = rectCount;
+        this.#builtString = this._string;
+        this.#builtScale = this._scale;
+        this.#builtAlign = this._align;
     }
 
     dispose()

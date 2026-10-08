@@ -174,40 +174,6 @@ export class GlSplineDrawer extends Events
     {
         if (this.#splines.length == 0) return;
 
-        // if (this.#rebuildLater)
-        // {
-        //     clearTimeout(this._laterTimeout);
-        //     this._laterTimeout = setTimeout(
-        //         () =>
-        //         {
-        //             this.rebuild();
-        //             this.#rebuildLater = false;
-        //         }, 30);
-        // }
-
-        if (this.#mesh)
-        {
-            this.#cgl.pushShader(this.#shader);
-
-            this.#uniWidth.set(this.width);
-            this.#uniResX.set(resX);
-            this.#uniResY.set(resY);
-            this.#uniscrollX.set(scrollX);
-            this.#uniscrollY.set(scrollY);
-            this.#uniZoom.set(1.0 / zoom);
-            this.#uniTime.set(performance.now() / 1000);
-
-            const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];
-            if (zoom > 1400)fadeOutOpts[3] = utils.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
-
-            this._uniFadeoutOptions.set(fadeOutOpts);
-
-            if (this.#points.length > 0) this.#mesh.render(this.#shader);
-            this.#cgl.popShader();
-        }
-
-        if (this.#splines.length == 0) return;
-
         if (this.#rebuildLater)
         {
             // clearTimeout(this._laterTimeout);

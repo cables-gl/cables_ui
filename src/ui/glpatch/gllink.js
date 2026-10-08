@@ -613,7 +613,7 @@ export default class GlLink
             if (this.#glOpIn)
             {
                 this.#glOpIn.addLink(this);
-                this.#glOpIn.on(GlOp.EVENT_MOVE, () => { this.update(); });
+                this.#glOpIn.on(GlOp.EVENT_MOVE, () => { this.#glPatch.queueLinkPosition(this); });
             }
         }
 
@@ -623,7 +623,7 @@ export default class GlLink
             if (this.#glOpOut)
             {
                 this.#glOpOut.addLink(this);
-                this.#glOpOut.on(GlOp.EVENT_MOVE, () => { this.update(); });
+                this.#glOpOut.on(GlOp.EVENT_MOVE, () => { this.#glPatch.queueLinkPosition(this); });
             }
         }
 

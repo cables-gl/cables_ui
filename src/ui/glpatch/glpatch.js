@@ -63,6 +63,9 @@ export default class GlPatch extends Events
 
     /** @type {string[]} */
     #selectionUndoIds = [];
+
+    /** @type {Set<GlLink>} */
+    #queuedLinks = new Set();
     #selectionUndoTimeout = null;
     #selectionUndoIndex = -1;
     #selectionUndoLength = 0;
@@ -536,6 +539,14 @@ export default class GlPatch extends Events
         console.warn("_lastmouse should not be used");
         logStack();
         return this.#lastMouseY;
+    }
+
+    /**
+     * @param {GlLink} link
+     */
+    queueLinkPosition(link)
+    {
+        this.#queuedLinks.add(link);
     }
 
     get textWriter()
@@ -1243,6 +1254,9 @@ export default class GlPatch extends Events
         {
             this._glOpz[i].updateIfNeeded();
         }
+
+        for (const link of this.#queuedLinks) link._updatePosition();
+        this.#queuedLinks.clear();
 
         this.frameCount++;
         this.isAnimated = false;
