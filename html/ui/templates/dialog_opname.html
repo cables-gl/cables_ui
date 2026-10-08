@@ -11,13 +11,13 @@
     {{#if opDirs}}
         <br/>
         <div class="opDirSelect">
+            <label for="opTargetDir">Directory:</label><br/>
             <select id="opTargetDir" name="opTargetDir" style="border-radius: 2px;">
                 {{#each opDirs}}
                     <option value="{{dir}}" {{#if selected}}selected="true"{{/if}}>{{dir}}</option>
                 {{/each}}
             </select>
-            &nbsp;<a id="addOpTargetDir" class="button-small button-icon tt info clickable" data-info="add op dir" data-tt="add op dir"><span class="icon icon-file-plus"></span></a>
-            &nbsp;<a id="openOpTargetDir" class="button-small button-icon tt info clickable" data-info="open dir" data-tt="open dir"><span class="icon icon-folder"></span></a>
+            <a tabindex="0" id="opNameDialogManageOpDirs" class="cblbutton">Manage Op Directories</a>
         </div>
     {{/if}}
     <br/>
