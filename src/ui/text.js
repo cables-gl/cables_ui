@@ -272,6 +272,8 @@ export const GuiText =
         "subtitle_formatcode": "Format code after saving",
 
         "subtitle_notlocalizeNumberformat": "Localize output port number format",
+        "title_sendErrorReports": "Send error reports",
+        "subtitle_sendErrorReports": "Automatically send error reports to the cables team to help fix bugs",
 
         "title_openlastproject": "Open the last saved patch on start",
         "subtitle_openlastproject": "",

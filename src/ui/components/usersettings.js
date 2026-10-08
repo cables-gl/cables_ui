@@ -11,6 +11,7 @@ export class UserSettings extends Events
     static PREF_OPSELECT_AUTOLINKOPS = "autoLinkOps";
     static PREF_SNAPTOGRID = "snapToGrid2";
     static PREF_SNAPTOGRID_LEGACY = "snapToGrid";
+    static PREF_SEND_ERROR_REPORTS = "sendErrorReports";
 
     static PREF_BGPREVIEW = "bgpreview";
     static PREF_GLFLOWMODE = "glflowmode";
@@ -119,6 +120,8 @@ export class UserSettings extends Events
         if (this.get("overlaysShow") === null) this.set("overlaysShow", false);
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
         if (this.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS) === null) this.set(UserSettings.PREF_OPSELECT_AUTOLINKOPS, true);
+        if (this.get(UserSettings.PREF_SEND_ERROR_REPORTS) === null) this.set(UserSettings.PREF_SEND_ERROR_REPORTS, true);
+
     }
 
     /**

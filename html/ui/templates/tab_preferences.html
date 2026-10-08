@@ -440,6 +440,19 @@
         </div>
     </div>
 
+    {{#if frontendOptions.sendErrorReports }}
+    <div class="row">
+        <div class="cute-5-phone prefLeft">
+            <span class="prefswitch switch switch-text switch-left" data-setting="sendErrorReports" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="sendErrorReports" data-value="false">Off</span>
+        </div>
+        <div class="cute-7-phone prefRight">
+            <h3>{{texts.title_sendErrorReports}}</h3>
+            {{texts.subtitle_sendErrorReports}}
+        </div>
+    </div>
+    {{/if}}
+
 
     {{#if frontendOptions.isElectron }}
         <br/><hr/><br/>

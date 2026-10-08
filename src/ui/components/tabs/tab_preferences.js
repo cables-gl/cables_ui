@@ -98,6 +98,7 @@ export default class Preferences
 
         // this.setSwitchValue("forceWebGl1", userSettings.get(UserSettings.PREF_FORCE_WEBGL1));
         this.setSwitchValue("devinfos", userSettings.get(UserSettings.PREF_DEVINFOS) || false);
+        this.setSwitchValue(UserSettings.PREF_SEND_ERROR_REPORTS, userSettings.get(UserSettings.PREF_SEND_ERROR_REPORTS));
 
         this.setSwitchValue(UserSettings.PREF_GLPATCH_PAN, userSettings.get(UserSettings.PREF_GLPATCH_PAN) || "2");
         this.setSwitchValue(UserSettings.PREF_GLPATCH_SELECT, userSettings.get(UserSettings.PREF_GLPATCH_SELECT) || "1");

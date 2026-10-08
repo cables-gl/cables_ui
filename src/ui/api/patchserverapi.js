@@ -1,6 +1,7 @@
 import { Logger, Events, TalkerAPI } from "cables-shared-client";
 import { CgContext } from "cables-corelibs";
 import { utils } from "cables";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import namespace from "../namespaceutils.js";
@@ -1039,6 +1040,8 @@ export default class PatchSaveServer extends Events
      */
     sendErrorReport(report, manualSend = true)
     {
+        if (!userSettings.get(UserSettings.PREF_SEND_ERROR_REPORTS)) return;
+
         const doneCallback = (err, res) =>
         {
             if (manualSend)

@@ -6,6 +6,7 @@ import namespace from "../namespaceutils.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { UiOp } from "../core_extend_op.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 
 /**
  * @typedef ModalErrorException
@@ -280,6 +281,8 @@ export default class ModalError
                 ignoreErrorReport = true;
             }
         }
+
+        if (!userSettings.get(UserSettings.PREF_SEND_ERROR_REPORTS)) ignoreErrorReport = true;
 
         let showSendButton = true;
         if (CABLES && platform && !platform.frontendOptions.sendErrorReports)
