@@ -18,6 +18,7 @@ import { CssClassNames } from "../theme.js";
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
  * @property {Boolean} [prompt=false] show an input field to enter a value
  * @property {String} [promptValue]
+ * @property {Boolean} [promptSelectText=false] select the text of the input field when shown
  * @property {ModalPromptCallback} [promptOk]
  * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
  * @property {{title: string, checkboxes: ModalDialogCheckbox[]}[]} [checkboxGroups]
@@ -237,6 +238,7 @@ export default class ModalDialog extends Events
         if (elePromptInput)
         {
             elePromptInput.focus();
+            if (this.#options.promptSelectText) elePromptInput.select();
             elePromptInput.addEventListener("keydown", (e) =>
             {
                 if (e.code == "Enter") this._promptSubmit();
@@ -368,7 +370,10 @@ export default class ModalDialog extends Events
 
         setTimeout(() =>
         {
-            if (ele.byId("modalpromptinput"))ele.byId("modalpromptinput").focus();
+            const elePromptInput = ele.byId("modalpromptinput");
+            if (!elePromptInput) return;
+            elePromptInput.focus();
+            if (this.#options.promptSelectText) elePromptInput.select();
         }, 50); // why is this delay needed in some cases (e.g. resolution button below canvas)
     }
 

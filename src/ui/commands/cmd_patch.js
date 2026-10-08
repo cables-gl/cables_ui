@@ -1405,6 +1405,7 @@ class CmdPatch
             "title": "Set Title",
             "text": "Enter a title for this op",
             "promptValue": ops[0].name,
+            "promptSelectText": true,
             "promptOk": (name) =>
             {
                 gui.opParams.setCurrentOpTitle(name);
