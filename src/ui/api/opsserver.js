@@ -2283,7 +2283,9 @@ export default class ServerOps
         let title = "Failed to load op";
         let footer = "";
         let otherEnvName = "dev.cables.gl";
-        let editorLink = "https://" + otherEnvName + "/edit/" + gui.project().shortId;
+        const project = gui.project();
+        let editorLink = "";
+        if (project) editorLink = "https://" + otherEnvName + "/edit/" + project.shortId;
         let otherEnvButton = "Try " + otherEnvName;
         let errMsg = "";
         let opLinks = [];
@@ -2307,11 +2309,12 @@ export default class ServerOps
                     }
                 }
             }
-            if (err.data.otherEnvUrl) editorLink = err.data.otherEnvUrl + "/edit/" + gui.project().shortId;
+            if (err.data.otherEnvUrl && project) editorLink = err.data.otherEnvUrl + "/edit/" + project.shortId;
             if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
             if (err.data.editorLink) editorLink = err.data.editorLink;
             if (err.data.hideEnvButton) hideEnvButton = true;
         }
+        if (!editorLink) hideEnvButton = true;
         else
         {
             if (oldName)
