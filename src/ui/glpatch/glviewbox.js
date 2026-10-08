@@ -31,6 +31,7 @@ export default class GlViewBox
     #viewResY = 0;
     _mouseRightDownStartX = 0;
     _mouseRightDownStartY = 0;
+    #panning = false;
     _panStarted = 0;
     _mouseSmoothCount = 0;
     _subPatchViewBoxes = {};
@@ -64,6 +65,8 @@ export default class GlViewBox
         cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("lostpointercapture", this.#stopPanning.bind(this), { "passive": true });
+        window.addEventListener("blur", this.#stopPanning.bind(this));
 
         this.glPatch.addEventListener(GlPatch.EVENT_SPACE_DOWN, this._onCanvasSpaceDown.bind(this));
         this.glPatch.addEventListener(GlPatch.EVENT_SPACE_UP, this._onCanvasSpaceUp.bind(this));
@@ -189,9 +192,20 @@ export default class GlViewBox
 
         if (gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
-        if (
+        const panning =
             (this.glPatch.mouseState.buttonStateForScrolling) ||
-            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling)))
+            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling));
+
+        if (panning && !this.#panning)
+        {
+            this._oldScrollX = this._scrollX;
+            this._oldScrollY = this._scrollY;
+            this._mouseRightDownStartX = e.offsetX;
+            this._mouseRightDownStartY = e.offsetY;
+        }
+        this.#panning = panning;
+
+        if (panning)
         {
             this.cursor = "grabbing";
             hideToolTip();
@@ -208,9 +222,15 @@ export default class GlViewBox
      */
     _onCanvasMouseUp(_e)
     {
+        this.#stopPanning();
+        this.cursor = null;
+    }
+
+    #stopPanning()
+    {
         this._oldScrollX = this._scrollX;
         this._oldScrollY = this._scrollY;
-        this.cursor = null;
+        this.#panning = false;
     }
 
     animateToCenterAtMouseCoords()
