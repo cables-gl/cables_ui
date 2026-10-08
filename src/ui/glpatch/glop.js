@@ -1933,6 +1933,7 @@ export default class GlOp extends Events
         this.emitEvent(GlOp.EVENT_DRAG);
         this.updatePosition();
 
+        if (!this.#op) return;
         if (this.op.tempData.scopeAreaEndOp)
         {
             const scopeEndOp = this.op.tempData.scopeAreaEndOp;
