@@ -60,6 +60,12 @@ export class GlSplineDrawer extends Events
 
     /** @type {Mesh} */
     #mesh;
+
+    /** @type {Object<string,number>} */
+    #dirtyMin = {};
+
+    /** @type {Object<string,number>} */
+    #dirtyMax = {};
     #uniWidth;
     #uniResX;
     #uniResY;
@@ -201,6 +207,7 @@ export class GlSplineDrawer extends Events
 
             this._uniFadeoutOptions.set(fadeOutOpts);
 
+            this.#uploadDirty();
             if (this.#points.length > 0) this.#mesh.render(this.#shader);
             this.#cgl.popShader();
         }
@@ -499,7 +506,7 @@ export class GlSplineDrawer extends Events
                 this.#speeds[(off + count) / 3] = this.#splines[idx].speed;
             }
         }
-        this.#mesh.setAttributeRange(this.#mesh.getAttribute("speed"), this.#speeds, off / 3, ((off + count) / 3));
+        this.#markDirty("speed", off / 3, (off + count) / 3);
     }
 
     /**
@@ -523,7 +530,45 @@ export class GlSplineDrawer extends Events
                 this.#speeds[(off + count) / 3] = this.#splines[idx].speed;
             }
         }
-        this.#mesh.setAttributeRange(this.#mesh.getAttribute("speed"), this.#speeds, off / 3, ((off + count) / 3));
+        this.#markDirty("speed", off / 3, (off + count) / 3);
+    }
+
+    /**
+     * @param {string} name
+     * @param {number} start
+     * @param {number} end
+     */
+    #markDirty(name, start, end)
+    {
+        if (this.#dirtyMin[name] === undefined || start < this.#dirtyMin[name]) this.#dirtyMin[name] = start;
+        if (this.#dirtyMax[name] === undefined || end > this.#dirtyMax[name]) this.#dirtyMax[name] = end;
+    }
+
+    #clearDirty()
+    {
+        this.#dirtyMin = {};
+        this.#dirtyMax = {};
+    }
+
+    #uploadDirty()
+    {
+        if (!this.#mesh) return;
+        const arrays = {
+            "vcolor": this._colors,
+            "vcolorInactive": this._colorsInactive,
+            "vcolorBorder": this._colorsBorder,
+            "spline": this.#points,
+            "spline2": this.#points2,
+            "spline3": this.#points3,
+            "splineProgress": this.#pointsProgress,
+            "splineLength": this.#pointsSplineLength,
+            "speed": this.#speeds
+        };
+
+        for (const name in this.#dirtyMin)
+            this.#mesh.setAttributeRange(this.#mesh.getAttribute(name), arrays[name], this.#dirtyMin[name], this.#dirtyMax[name]);
+
+        this.#clearDirty();
     }
 
     /**
@@ -608,7 +653,8 @@ export class GlSplineDrawer extends Events
                     count += 6 * 3;
                 }
 
-                for (let i = 0; i < this.#pointsProgress.length; i++)
+                const lengthEnd = (off / 3) + (points.length / 3) * 6;
+                for (let i = off / 3; i < lengthEnd; i++)
                     this.#pointsSplineLength[i] = totalDistance;
 
                 perf2.finish();
@@ -617,6 +663,13 @@ export class GlSplineDrawer extends Events
 
         const perf4 = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates color values");
 
+        const all = updateWhat === undefined;
+        const doColors = all || updateWhat.colors;
+        const doColorsInactive = all || updateWhat.colorsInactive;
+        const doColorsBorder = all || updateWhat.colorsBorder;
+        const doSpeed = all || updateWhat.speed;
+        const spline = this.#splines[idx];
+
         count = 0;
         for (let i = 0; i < points.length / 3; i++)
         {
@@ -624,48 +677,63 @@ export class GlSplineDrawer extends Events
             {
                 const idxArr = (off + count) / 3;
                 const idxArr4 = idxArr * 4;
-                this.#speeds[idxArr + 0] = this.#splines[idx].speed;
 
-                this._colors[idxArr4 + 0] = this.#splines[idx].color[0];
-                this._colors[idxArr4 + 1] = this.#splines[idx].color[1];
-                this._colors[idxArr4 + 2] = this.#splines[idx].color[2];
-                this._colors[idxArr4 + 3] = this.#splines[idx].color[3];
+                if (doSpeed) this.#speeds[idxArr] = spline.speed;
 
-                this._colorsInactive[idxArr4 + 0] = this.#splines[idx].colorInactive[0];
-                this._colorsInactive[idxArr4 + 1] = this.#splines[idx].colorInactive[1];
-                this._colorsInactive[idxArr4 + 2] = this.#splines[idx].colorInactive[2];
-                this._colorsInactive[idxArr4 + 3] = this.#splines[idx].colorInactive[3];
-
-                this._colorsBorder[idxArr4 + 0] = this.#splines[idx].colorBorder[0];
-                this._colorsBorder[idxArr4 + 1] = this.#splines[idx].colorBorder[1];
-                this._colorsBorder[idxArr4 + 2] = this.#splines[idx].colorBorder[2];
-                this._colorsBorder[idxArr4 + 3] = this.#splines[idx].colorBorder[3];
-
-                for (let k = 0; k < 3; k++)
+                if (doColors)
                 {
-                    this.#points[off + count] = points[(Math.max(0, i - 1)) * 3 + k];
-                    this.#points2[off + count] = points[(i + 0) * 3 + k];
-                    this.#points3[off + count] = points[(i + 1) * 3 + k];
-                    count++;
+                    this._colors[idxArr4 + 0] = spline.color[0];
+                    this._colors[idxArr4 + 1] = spline.color[1];
+                    this._colors[idxArr4 + 2] = spline.color[2];
+                    this._colors[idxArr4 + 3] = spline.color[3];
                 }
+
+                if (doColorsInactive)
+                {
+                    this._colorsInactive[idxArr4 + 0] = spline.colorInactive[0];
+                    this._colorsInactive[idxArr4 + 1] = spline.colorInactive[1];
+                    this._colorsInactive[idxArr4 + 2] = spline.colorInactive[2];
+                    this._colorsInactive[idxArr4 + 3] = spline.colorInactive[3];
+                }
+
+                if (doColorsBorder)
+                {
+                    this._colorsBorder[idxArr4 + 0] = spline.colorBorder[0];
+                    this._colorsBorder[idxArr4 + 1] = spline.colorBorder[1];
+                    this._colorsBorder[idxArr4 + 2] = spline.colorBorder[2];
+                    this._colorsBorder[idxArr4 + 3] = spline.colorBorder[3];
+                }
+
+                if (all)
+                {
+                    for (let k = 0; k < 3; k++)
+                    {
+                        this.#points[off + count + k] = points[(Math.max(0, i - 1)) * 3 + k];
+                        this.#points2[off + count + k] = points[(i + 0) * 3 + k];
+                        this.#points3[off + count + k] = points[(i + 1) * 3 + k];
+                    }
+                }
+                count += 3;
             }
         }
         perf4.finish();
 
-        const perf3 = gui.uiProfiler.start("[glspline] _updateAttribsCoordinates setAttributeRanges");
+        const start3 = off / 3;
+        const end3 = (off + count) / 3;
 
-        if (updateWhat === undefined || updateWhat.colors) this.#mesh.setAttributeRange(this.#mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
-        if (updateWhat === undefined || updateWhat.colorsInactive) this.#mesh.setAttributeRange(this.#mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
-        if (updateWhat === undefined || updateWhat.colorsBorder) this.#mesh.setAttributeRange(this.#mesh.getAttribute("vcolorBorder"), this._colorsBorder, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (doColors) this.#markDirty("vcolor", start3 * 4, end3 * 4);
+        if (doColorsInactive) this.#markDirty("vcolorInactive", start3 * 4, end3 * 4);
+        if (doColorsBorder) this.#markDirty("vcolorBorder", start3 * 4, end3 * 4);
+        if (doSpeed) this.#markDirty("speed", start3, end3);
 
-        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("spline"), this.#points, off, off + count);
-        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("spline2"), this.#points2, off, off + count);
-        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("spline3"), this.#points3, off, off + count);
-
-        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("splineProgress"), this.#pointsProgress, off / 3, (off + count) / 3);
-        if (updateWhat === undefined) this.#mesh.setAttributeRange(this.#mesh.getAttribute("splineLength"), this.#pointsSplineLength, off / 3, (off + count) / 3);
-        if (updateWhat === undefined || updateWhat.speed) this.#mesh.setAttributeRange(this.#mesh.getAttribute("speed"), this.#speeds, off / 3, ((off + count) / 3));
-        perf3.finish();
+        if (all)
+        {
+            this.#markDirty("spline", off, off + count);
+            this.#markDirty("spline2", off, off + count);
+            this.#markDirty("spline3", off, off + count);
+            this.#markDirty("splineProgress", start3, end3);
+            this.#markDirty("splineLength", start3, end3);
+        }
         perf.finish();
     }
 
@@ -737,6 +805,8 @@ export class GlSplineDrawer extends Events
             this.#pointsProgress = new Float32Array(newLength / 3);
             this.#pointsSplineLength = new Float32Array(newLength / 3);
             this.#speeds = new Float32Array(newLength / 3);
+
+            for (let i = 0; i < this.#splines.length; i++) this.#splines[i].pointsNeedProgressUpdate = true;
         }
 
         for (let i = 0; i < this.#thePoints.length / 3; i++)
@@ -768,6 +838,15 @@ export class GlSplineDrawer extends Events
             // console.log(this._splines[this._splineIndex[i]], this._splineIndex[i]);
         }
 
+        const perfAttribs2 = gui.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
+
+        for (let i = 0; i < this.#splines.length; i++)
+        {
+            this._updateAttribsCoordinates(this.#splines[i].index);
+        }
+
+        perfAttribs2.finish("num" + this.#splines.length);
+
         const perfAttribs = gui.uiProfiler.start("[glspline] rebuild set Attribs");
 
         this.#mesh.setAttribute("speed", this.#speeds, 1);
@@ -786,15 +865,7 @@ export class GlSplineDrawer extends Events
 
         perfAttribs.finish(this.#splines.length + "splines, length " + newLength);
 
-        const perfAttribs2 = gui.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
-
-        for (let i = 0; i < this.#splines.length; i++)
-        {
-
-            this._updateAttribsCoordinates(this.#splines[i].index);
-        }
-
-        perfAttribs2.finish("num" + this.#splines.length);
+        this.#clearDirty();
 
         this.#rebuildLater = false;
         perf.finish();
