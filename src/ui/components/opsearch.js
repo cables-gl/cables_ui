@@ -1,6 +1,6 @@
 import { Events } from "cables-shared-client";
 import { CgContext } from "cables-corelibs";
-import { Patch, Port, utils } from "cables";
+import { Link, Patch, Port, utils } from "cables";
 import defaultOps from "../defaultops.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
@@ -50,9 +50,16 @@ import { platform } from "../platform.js";
  * @property {boolean} [elementHidden]
  */
 
+/** @typedef NewOpOptions
+  * @property {Link} [linkNewLink]
+  * @property {Port} [linkNewOpToPort]
+  */
+
 /** Searches through the op docs, e.g. for the op select dialog. */
 export default class OpSearch extends Events
 {
+
+    /** @type {NewOpOptions} */
     newOpOptions = {};
     constructor()
     {
@@ -275,12 +282,12 @@ export default class OpSearch extends Events
 
                     const docs = gui.opDocs.getOpDocByName(list[i].name);
 
-                    if (docs && docs.hasOwnProperty("version"))
-                    {
-                        const p = docs.version * 0.01;
-                        points += p;
-                        scoreDebug += "+" + p + " version<br/>";
-                    }
+                    // if (docs && docs.hasOwnProperty("version"))
+                    // {
+                    //     const p = docs.version * 0.01;
+                    //     points += p;
+                    //     scoreDebug += "+" + p + " version<br/>";
+                    // }
 
                     /// ////////////////////
                     // namespace similarity
@@ -296,12 +303,23 @@ export default class OpSearch extends Events
                     let nspoints = 0;
                     if (this.newOpOptions.linkNewOpToPort)
                     {
-                        for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
-                        {
-                            if (!this.newOpOptions.linkNewOpToPort.op.objName.startsWith(list[i].namespaces[nsi])) break;
-                            nspoints++;
-                        }
+                        if (this.newOpOptions.linkNewOpToPort.op)
+                            for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
+                            {
+                                if (!this.newOpOptions.linkNewOpToPort.op.objName.startsWith(list[i].namespaces[nsi])) break;
+                                nspoints++;
+                            }
                     }
+
+                    if (list[i].nameSpace.startsWith("Ops.Graphics") &&
+                             (this.newOpOptions.linkNewOpToPort && this.newOpOptions.linkNewOpToPort.op.objName.startsWith("Ops.Gl")) ||
+                             (linkPortIn && linkPortIn.op.objName.startsWith("Ops.Gl")) ||
+                             (linkPortIn && linkPortOut.op.objName.startsWith("Ops.Gl")))
+                    {
+                        scoreDebug += "+2 compatible namespace similarity<br/>";
+                        nspoints += 2;
+                    }
+
                     if (linkPortIn)
                         for (let nsi = 0; nsi < list[i].namespaces.length; nsi++)
                         {
@@ -318,7 +336,7 @@ export default class OpSearch extends Events
 
                     if (nspoints > 0)
                     {
-                        points += nspoints * 2;
+                        points += nspoints;
                         scoreDebug += "+" + nspoints + " namespace similarity<br/>";
                     }
 
