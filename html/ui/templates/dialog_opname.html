@@ -13,7 +13,7 @@
         <div class="opDirSelect">
             <select id="opTargetDir" name="opTargetDir" style="border-radius: 2px;">
                 {{#each opDirs}}
-                    <option value="{{dir}}">{{dir}}</option>
+                    <option value="{{dir}}" {{#if selected}}selected="true"{{/if}}>{{dir}}</option>
                 {{/each}}
             </select>
             &nbsp;<a id="addOpTargetDir" class="button-small button-icon tt info clickable" data-info="add op dir" data-tt="add op dir"><span class="icon icon-file-plus"></span></a>
