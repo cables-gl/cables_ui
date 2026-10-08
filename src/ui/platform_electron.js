@@ -170,9 +170,10 @@ export default class PlatformElectron extends Platform
                 };
                 modalOptions.okButton = {
                     "text": "Show",
-                    "callback": () =>
+                    "callback": (done) =>
                     {
                         CABLES.CMD.ELECTRON.openFileManager(result.data.url);
+                        if (done) done();
                     }
                 };
                 modalOptions.text = "Successfully exported patch:";
