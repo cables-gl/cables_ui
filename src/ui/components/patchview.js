@@ -2024,6 +2024,24 @@ export default class PatchView extends Events
     }
 
     /**
+     * @param {UiOp} op
+     * @param {boolean} collapsed
+     */
+    setAreaCollapsed(op, collapsed)
+    {
+        const glop = this.patchRenderer.getGlOp(op);
+        if (!glop || !op.uiAttribs.area) return;
+        if (collapsed && glop._resizableArea) glop._resizableArea.updateChildOps();
+        if (!op.attribs.area) return;
+
+        const ops = gui.corePatch().getOpsByArea(op.attribs.area);
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i] != op) ops[i].setUiAttribs({ "hidden": collapsed });
+
+        op.setUiAttribs({ "areaCollapsed": collapsed });
+    }
+
+    /**
      * @param {Op[]} ops
      */
     cleanOps(ops)

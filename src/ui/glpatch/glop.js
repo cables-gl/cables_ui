@@ -660,6 +660,7 @@ export default class GlOp extends Events
     {
         if (this._needsUpdate) this.update();
         this._needsUpdate = false;
+        if (this._resizableArea) this._resizableArea.updateAnim();
     }
 
     /**
@@ -1212,7 +1213,7 @@ export default class GlOp extends Events
 
     get visible()
     {
-        if (!this.isInCurrentSubPatch()) return false;
+        if (!this.isInCurrentSubPatch() || this.opUiAttribs.hidden) return false;
         return this.#visible;
     }
 
@@ -1254,6 +1255,7 @@ export default class GlOp extends Events
         if (this.#glDotHint) this.#glDotHint.visible = visi;
         if (this.#glDotWarning) this.#glDotWarning.visible = visi;
         if (this.#glDotError) this.#glDotError.visible = visi;
+        if (this.#glNotWorkingCross) this.#glNotWorkingCross.visible = visi;
 
         if (changed) this._updateIndicators();
 

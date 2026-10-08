@@ -1,4 +1,4 @@
-import { utils } from "cables";
+import { Anim, utils } from "cables";
 import { UserSettings, userSettings } from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -27,6 +27,11 @@ export default class GlArea
 
     /** @type {GlOp} */
     #glOpScopeEnd;
+
+    #animW = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+    #animH = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
+    #animating = false;
+    animDuration = 0.25;
 
     /**
      * @param {GlRectInstancer} instancer
@@ -126,11 +131,10 @@ export default class GlArea
                 this.#glop.op.uiAttribs.area.origW = this._w;
                 this.#glop.op.uiAttribs.area.origH = this._h;
 
+                this.#startAnim(this._w, this._h, this.#glop.w, this.#glop.h);
+
                 this._w = this.minsize;
                 this._h = this.minsize;
-
-                this.#rectBg.visible = false;
-                this.#rectResize.visible = false;
             }
 
             if (!this.#glop.op.uiAttribs.areaCollapsed)
@@ -143,6 +147,8 @@ export default class GlArea
 
                     this._w = this.#glop.op.uiAttribs.area.origW;
                     this._h = this.#glop.op.uiAttribs.area.origH;
+
+                    this.#startAnim(this.#glop.w, this.#glop.h, this._w, this._h);
                 }
 
                 this.#rectBg.visible = this._visible;
@@ -158,20 +164,13 @@ export default class GlArea
                 {
 
                     this._h = this.#glOpScopeEnd.y - this.#glop.y + this.#glOpScopeEnd.h;
-                    this.#rectBg.setSize(
-                        this._w,
-                        this._h);
+                    if (!this.#animating) this.#rectBg.setSize(this._w, this._h);
 
                     this.#rectResize.setPosition(this.#rectResize.x, this.#glOpScopeEnd.y + this.#glOpScopeEnd.h);
                 }
-                else
-                    this.#rectBg.setSize(this._w, this._h);
+                else if (!this.#animating) this.#rectBg.setSize(this._w, this._h);
 
-                this.#rectResize.setPosition(
-                    this.#glop.x + this._w - this.#rectResize.w,
-                    this.#glop.y + this._h - this.#rectResize.h,
-                    -0.1
-                );
+                if (!this.#animating) this.#setRectResizePosition(this._w, this._h);
             }
         }
         if (!this.#glOpScopeEnd && this.#glop.getUiAttribs().scopeArea)
@@ -186,6 +185,69 @@ export default class GlArea
             this.updateChildOps();
         }
 
+    }
+
+    /**
+     * @param {number} fromW
+     * @param {number} fromH
+     * @param {number} toW
+     * @param {number} toH
+     */
+    #startAnim(fromW, fromH, toW, toH)
+    {
+        const t = this.#glop.glPatch.time;
+
+        this.#animW.clear();
+        this.#animW.setValue(t, fromW);
+        this.#animW.setValue(t + this.animDuration, toW);
+
+        this.#animH.clear();
+        this.#animH.setValue(t, fromH);
+        this.#animH.setValue(t + this.animDuration, toH);
+
+        this.#animating = true;
+        this.#rectBg.visible = true;
+        this.#rectResize.visible = true;
+        this.updateAnim();
+    }
+
+    updateAnim()
+    {
+        if (!this.#animating || !this.#rectBg) return;
+        const t = this.#glop.glPatch.time;
+
+        const w = this.#animW.getValue(t);
+        const h = this.#animH.getValue(t);
+        this.#rectBg.setSize(w, h);
+        this.#setRectResizePosition(w, h);
+
+        if (this.#animW.isFinished(t))
+        {
+            this.#animating = false;
+            if (this.#glop.op.uiAttribs.areaCollapsed)
+            {
+                this.#rectBg.visible = false;
+                this.#rectResize.visible = false;
+            }
+            else
+            {
+                this.#rectBg.setSize(this._w, this._h);
+                this.#setRectResizePosition(this._w, this._h);
+            }
+        }
+    }
+
+    /**
+     * @param {number} w
+     * @param {number} h
+     */
+    #setRectResizePosition(w, h)
+    {
+        this.#rectResize.setPosition(
+            this.#glop.x + w - this.#rectResize.w,
+            this.#glop.y + h - this.#rectResize.h,
+            -0.1
+        );
     }
 
     updateChildOps()
