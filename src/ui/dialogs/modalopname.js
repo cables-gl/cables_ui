@@ -8,14 +8,23 @@ import defaultOps from "../defaultops.js";
 
 /**
  * @typedef DialogOptions
- * @property {string} title
- * @property {string} shortName
- * @property {string} type
- * @property {string} suggestedNamespace
- * @property {boolean} showReplace
- * @property {boolean} rename
- * @property {string} sourceOpName
- * @property {boolean} hasOpDirectories
+ * @property {String} title
+ * @property {String} shortName
+ * @property {String} type
+ * @property {String} suggestedNamespace
+ * @property {Boolean} showReplace
+ * @property {Boolean} rename
+ * @property {String} sourceOpName
+ * @property {Boolean} hasOpDirectories
+ */
+
+/**
+ * @typedef CheckOpNameRequest
+ * @property {String} namespace
+ * @property {String} v
+ * @property {String} sourceName
+ * @property {Boolean} rename
+ * @property {String} [opTargetDir]
  */
 
 export class ModalOpName
@@ -24,16 +33,16 @@ export class ModalOpName
     #log = new Logger("modalopname");
 
     /**
-     * @param {object} options
-     * @param {string} options.title title of the dialog
-     * @param {string} options.shortName shortname of the new op
-     * @param {string} options.type type of op (patch/user/team/...)
-     * @param {string} options.suggestedNamespace suggested namespace in dropdown
-     * @param {boolean} options.showReplace show "create and replace existing" button
-     * @param {boolean} options.rename rename or create a new op?
-     * @param {string|null} options.sourceOpName opname to clone from or create op into
-     * @param {boolean} options.hasOpDirectories electron has directories for additional ops, setting comes from platform_electron.js
-     * @param {function} callback
+     * @param {Object} options
+     * @param {String} options.title title of the dialog
+     * @param {String} options.shortName shortname of the new op
+     * @param {String} options.type type of op (patch/user/team/...)
+     * @param {String} options.suggestedNamespace suggested namespace in dropdown
+     * @param {Boolean} options.showReplace show "create and replace existing" button
+     * @param {Boolean} options.rename rename or create a new op?
+     * @param {String|null} options.sourceOpName opname to clone from or create op into
+     * @param {Boolean} options.hasOpDirectories electron has directories for additional ops, setting comes from platform_electron.js
+     * @param {Function} callback
      */
     constructor(options, callback)
     {
@@ -54,43 +63,44 @@ export class ModalOpName
         }
         else if (this._options.hasOpDirectories)
         {
-            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, res) =>
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, { "opName": this._options.sourceOpName }, (err, res) =>
             {
                 const opDirs = res?.data || [];
                 for (let i = 0; i < opDirs.length; i++)
                 {
                     const dirInfo = opDirs[i];
                     if (i === 0) this._opTargetDir = dirInfo.dir;
+                    if (dirInfo.selected) this._opTargetDir = dirInfo.dir;
                 }
-                this._createModal(options, opDirs);
+                this.#createModal(options, opDirs);
             });
         }
         else
         {
-            this._createModal(options);
+            this.#createModal(options);
         }
     }
 
     /**
      * @param {DialogOptions} options
      */
-    _createModal(options, opDirs = [])
+    #createModal(options, opDirs = [])
     {
         this._modalDialog = new ModalDialog({
             "title": options.title,
-            "text": this._getHtml(opDirs)
+            "text": this.#getHtml(opDirs)
         });
         const opNameInput = ele.byId("opNameDialogInput");
         opNameInput.value = this._options.sourceOpName || this._options.shortName;
 
-        this._updateDialog(options, {
+        this.#updateDialog(options, {
             "namespaces": [options.suggestedNamespace],
             "problems": []
         }, opNameInput.value);
-        this._checkOpName();
+        this.#checkOpName();
 
-        opNameInput.addEventListener("input", () => { this._nameChangeListener(this._options); });
-        ele.byId("opNameDialogNamespace").addEventListener("input", () => { this._namespaceChangeListener(this._options); });
+        opNameInput.addEventListener("input", () => { this.#nameChangeListener(this._options); });
+        ele.byId("opNameDialogNamespace").addEventListener("input", () => { this.#namespaceChangeListener(this._options); });
 
         const cbOptions = {
             "replace": false
@@ -115,9 +125,11 @@ export class ModalOpName
         }
     }
 
-    _checkOpName()
+    #checkOpName()
     {
         const newName = this._options.sourceOpName || this._options.shortName;
+
+        /** @type CheckOpNameRequest */
         const checkNameRequest = {
             "namespace": this._options.suggestedNamespace?.trim(),
             "v": newName?.trim(),
@@ -125,10 +137,15 @@ export class ModalOpName
             "rename": this._options.rename
         };
         if (this._opTargetDir) checkNameRequest.opTargetDir = this._opTargetDir;
-        this._apiCheckName(checkNameRequest);
+        this.#apiCheckName(checkNameRequest);
     }
 
-    _getHtml(opDirs = [])
+    /**
+     *
+     * @param {import("cables-shared-client").OpDir[]} opDirs
+     * @returns {String}
+     */
+    #getHtml(opDirs = [])
     {
         return getHandleBarHtml("dialog_opname", {
             "showTeamHint": !platform.isElectron(),
@@ -141,8 +158,11 @@ export class ModalOpName
 
     /**
      * @param {DialogOptions} dialogOptions
+     * @param {any} data
+     * @param {String} newOpName
+     * @param {String} [newNamespace]
      */
-    _updateDialog(dialogOptions, data, newOpName, newNamespace = null)
+    #updateDialog(dialogOptions, data, newOpName, newNamespace = null)
     {
         let hintsHtml = "";
         const eleHints = ele.byId("opNameDialogHints");
@@ -216,7 +236,7 @@ export class ModalOpName
                         suggest.addEventListener("pointerdown", (_e) =>
                         {
                             inputField.value = namespace.capitalizeNamespaceParts(suggest.dataset.nextName);
-                            this._nameChangeListener(dialogOptions);
+                            this.#nameChangeListener(dialogOptions);
                         });
                     }
                 });
@@ -247,8 +267,14 @@ export class ModalOpName
         ele.byId("opNameDialogInput").focus();
     }
 
-    _apiCheckName(checkNameRequest, cb = null)
+    /**
+     *
+     * @param {CheckOpNameRequest} checkNameRequest
+     * @param {Function} [cb]
+     */
+    #apiCheckName(checkNameRequest, cb = null)
     {
+        console.log("CHECKING NAME");
         clearTimeout(this._currentCheckNameTimeout);
         this._currentCheckNameTimeout = setTimeout(() =>
         {
@@ -314,7 +340,7 @@ export class ModalOpName
 
                 const opNameInput = ele.byId("opNameDialogInput");
                 const checkedName = res.checkedName || this._options.sourceOpName;
-                this._updateDialog(this._options, res, checkedName);
+                this.#updateDialog(this._options, res, checkedName);
                 if (opNameInput && opNameInput.value) opNameInput.focus();
 
                 const opTargetDirEle = ele.byId("opTargetDir");
@@ -330,7 +356,7 @@ export class ModalOpName
                         {
                             this._opTargetDir = null;
                         }
-                        this._nameChangeListener(this._options);
+                        this.#nameChangeListener(this._options);
                     });
                 }
 
@@ -345,7 +371,7 @@ export class ModalOpName
     /**
      * @param {DialogOptions} dialogOptions
      */
-    _namespaceChangeListener(dialogOptions)
+    #namespaceChangeListener(dialogOptions)
     {
         const opNameInput = ele.byId("opNameDialogInput");
         const selectEle = ele.byId("opNameDialogNamespace");
@@ -359,7 +385,7 @@ export class ModalOpName
             if (opNameInput)
             {
                 opNameInput.value = newOpName;
-                this._nameChangeListener(dialogOptions);
+                this.#nameChangeListener(dialogOptions);
             }
         }
     }
@@ -367,7 +393,7 @@ export class ModalOpName
     /**
      * @param {DialogOptions} dialogOptions
      */
-    _nameChangeListener(dialogOptions)
+    #nameChangeListener(dialogOptions)
     {
         const newNamespace = ele.byId("opNameDialogNamespace").value;
         const fullName = ele.byId("opNameDialogInput").value;
@@ -385,7 +411,7 @@ export class ModalOpName
             };
             const opTargetDirEle = ele.byId("opTargetDir");
             if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
-            this._apiCheckName(checkNameRequest);
+            this.#apiCheckName(checkNameRequest);
         }
     }
 }
