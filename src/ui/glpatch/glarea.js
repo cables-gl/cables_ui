@@ -5,6 +5,7 @@ import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { gui } from "../gui.js";
 import GlOp from "./glop.js";
 import { UiOp } from "../core_extend_op.js";
+import gluiconfig from "./gluiconfig.js";
 
 export default class GlArea
 {
@@ -158,7 +159,7 @@ export default class GlArea
                 this.#rectBg.setPosition(
                     this.#glop.x,
                     this.#glop.y,
-                    0.2);
+                    gluiconfig.zPosAreas + gluiconfig.zOpSlot);
 
                 if (this.#glOpScopeEnd)
                 {

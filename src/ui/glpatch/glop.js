@@ -91,6 +91,10 @@ export default class GlOp extends Events
     /** @type {GlRect} */
     #glRerouteDot = null;
 
+    #stackOrder = 0;
+    #stackRank = 0;
+    #stackSubPatch = null;
+
     minWidth = 10;
 
     /** @type GlText */
@@ -186,9 +190,8 @@ export default class GlOp extends Events
         /** @type {Number} */
         this._height = gluiconfig.opHeight;
 
-        this._origPosZ = gluiconfig.zPosOpSelected;// + (0.1 + Math.random() * 0.01);
-
         this.setUiAttribs({}, op.uiAttribs);
+        this.bringToFront();
         if (this.#op)
         {
             this.#op.on(Op.EVENT_STORAGE_CHANGE, () =>
@@ -354,11 +357,34 @@ export default class GlOp extends Events
         if (gui.patchView.getSelectedOps().length == 1) this.#glRectBg.setOpacity(0.8, false);
     }
 
+    get stackOrder() { return this.#stackOrder; }
+
+    /**
+     * @param {number} rank
+     */
+    set stackRank(rank)
+    {
+        if (this.#stackRank == rank) return;
+        this.#stackRank = rank;
+        this.updatePosition();
+    }
+
+    bringToFront()
+    {
+        const subPatch = this.getSubPatch();
+        if (this.#stackSubPatch == subPatch && this.#stackRank == this.#glPatch.getOpStackTop(subPatch)) return;
+        this.#stackSubPatch = subPatch;
+        this.#stackOrder = this.#glPatch.nextOpStackOrder();
+        this.#stackRank = this.#glPatch.nextOpStackRank(subPatch);
+        this.updatePosition();
+    }
+
     getPosZ()
     {
-        if (!this.op.isLinked()) return gluiconfig.zPosOpUnlinked;
-        if (this.selected) return gluiconfig.zPosOpSelected;
-        return gluiconfig.zPosOpUnSelected;
+        if (this.displayType == this.DISPLAY_UI_AREA) return gluiconfig.zPosAreas;
+        let z = gluiconfig.zPosOps;
+        if (!this.op.isLinked()) z = gluiconfig.zPosOpsUnlinked;
+        return z - Math.min(this.#stackRank, gluiconfig.zOpsMaxStackRank) * gluiconfig.zOpSlot;
     }
 
     _onBgRectDragEnd()
@@ -625,6 +651,7 @@ export default class GlOp extends Events
         if (newAttribs.color) this._updateColors();
 
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
+        if (newAttribs.hasOwnProperty("subPatch") && newAttribs.subPatch != this.#stackSubPatch) this.bringToFront();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
         if (newAttribs.hasOwnProperty("resizable"))
@@ -763,16 +790,16 @@ export default class GlOp extends Events
             let x = this.w + gluiconfig.portWidth;
             if (this.#rectResize) x += this.#rectResize.w;
             if (this._glColorSwatch) x += this._height / 2;
-            if (!this._hideBgRect) this._glComment.setPosition(x, 0, 0); // normal op comment
-            else this._glComment.setPosition(12, this._height, 0); // comment op (weird hardcoded values because of title scaling)
+            if (!this._hideBgRect) this._glComment.setPosition(x, 0, gluiconfig.zOpLayerTitle); // normal op comment
+            else this._glComment.setPosition(12, this._height, gluiconfig.zOpLayerTitle); // comment op (weird hardcoded values because of title scaling)
         }
     }
 
     _updateSelectedRect()
     {
-        if (!this.#visible || (!this.selected && this.#glRectSelectedBorder))
+        if (!this.#visible || !this.selected)
         {
-            this.#glRectSelectedBorder.visible = false;
+            if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.visible = false;
             return;
         }
 
@@ -789,7 +816,7 @@ export default class GlOp extends Events
                 this.updateSize();
                 this.updatePosition();
             }
-            // this.#glRectSelectedBorder.visible = true;
+            this.#glRectSelectedBorder.visible = true;
         }
     }
 
@@ -846,7 +873,7 @@ export default class GlOp extends Events
                 this.#glPorts[i].updateSize();
 
         if (this.#rectResize)
-            this.#rectResize.setPosition(this._width, this._height - this.#rectResize.h);
+            this.#rectResize.setPosition(this._width, this._height - this.#rectResize.h, gluiconfig.zOpLayerDecoration);
 
         if (this._glColorIndicator)
         {
@@ -854,7 +881,7 @@ export default class GlOp extends Events
             if (this.#glRectArea)h = this.#glRectArea.h;
             if (this.opUiAttribs.area)h = this.opUiAttribs.area.h;
 
-            this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0.04);
+            this._glColorIndicator.setPosition(-GlOp.COLORINDICATOR_WIDTH - GlOp.COLORINDICATOR_SPACING, 0.04, gluiconfig.zOpLayerDecoration);
             this._glColorIndicator.setSize(GlOp.COLORINDICATOR_WIDTH, h);
             this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, h);
         }
@@ -875,7 +902,7 @@ export default class GlOp extends Events
 
         if (this._glColorSwatch)
         {
-            this._glColorSwatch.setPosition(this._width + (this._height * indicSize * 0.5), this._height * ((1.0 - indicSize) / 2));
+            this._glColorSwatch.setPosition(this._width + (this._height * indicSize * 0.5), this._height * ((1.0 - indicSize) / 2), gluiconfig.zOpLayerDecoration);
             this._glColorSwatch.setSize(this._height * indicSize, this._height * indicSize);
             this._width += this._height * indicSize;
         }
@@ -1167,10 +1194,10 @@ export default class GlOp extends Events
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
+        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosSelectedOpsBorder - this.getPosZ());
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
-        if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zOpLayerTitle);
+        if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zOpLayerTitle);
         this._updateCommentPosition();
         this._updateIndicators();
         if (this._resizableArea) this._resizableArea.update();
@@ -1302,7 +1329,7 @@ export default class GlOp extends Events
                 else this.#glRectHighlighted.setColor(0.5, 0.5, 0.5, 1);
 
                 this.#glRectHighlighted.setSize(this.#glRectBg.w + 8, this.#glRectBg.h + 8);
-                this.#glRectHighlighted.setPosition(this.#glRectBg.x - 4, this.#glRectBg.y - 4, this.#glRectBg.z + 0.3);
+                this.#glRectHighlighted.setPosition(this.#glRectBg.x - 4, this.#glRectBg.y - 4, this.#glRectBg.z + gluiconfig.zOpLayerHighlight);
                 this.#glRectHighlighted.visible = true;
 
             }
@@ -1338,7 +1365,7 @@ export default class GlOp extends Events
 
                 this.#glLoadingIndicator.setColor(1, 1, 1, 1);
 
-                this.#glLoadingIndicator.setPosition(-(this._height * 0.125), (this._height * 0.375), -0.05);
+                this.#glLoadingIndicator.setPosition(-(this._height * 0.125), (this._height * 0.375), gluiconfig.zOpLayerIndicator);
                 this.#glLoadingIndicator.visible = true;
             }
         }
@@ -1403,7 +1430,7 @@ export default class GlOp extends Events
 
             if (hasHints)
             {
-                this.#glDotHint.setPosition(dotX, dotY, 0);
+                this.#glDotHint.setPosition(dotX, dotY, gluiconfig.zOpLayerIndicator);
                 this.#glDotHint.visible = this.visible && hasHints;
 
                 dotX += 2;
@@ -1411,21 +1438,21 @@ export default class GlOp extends Events
 
             if (hasWarnings)
             {
-                this.#glDotWarning.setPosition(dotX, dotY, 0);
+                this.#glDotWarning.setPosition(dotX, dotY, gluiconfig.zOpLayerIndicator);
                 this.#glDotWarning.visible = this.visible && hasWarnings;
                 dotX += 2;
             }
 
             if (hasErrors)
             {
-                this.#glDotError.setPosition(dotX, dotY, 0);
+                this.#glDotError.setPosition(dotX, dotY, gluiconfig.zOpLayerIndicator);
                 this.#glDotError.visible = this.visible && hasErrors;
                 dotX += 2;
             }
 
             if (notworking)
             {
-                this.#glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375));
+                this.#glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375), gluiconfig.zOpLayerIndicator);
                 this.#glNotWorkingCross.visible = this.visible && notworking;
             }
 
@@ -1556,7 +1583,7 @@ export default class GlOp extends Events
             if (this.opUiAttribs.hasOwnProperty("resizableY")) this.#rectResize.draggableY = this.opUiAttribs.resizableY;
 
             this.#rectResize.setSize(gluiconfig.rectResizeSize, gluiconfig.rectResizeSize);
-            this.#rectResize.setPosition((this.opUiAttribs.width || 0) - this.#rectResize.w, (this.opUiAttribs.height || 0) - this.#rectResize.h);
+            this.#rectResize.setPosition((this.opUiAttribs.width || 0) - this.#rectResize.w, (this.opUiAttribs.height || 0) - this.#rectResize.h, gluiconfig.zOpLayerDecoration);
             this.#rectResize.setColor(0.24, 0.24, 0.24, 1);
 
             this.#rectResize.draggable = true;
@@ -1676,7 +1703,7 @@ export default class GlOp extends Events
             this._glTitle.text = "";
             this.#glRerouteDot.setSize(this._width, this._height);
 
-            this.#glRerouteDot.setPosition(-0.5, 0, 0);
+            this.#glRerouteDot.setPosition(-0.5, 0, gluiconfig.zOpLayerIndicator);
             this.#glRerouteDot.setParent(this.#glRectBg);
 
             this.#glRerouteDot.setColorArray(GlPort.getInactiveColor(this.#glPorts[0].port.type));
@@ -1802,7 +1829,7 @@ export default class GlOp extends Events
 
                 this._glColorIndicatorSpacing = this.#instancer.createRect({ "name": "cispacing", "interactive": false, "parent": this.#glRectBg });
                 this._glColorIndicatorSpacing.setParent(this.#glRectBg);
-                this._glColorIndicatorSpacing.setPosition(-GlOp.COLORINDICATOR_SPACING, 0);
+                this._glColorIndicatorSpacing.setPosition(-GlOp.COLORINDICATOR_SPACING, 0, gluiconfig.zOpLayerDecoration);
                 this._glColorIndicatorSpacing.setSize(GlOp.COLORINDICATOR_SPACING, this._height);
             }
             this._glColorIndicator.setColorArray(chroma.hex(this.opUiAttribs.color).gl());
@@ -1852,6 +1879,7 @@ export default class GlOp extends Events
         {
             if (s != this.opUiAttribs.selected)
             {
+                if (s) this.bringToFront();
                 this.#op.setUiAttribs({ "selected": s });
 
                 for (const i in this._links) this._links[i].updateColor();

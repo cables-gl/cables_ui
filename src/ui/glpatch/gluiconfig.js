@@ -23,16 +23,29 @@ class GlUiConfig
         this.drawBoundingRect = true;
         this.clickMaxDuration = 300;
 
-        this.zPosOpUnSelected = -0.5;
-        this.zPosOpSelected = -0.6;
-        this.zPosOpUnlinked = 0.1;
+        this.zPosOps = -0.45;
+        this.zPosOpsUnlinked = 0.24;
+        this.zOpsBandDepth = 0.54;
+
+        this.zDepthBufferResolution = 2 / 65536;
+        this.zOpLayerStep = this.zDepthBufferResolution * 1.5;
+        this.zOpSlot = this.zOpLayerStep * 8;
+        this.zOpsMaxStackRank = Math.floor(this.zOpsBandDepth / this.zOpSlot);
+        this.zOpsStackHeadroom = Math.floor(this.zOpsMaxStackRank / 4);
+        this.zOpLayerHighlight = this.zOpLayerStep * 2;
+        this.zOpLayerDecoration = -this.zOpLayerStep;
+        this.zOpLayerPort = -this.zOpLayerStep * 2;
+        this.zOpLayerTitle = -this.zOpLayerStep * 3;
+        this.zOpLayerIndicator = -this.zOpLayerStep * 4;
+        this.zPortDotOffset = -this.zOpLayerStep;
 
         this.zPosCableButtonRect = -0.4;
         this.zPosCables = -0.4;
+        this.zPosSelectedOpsBorder = 0.3;
+        this.zPosAreas = 0.35;
         this.zPosGreyOutRect = -0.1;
 
-        this.zPosGlRectSelected = 0.25; // is relative child of op glbgrect
-        this.zPosGlTitle = -0.01; // is relative child of op glbgrect
+        this.zPosSubPatchAnimRect = 0.25;
 
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;

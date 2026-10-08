@@ -233,7 +233,7 @@ export default class GlPort
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
 
                 this.#dot.setSize(dotWidth, dotHeight);
-                this.#dot.setPosition(gluiconfig.portWidth / 2 - dotWidth / 2, dotPosY);
+                this.#dot.setPosition(gluiconfig.portWidth / 2 - dotWidth / 2, dotPosY, gluiconfig.zPortDotOffset);
             }
             else
             {
@@ -312,7 +312,7 @@ export default class GlPort
 
         this.#posX = this.#glop.getPortPos(this.#name, false);
 
-        this.#rect.setPosition(this.#posX, y, -0.0001);
+        this.#rect.setPosition(this.#posX, y, gluiconfig.zOpLayerPort);
         this.#rect.setSize(gluiconfig.portWidth, h);
         if (oldh != h) this._updateColor();
 
@@ -330,7 +330,7 @@ export default class GlPort
             let yl = gluiconfig.portHeight - gluiconfig.portLongPortHeight;
             if (this.#direction == Port.DIR_OUT) yl = this.#parentRect.h - gluiconfig.portHeight;
 
-            this.#longPortRect.setPosition(this.#posX + this.#rect.w, yl, this.#rect.z + 0.00001);
+            this.#longPortRect.setPosition(this.#posX + this.#rect.w, yl, gluiconfig.zOpLayerDecoration);
         }
     }
 

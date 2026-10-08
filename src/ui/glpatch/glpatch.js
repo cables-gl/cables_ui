@@ -88,6 +88,11 @@ export default class GlPatch extends Events
     /** @type {Object<string,GlOp>} */
     _glOpz = {};
 
+    #opStackOrder = 0;
+
+    /** @type {Object<string,number>} */
+    #opStackTops = {};
+
     /** @type {string | any[]} */
     _hoverOps = [];
 
@@ -569,6 +574,48 @@ export default class GlPatch extends Events
     get isAreaSelecting() { return this.#selectionArea.active; }
 
     get cgl() { return this.#cgl; }
+
+    nextOpStackOrder()
+    {
+        this.#opStackOrder++;
+        return this.#opStackOrder;
+    }
+
+    /**
+     * @param {string} subPatch
+     */
+    getOpStackTop(subPatch)
+    {
+        return this.#opStackTops[subPatch] || 0;
+    }
+
+    /**
+     * @param {string} subPatch
+     */
+    nextOpStackRank(subPatch)
+    {
+        if (this.getOpStackTop(subPatch) >= gluiconfig.zOpsMaxStackRank) this.#compactOpStack(subPatch);
+        this.#opStackTops[subPatch] = this.getOpStackTop(subPatch) + 1;
+        return this.#opStackTops[subPatch];
+    }
+
+    /**
+     * @param {string} subPatch
+     */
+    #compactOpStack(subPatch)
+    {
+        const glOps = [];
+        for (const i in this._glOpz)
+            if (this._glOpz[i].getSubPatch() == subPatch) glOps.push(this._glOpz[i]);
+
+        glOps.sort((a, b) => { return a.stackOrder - b.stackOrder; });
+
+        const maxRank = gluiconfig.zOpsMaxStackRank - gluiconfig.zOpsStackHeadroom;
+        const sharedBackRanks = Math.max(0, glOps.length - maxRank);
+
+        for (let i = 0; i < glOps.length; i++) glOps[i].stackRank = Math.max(1, i + 1 - sharedBackRanks);
+        this.#opStackTops[subPatch] = Math.min(glOps.length, maxRank);
+    }
 
     updateVizFlowMode()
     {
@@ -1332,7 +1379,9 @@ export default class GlPatch extends Events
 
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
         this.#rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.#cgl.pushDepthWrite(false);
         this.#textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.#cgl.popDepthWrite();
         this.#overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this.#cgl.popDepthTest();
@@ -1727,7 +1776,7 @@ export default class GlPatch extends Events
     {
         if (this._subpatchoprect)
         {
-            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), gluiconfig.zPosGlRectSelected);
+            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), gluiconfig.zPosSubPatchAnimRect);
             this._subpatchoprect.setSize(this._subpatchAnimOutW.getValue(this._time), this._subpatchAnimOutH.getValue(this._time));
             this._subpatchoprect.setOpacity(this._subpatchAnimFade.getValue(this._time));
         }
