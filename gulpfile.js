@@ -120,25 +120,40 @@ function _scripts_ui_webpack(done)
     });
 }
 
+function getGitInfo(commit)
+{
+    return {
+        "branch": commit.branch,
+        "commit": commit.hash,
+        "date": commit.committedOn,
+        "message": commit.subject
+    };
+}
+
 function getBuildInfo(cb)
 {
     const date = new Date();
     git.getLastCommit((err, commit) =>
     {
-        const buildInfo = {
-            "timestamp": date.getTime(),
-            "created": date.toISOString(),
-            "git": {
-                "branch": commit.branch,
-                "commit": commit.hash,
-                "date": commit.committedOn,
-                "message": commit.subject
-            }
-        };
-        fs.writeFile("./dist/buildinfo.json", JSON.stringify(buildInfo), () =>
+        git.getLastCommit((coreErr, coreCommit) =>
         {
-            cb(buildInfo);
-        });
+            const buildInfo = {
+                "timestamp": date.getTime(),
+                "created": date.toISOString(),
+                "git": getGitInfo(commit)
+            };
+            if (!coreErr && coreCommit)
+                buildInfo.core = {
+                    "timestamp": buildInfo.timestamp,
+                    "created": buildInfo.created,
+                    "git": getGitInfo(coreCommit)
+                };
+
+            fs.writeFile("./dist/buildinfo.json", JSON.stringify(buildInfo), () =>
+            {
+                cb(buildInfo);
+            });
+        }, { "dst": "../cables" });
     });
 }
 

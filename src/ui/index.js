@@ -108,3 +108,4 @@ CABLES.UI_EVENT_EDITORSESSION_INIT = "cblEditorSessionInit";
 
 // added during webpack build
 CABLES.UI.build = window.BUILD_INFO;
+if (CABLES.UI.build && CABLES.UI.build.core) CABLES.build = CABLES.UI.build.core;
