@@ -1772,10 +1772,10 @@ export class GlTimeline extends Events
     setPositions()
     {
         if (this.disposed) return;
-        let posy = this.getFirstLinePosy();
+        const rc = this.tlTimeScrollContainer.getBoundingClientRect();
 
         for (let i = 0; i < this.#tlAnims.length; i++)
-            this.#tlAnims[i].updateGlPos();
+            this.#tlAnims[i].updateGlPos(rc);
     }
 
     dispose()
@@ -1949,6 +1949,7 @@ export class GlTimeline extends Events
         this.ruler.update();
         this.scroll.update();
         for (let i = 0; i < this.#tlAnims.length; i++) this.#tlAnims[i].update();
+        this.setPositions();
         this.cursorVertLineRect.setSize(1, this.#cgl.canvasHeight);
         this.updateCursor();
 

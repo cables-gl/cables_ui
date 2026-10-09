@@ -431,7 +431,7 @@ export class TlAnimLine extends Events
             }
         }
 
-        this.#glTl.setPositions();
+        this.#glTl.needsUpdateAll = "titles";
     }
 
     setTitlePos()
@@ -444,7 +444,10 @@ export class TlAnimLine extends Events
         }
     }
 
-    updateGlPos()
+    /**
+     * @param {DOMRect} [rc]
+     */
+    updateGlPos(rc)
     {
         if (!this.isGraphLayout())
         {
@@ -453,7 +456,7 @@ export class TlAnimLine extends Events
 
             if (this.#titles[0])
             {
-                const rc = this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
+                rc = rc || this.#glTl.tlTimeScrollContainer.getBoundingClientRect();
                 const r = this.#titles[0].getClientRect();
                 if (this.isHidden)
                 {
@@ -488,7 +491,6 @@ export class TlAnimLine extends Events
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
-        this.updateGlPos();
     }
 
     updateColorKeys()
