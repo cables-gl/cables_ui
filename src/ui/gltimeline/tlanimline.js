@@ -98,21 +98,6 @@ export class TlAnimLine extends Events
         this.#rectBg.setColorArray([1, 1, 1, 1]);
 
         this.#listeners.push(
-            this.#glTl.on(GlTimeline.EVENT_LAYOUTCHANGE, () =>
-            {
-                if (this.#glTl.isGraphLayout())
-                {
-                    this.#valueRuler = new TlValueRuler(glTl, this, this.#rectBg);
-                    this.#glTextSideValue = new GlText(this.#glTl.texts, "");
-                    this.#disposeRects.push(this.#glTextSideValue);
-                }
-                else
-                {
-                    if (this.#glTextSideValue) this.#glTextSideValue = this.#glTextSideValue.dispose();
-                    if (this.#valueRuler) this.#valueRuler = this.#valueRuler?.dispose();
-                }
-            }),
-
             this.#rectBg.on(GlRect.EVENT_POINTER_MOVE, (_x, y) =>
             {
                 if (this.#glTextSideValue)
@@ -498,7 +483,27 @@ export class TlAnimLine extends Events
         else this.#rectBg.setSize(0, 0);
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
+        this.#updateValueRuler();
+    }
+
+    #updateValueRuler()
+    {
+        const showRuler = this.isGraphLayout() && this.hasBackground();
+
+        if (showRuler && !this.#valueRuler)
+        {
+            this.#valueRuler = new TlValueRuler(this.#glTl, this, this.#rectBg);
+            this.#glTextSideValue = new GlText(this.#glTl.texts, "");
+        }
+        else if (!showRuler && this.#valueRuler) this.#disposeValueRuler();
+
         if (this.#valueRuler) this.#valueRuler.update();
+    }
+
+    #disposeValueRuler()
+    {
+        if (this.#valueRuler) this.#valueRuler = this.#valueRuler.dispose();
+        if (this.#glTextSideValue) this.#glTextSideValue = this.#glTextSideValue.dispose();
     }
 
     updateColorKeys()
@@ -605,7 +610,7 @@ export class TlAnimLine extends Events
         if (this.#disposed) return;
         this.#disposed = true;
         this.foreachTlVizPorts((p) => { p.emitEvent("tlVizDispose"); });
-        if (this.#valueRuler) this.#valueRuler = this.#valueRuler.dispose();
+        this.#disposeValueRuler();
 
         for (let i = 0; i < this.#titles.length; i++) this.#titles[i].dispose();
 

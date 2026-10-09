@@ -70,8 +70,8 @@ export class TlValueRuler
     dispose()
     {
         for (let i = 0; i < this.#marker.length; i++) this.#marker[i].dispose();
-        if (this.#zeroRect)
-            this.#zeroRect.dispose();
+        this.#marker = [];
+        if (this.#zeroRect) this.#zeroRect = this.#zeroRect.dispose();
 
         return null;
     }
