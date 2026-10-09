@@ -126,7 +126,8 @@
             incrementStartup();
             logStartup("loaded ui");
 
-            CABLESUILOADER.talkerAPI.send(CABLESUILOADER.TalkerAPI.CMD_GET_ALL_OPDOCS, { "projectId": cfg.patchId }, (err, _data) =>
+            CABLESUILOADER.talkerAPI.send(CABLESUILOADER.TalkerAPI.CMD_GET_ALL_OPDOCS, { "projectId": cfg.patchId },
+             (err, _data) =>
             {
                 if (err)
                 {
@@ -136,9 +137,6 @@
                 {
                     CABLESUILOADER.preload.opDocsAll = _data;
                 }
-            }, (response) =>
-            {
-                console.error("preloading error", response);
             });
 
             loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops', { "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); } });
@@ -147,21 +145,27 @@
                 incrementStartup();
                 logStartup('loaded cables ops');
 
-                waitForAce();
+                waitForFinish();
             });
         });
     };
 
-    function waitForAce()
+    function waitForFinish()
     {
         if (!CABLESUILOADER.preload.opDocsAll)
         {
-            setTimeout(waitForAce, 100);
+            setTimeout(waitForFinish, 100);
         }
         else
         {
-            CABLESUILOADER.uiLoadFiles = performance.now() - CABLESUILOADER.uiLoadStart;
-            CABLES.UI.startUi(CABLESUILOADER.cfg);
+            const finish= ()=>
+                {
+                    CABLESUILOADER.uiLoadFiles = performance.now() - CABLESUILOADER.uiLoadStart;
+                    CABLES.UI.startUi(CABLESUILOADER.cfg);
+                }
+
+            if(window.electronStartupUi)window.electronStartupUi(finish)
+            else finish()
         }
     }
 
