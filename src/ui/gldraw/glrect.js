@@ -45,6 +45,8 @@ export default class GlRect extends Events
     static SHAPE_ARROW_DOWN = 11;
     static SHAPE_PLUS = 12;
     static SHAPE_RHOMB = 13;
+    static SHAPE_TRIANGLE_DOWN = 14;
+    static SHAPE_TRIANGLE_UP = 15;
 
     /** @type {array} */
     color = vec4.create();
@@ -287,14 +289,7 @@ export default class GlRect extends Events
         if (g === null) g = 1.0;
         if (b === null) b = 1.0;
         if (a === null) a = 1.0;
-        if (r.length)
-        { // todo remove after jul2025
-            console.warn("setcolor cant use array, use colorarray", this.name, r, g, b, a);
-            logStack();
-            vec4.set(this.color, r[0], r[1], r[2], r[3]);
-        }
-        else
-            vec4.set(this.color, r, g, b, a);
+        vec4.set(this.color, r, g, b, a);
         this.#rectInstancer.setColorArray(this.#attrIndex, this.color);
     }
 

@@ -34,6 +34,9 @@ export default class GlPort
     #dot;
 
     /** @type {GlRect} */
+    #arrowRect;
+
+    /** @type {GlRect} */
     #longPortRect;
 
     #activity = 1;
@@ -128,6 +131,7 @@ export default class GlPort
 
         if (attribs.hasOwnProperty("addPort")) this._updateColor();
         if (attribs.hasOwnProperty("greyout")) this._updateColor();
+        if (attribs.hasOwnProperty("arrow")) this.updateSize();
         if (attribs.hasOwnProperty("hover")) this.updateSize();
 
         if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
@@ -276,6 +280,12 @@ export default class GlPort
         return this.#rect.w;
     }
 
+    get visibleHeight()
+    {
+        if (this.#rect.shape == GlRect.SHAPE_HALF_BLOCK_TOP || this.#rect.shape == GlRect.SHAPE_HALF_BLOCK_BOTTOM) return this.#rect.h / 2;
+        return this.#rect.h;
+    }
+
     updateSize()
     {
         if (!this.#rect) return;
@@ -331,6 +341,22 @@ export default class GlPort
             if (this.#direction == Port.DIR_OUT) yl = this.#parentRect.h - gluiconfig.portHeight;
 
             this.#longPortRect.setPosition(this.#posX + this.#rect.w, yl, gluiconfig.zOpLayerDecoration);
+        }
+
+        let showArrow = !!this.#port.uiAttribs.arrow;
+        if (this.#arrowRect && !showArrow) this.#arrowRect = this.#arrowRect.dispose();
+        if (!this.#arrowRect && showArrow)
+        {
+            this.#arrowRect = new GlRect(this.#rectInstancer, { "name": "portdot", "parent": this.#rect, "interactive": false });
+            this.#arrowRect.setShape(GlRect.SHAPE_TRIANGLE_DOWN);
+            this.#arrowRect.setSize(this.width, this.width / 3);
+            this.#arrowRect.setColorArray(this.#rect.color);
+            this.#rect.addChild(this.#arrowRect);
+        }
+        if (this.#arrowRect)
+        {
+            if (this.port.direction == Port.DIR_IN) this.#arrowRect.setPosition(0, this.#rect.h, gluiconfig.zPortDotOffset);
+            else this.#arrowRect.setPosition(0, this.visibleHeight - 0.1, gluiconfig.zPortDotOffset);
         }
     }
 
@@ -449,6 +475,7 @@ export default class GlPort
         this.#mouseEventListeners.length = 0;
         if (this.#rect) this.#rect = this.#rect.dispose();
         if (this.#dot) this.#dot = this.#dot.dispose();
+        if (this.#arrowRect) this.#arrowRect = this.#arrowRect.dispose();
         if (this.#longPortRect) this.#longPortRect = this.#longPortRect.dispose();
     }
 

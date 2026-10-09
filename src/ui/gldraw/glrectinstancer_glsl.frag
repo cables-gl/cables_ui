@@ -222,6 +222,14 @@ float samp(in vec2 uv, float w) {
             if(abs(uw.y-0.5) < abs(mod(uw.x,0.5))) finalColor.a=1.0;
             else discard;
     }
+    else if (shape==14.0) // triangle down
+    {
+        if(abs(uv.x-0.5)*2.0>uv.y)discard;
+    }
+    else if (shape==15.0) // triangle up
+    {
+        if(abs(uv.x-0.5)*2.0>1.0-uv.y)discard;
+    }
 
 
 
