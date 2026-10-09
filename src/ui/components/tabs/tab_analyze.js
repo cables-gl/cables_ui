@@ -20,7 +20,7 @@ export default class AnalyzePatchTab extends Events
         super();
         this._tabs = tabs || gui.mainTabs;
 
-        this._tab = new Tab("Analyze", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
+        this._tab = new Tab("Analyze", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true" });
         this._tabs.addTab(this._tab, true);
         gui.maintabPanel.show(true);
 
@@ -70,7 +70,6 @@ export default class AnalyzePatchTab extends Events
         report += "<h2>Ops</h2>";
 
         const opsCount = {};
-        const opDirs = {};
         const hasOpDirs = platform.frontendOptions.hasOpDirectories;
 
         for (let i = 0; i < patch.ops.length; i++)
@@ -78,61 +77,10 @@ export default class AnalyzePatchTab extends Events
             const opName = patch.ops[i].objName;
             opsCount[opName] = opsCount[opName] || 0;
             opsCount[opName]++;
-            if (hasOpDirs)
-            {
-                const doc = gui.opDocs.getOpDocByName(opName);
-                const opDir = doc ? doc.opDir : null;
-                if (opDir)
-                {
-                    opDirs[opDir] = opDirs[opDir] || 0;
-                    opDirs[opDir]++;
-                }
-            }
         }
 
         report += patch.ops.length + " Ops total<br/>";
         report += Object.keys(opsCount).length + " unique ops<br/>";
-
-        if (hasOpDirs)
-        {
-            report += "<hr/>";
-            report += "<h2>Used Op Directories</h2>";
-            Object.keys(opDirs).forEach((opDir) =>
-            {
-                report += opDirs[opDir] + " ops from " + opDir;
-                report += "&nbsp;<a class=\"icon icon-folder icon-0_75x\" onClick=\"CABLESUILOADER.talkerAPI.send('openDir', { 'dir': '" + opDir + "'});\"></a>";
-                report += "<br>";
-            });
-        }
-
-        if (platform.frontendOptions.hasAssetDirectories)
-        {
-            const ops = gui.corePatch().ops;
-            const assets = {};
-            let assetCount = 0;
-            for (let i = 0; i < ops.length; i++)
-            {
-                for (let j = 0; j < ops[i].portsIn.length; j++)
-                {
-                    if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display === "file")
-                    {
-                        const asset = ops[i].portsIn[j].get();
-                        if (asset)
-                        {
-                            assets[asset] = assets[asset] || 0;
-                            assets[asset]++;
-                            assetCount++;
-                        }
-                    }
-                }
-            }
-
-            report += "<hr/>";
-            report += "<h2>Used Assets</h2>";
-
-            report += assetCount + " Assets total<br/>";
-            report += Object.keys(assets).length + " unique assets<br/>";
-        }
 
         report += "<hr/>";
         report += "<h2>Op Types</h2>";
@@ -197,7 +145,7 @@ export default class AnalyzePatchTab extends Events
         report += numKeys + " animation keys<br/>";
 
         report += "<hr/>";
-        report += "<h2>Most use Ops</h2>";
+        report += "<h2>Most used Ops</h2>";
 
         let opscountSorted = [];
 

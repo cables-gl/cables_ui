@@ -1,34 +1,37 @@
 <script id="tab_electron_opdirs" type="text/x-handlebars-template">
-
     <div class="tabContentScrollContainer">
         <h2>Op Directories</h2>
-        Manage directories from where to pick Ops in this project.
+        Manage directories from where to find Ops.
         <br/><br/>
-        If multiple Ops with the same name exist,<br/>
-        the Op will be loaded from the directory higher on this list.
+        If multiple Ops with the same name exist, the Op will be loaded from the directory higher on this list.
         <br/><br/>
-        <a id="addOpProjectDir" class="button-small button-icon tt info" data-info="add op dir" ><span class="icon icon-file-plus"></span>Add Directory</a>
-        <!-- <a id="addOpPackage" class="button-small button-icon tt info" data-info="add op package" data-tt="add op package"><span class="icon icon-file-plus"></span>Add Package</a> -->
+        <a id="addOpDir" class="button-small button-icon tt info"><span class="icon icon-file-plus"></span>&nbsp; Add Directory</a>
 
         <br/><br/>
         {{#if dirs}}
-            <div id="dirlist" class="dragList draggable">
-            {{#each dirs}}
-                    <div class="draggable" data-id="{{@index}}" data-dir="{{dir}}">
-                        {{#unless fixedPlace}}<span class="handle icon-grip icon icon-0_75x draggable" style="float: none;"></span>{{/unless}}
-                        <span class="dir">{{dir}}</span>
-                        <div class="controls">
-                            using <span class="usedOps">{{numUsedOps}}</span> of <span class="ops">{{numOps}}</span> ops&nbsp;
-                            <a class="icon icon-folder icon-0_75x" data-dir="{{dir}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir});"></a>&nbsp;
-                            {{#unless fixedPlace}}<a class="removeOpProjectDir icon icon-x icon-0_75x" data-dir="{{dir}}"></a>{{/unless}}
-                        </div>
-                    </div>
-            {{/each}}
-                <div class="highlightBlock info hidden" style="margin-top: 20px;"></div>
-            </div>
+            <table class="table">
+                <thead>
+                    <th></th>
+                    <th>Type</th>
+                    <th>Directory</th>
+                    <th>Num Ops</th>
+                    <th>Used</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    {{#each dirs}}
+                    <tr data-id="{{@index}}" data-dir="{{dir}}">
+                        <td><a class="icon icon-folder icon-0_75x" data-dir="{{dir}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir});"></a></td>
+                        <td>{{type}}</td>
+                        <td><span class="dir">{{dir}}</span></td>
+                        <td>{{numOps}}</td>
+                        <td>{{#if numUsedOps}}{{numUsedOps}}{{/if}}</td>
+                        <td>{{#if showOptions}}<a class="opdirthreedot" data-tt="more options" data-dir="{{dir}}"><span class="icon icon-three-dots"></span></a>{{/if}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         {{/if}}
     </div>
 
 </script>
-
-

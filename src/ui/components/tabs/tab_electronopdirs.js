@@ -5,6 +5,7 @@ import ModalDialog from "../../dialogs/modaldialog.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
+import { contextMenu } from "../../elements/contextmenu.js";
 
 export default class ElectronOpDirs
 {
@@ -17,7 +18,7 @@ export default class ElectronOpDirs
         this._count = 0;
         this._timeout = null;
 
-        this._tab = new Tab("op directories", { "icon": "folder", "singleton": true, "infotext": "tab_profiler", "padding": true });
+        this._tab = new Tab("Op Directories", { "icon": "folder", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
         this.show();
 
@@ -34,18 +35,22 @@ export default class ElectronOpDirs
         {
             if (!err && r.data)
             {
-                const html = getHandleBarHtml("tab_electron_opdirs", { "dirs": r.data });
+                const templateVars = [];
+                r.data.forEach((dir) =>
+                {
+                    if (dir.removeable) dir.showOptions = true;
+                    templateVars.push(dir);
+                });
+                const html = getHandleBarHtml("tab_electron_opdirs", { "dirs": templateVars });
                 this._tab.html(html);
 
-                const listEle = ele.byId("dirlist");
-                const infoBlock = listEle.querySelector(".highlightBlock");
-                const addButton = this._tab.contentEle.querySelector("#addOpProjectDir");
+                const addButton = this._tab.contentEle.querySelector("#addOpDir");
 
                 if (addButton)
                 {
                     addButton.addEventListener("click", () =>
                     {
-                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_PROJECT_OPDIR, {}, (dirErr, _dirRes) =>
+                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_ADD_OPDIR, {}, (dirErr, _dirRes) =>
                         {
                             if (!dirErr)
                             {
@@ -61,73 +66,22 @@ export default class ElectronOpDirs
                     });
                 }
 
-                const packageButton = this._tab.contentEle.querySelector("#addOpPackage");
-                if (packageButton)
+                ele.clickables(this._tab.contentEle, ".opdirthreedot", (e, dataset) =>
                 {
-                    packageButton.addEventListener("click", () =>
-                    {
-                        platform.talkerAPI.send(TalkerAPI.CMD_ADD_OP_PACKAGE, {}, (dirErr, _dirRes) =>
+                    const contextItems = [];
+                    contextItems.push({
+                        "title": "Remove",
+                        "func": () =>
                         {
-                            if (!dirErr)
+                            const dir = dataset.dir;
+                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_REMOVE_OPDIR, dir, () =>
                             {
                                 this.show();
                                 this._loadOpsInDirs();
-                            }
-                            else
-                            {
-                                new ModalDialog({ "showOkButton": true, "warning": true, "title": "Warning", "text": dirErr.msg });
-                                this._log.info(dirErr.msg);
-                            }
-                        });
+                            });
+                        }
                     });
-                }
-
-                const removeButtons = this._tab.contentEle.querySelectorAll(".removeOpProjectDir");
-                removeButtons.forEach((removeButton) =>
-                {
-                    removeButton.addEventListener("click", () =>
-                    {
-                        const dir = removeButton.dataset.dir;
-                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_REMOVE_PROJECT_OPDIR, dir, () =>
-                        {
-                            this.show();
-                            this._loadOpsInDirs();
-                        });
-                    });
-                });
-                ele.hide(infoBlock);
-
-                new Sortable(listEle, {
-                    "animation": 150,
-                    "handle": ".handle",
-                    "ghostClass": "ghost",
-                    "dragClass": "dragActive",
-                    "onEnd": () =>
-                    {
-                        infoBlock.classList.add("info");
-                        infoBlock.classList.remove("error");
-                        const order = [];
-                        const dirs = listEle.querySelectorAll("[data-dir]");
-                        dirs.forEach((dirEle) =>
-                        {
-                            order.push(dirEle.dataset.dir);
-                        });
-                        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SAVE_PROJECT_OPDIRS_ORDER, order, (orderErr, orderRes) =>
-                        {
-                            if (orderRes && orderRes.success)
-                            {
-                                infoBlock.innerHTML = "Saved, please reload the patch to see the changes";
-                                ele.show(infoBlock);
-                            }
-                            else
-                            {
-                                infoBlock.classList.remove("info");
-                                infoBlock.classList.add("error");
-                                infoBlock.innerHTML = orderErr;
-                                ele.show(infoBlock);
-                            }
-                        });
-                    }
+                    contextMenu.show({ "items": contextItems }, e.target);
                 });
             }
         });

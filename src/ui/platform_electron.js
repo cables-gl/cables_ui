@@ -27,7 +27,6 @@ export default class PlatformElectron extends Platform
         this.frontendOptions.showLocalOpDirButton =
         this.frontendOptions.editOpSummary =
         this.frontendOptions.hasOpDirectories =
-        this.frontendOptions.hasAssetDirectories =
         this.frontendOptions.showWelcome =
         this.frontendOptions.showBuildInfoMenuLink =
         this.frontendOptions.opDependencies =
