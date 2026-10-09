@@ -1,8 +1,12 @@
-export default class UiProfiler
+import { Events } from "cables-shared-client";
+
+export default class UiProfiler extends Events
 {
+    static EVENT_HIGHLIGHT = "highlight";
 
     constructor()
     {
+        super();
         this._measures = {};
         this.ignore = undefined;
         this.maxTimes = 100;
@@ -32,6 +36,14 @@ export default class UiProfiler
     clear()
     {
         this._measures = {};
+    }
+
+    /**
+     * @param {string} name
+     */
+    highlight(name)
+    {
+        this.emitEvent(UiProfiler.EVENT_HIGHLIGHT, name);
     }
 
     /**

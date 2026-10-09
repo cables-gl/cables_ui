@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { gui } from "../../gui.js";
 import { UserSettings, userSettings } from "../usersettings.js";
+import UiProfiler from "../uiprofiler.js";
 
 export class UiProfilerTab extends Events
 {
@@ -24,10 +25,13 @@ export class UiProfilerTab extends Events
         this.#filter = userSettings.get(UserSettings.PREF_SHOW_UIPERF_FILTER) || "";
         this._ignore = false;
 
+        const highlightListener = gui.uiProfiler.on(UiProfiler.EVENT_HIGHLIGHT, (name) => { this.highlight(name); });
+
         this._tab.on("close", () =>
         {
             userSettings.set(UserSettings.PREF_SHOW_UI_PERF, false);
             clearTimeout(this._timeout);
+            gui.uiProfiler.off(highlightListener);
         });
 
         ele.byId("uiPerfFilter").value = this.#filter;

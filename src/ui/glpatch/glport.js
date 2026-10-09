@@ -468,7 +468,7 @@ export default class GlPort
      */
     static getColor(type, hovering, _selected, activity)
     {
-        const perf = gui.uiProfiler.start("[glport] getcolor");
+        // const perf = gui.uiProfiler.start("[glport] getcolor");
 
         let name = "";
         let portname = "";
@@ -487,7 +487,7 @@ export default class GlPort
 
         let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
 
-        perf.finish();
+        // perf.finish();
 
         return col;
     }
