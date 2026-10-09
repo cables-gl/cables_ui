@@ -216,7 +216,11 @@ export class GlTimeline extends Events
         this.loopAreaDrag = new GlDragArea(this, null, this.#rectsOver);
         this.loopAreaDrag.setColor(1, 0.2, 0, 0.3);
 
-        this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () => { this.updateSelectedKeysDragArea(); });
+        this.on(GlTimeline.EVENT_KEYSELECTIONCHANGE, () =>
+        {
+            this.updateSelectedKeysDragArea();
+            this.scroll.setIndicatorsDirty();
+        });
         this.bgRect = this.#rectsOver.createRect({ "draggable": false, "interactive": true, "name": "bgrect" });
         this.bgRect.setSize(cgl.canvasWidth, cgl.canvasHeight);
         this.bgRect.setPosition(0, 20, 1);
@@ -283,6 +287,7 @@ export class GlTimeline extends Events
         gui.corePatch().on(Patch.EVENT_OP_DELETED, () => { this.initSoon(); });
         gui.corePatch().on(Patch.EVENT_OP_ADDED, () => { this.initSoon(); });
         gui.corePatch().on(Port.EVENT_ANIM_TOGGLE, () => { this.initSoon(); });
+        gui.corePatch().on(Patch.EVENT_ANIM_MAXTIME_CHANGE, () => { this.scroll.setIndicatorsDirty(); });
 
         this.#elKeyParamPanel = document.createElement("div");
         this.#elKeyParamPanel.classList.add("keyOverlay");
@@ -1663,6 +1668,7 @@ export class GlTimeline extends Events
     init()
     {
         if (this.disposed) return;
+        this.scroll.setIndicatorsDirty();
 
         const perf = gui.uiProfiler.start("[gltimeline] init");
 
@@ -1944,6 +1950,7 @@ export class GlTimeline extends Events
     {
         const perf = gui.uiProfiler.start("[gltimeline] udpateAllElements");
 
+        if (this.needsUpdateAll) this.scroll.setIndicatorsDirty();
         this.needsUpdateAll = "";
 
         this.ruler.update();

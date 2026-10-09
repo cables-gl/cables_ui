@@ -27,6 +27,7 @@ export class tlOverview extends Events
 
     /** @type {GlRect[]} */
     #indicatorRects = [];
+    #indicatorsDirty = true;
     #rulerBg;
 
     /**
@@ -102,51 +103,48 @@ export class tlOverview extends Events
         this.updateIndicators();
     }
 
+    setIndicatorsDirty()
+    {
+        this.#indicatorsDirty = true;
+    }
+
     updateIndicators()
     {
+        this.#indicatorsDirty = false;
         const steps = Math.floor((this.#width || 10) / 10);
         const stepSeconds = this.#glTl.duration / (steps - 2);
         this.#indicatorRects.length = Math.max(this.#indicatorRects.length, steps);
 
+        const found = new Array(this.#indicatorRects.length).fill(false);
+        const selected = new Array(this.#indicatorRects.length).fill(false);
+        const selectedKeys = new Set(this.#glTl.getSelectedKeys());
         const ports = gui.corePatch().getAllAnimPorts();
+
+        for (let j = 0; j < ports.length; j++)
+        {
+            const keys = ports[j].anim.keys;
+            for (let k = 0; k < keys.length; k++)
+            {
+                const idx = Math.floor(keys[k].time / stepSeconds);
+                if (idx < 0 || idx >= found.length) continue;
+                found[idx] = true;
+                if (selectedKeys.has(keys[k])) selected[idx] = true;
+            }
+        }
 
         for (let i = 0; i < this.#indicatorRects.length; i++)
         {
-            let selected = false;
-            let found = false;
-            for (let j = 0; j < ports.length; j++)
-            {
-                if (ports[j].anim.hasKeyframesBetween(stepSeconds * i, stepSeconds * (i + 1)))
-                {
-                    found = true;
-
-                    for (let ki = 0; ki < ports[j].anim.keys.length; ki++)
-                    {
-                        if (ports[j].anim.keys[ki].time >= stepSeconds * i && ports[j].anim.keys[ki].time < stepSeconds * (i + 1))
-                        {
-                            if (this.#glTl.isKeySelected(ports[j].anim.keys[ki]))
-                            {
-                                selected = true;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
             if (!this.#indicatorRects[i]) this.#indicatorRects[i] = this.#glTl.rectsNoScroll.createRect({ "interactive": false, "draggable": false, "name": "scroll indicator" + i });
 
-            if (found)
+            if (found[i])
             {
                 const x = stepSeconds * i * this.#glTl.view.pixelPerSecond;
                 this.#indicatorRects[i].setPosition(x, this.height / 3, -0.12);
                 this.#indicatorRects[i].setSize(this.height / 3, this.height / 3);
                 this.#indicatorRects[i].setShape(GlRect.SHAPE_RHOMB);
 
-                if (selected)
-                    this.#indicatorRects[i].setColorArray(gui.theme.colors_timeline.key_selected);
-                else
-                    this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);
+                if (selected[i]) this.#indicatorRects[i].setColorArray(gui.theme.colors_timeline.key_selected);
+                else this.#indicatorRects[i].setColor(0.5, 0.5, 0.5, 1);
 
                 this.#indicatorRects[i].setParent(this.#bgRect);
             }
@@ -173,6 +171,7 @@ export class tlOverview extends Events
     {
         this.#width = w;
         this.#bgRect.setSize(this.#width, this.height);
+        this.#indicatorsDirty = true;
         // this.ruler.update();
 
     }
@@ -190,7 +189,7 @@ export class tlOverview extends Events
 
         this.#glRectCursor.setPosition(Math.max(0, cx - 1), 0);
 
-        this.updateIndicators();
+        if (this.#indicatorsDirty) this.updateIndicators();
 
         const bounds = this.#glTl.getSelectedKeysBoundsTime();
 

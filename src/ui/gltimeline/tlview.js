@@ -182,7 +182,7 @@ export class tlView
 
     get timeRight()
     {
-        return this.pixelToTime(this.#tl.width) + this.offset;
+        return this.pixelToTime(this.#tl.width / window.devicePixelRatio) + this.offset;
     }
 
     /**

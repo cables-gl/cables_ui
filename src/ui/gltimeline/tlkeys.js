@@ -123,6 +123,7 @@ export class TlKeys extends Events
             anim.on(Anim.EVENT_CHANGE, () =>
             {
                 this.#needsUpdate = true;
+                this.#glTl.scroll.setIndicatorsDirty();
                 for (let i = 0; i < this.#keys.length; i++)
                     this.#keys[i].update();
             })

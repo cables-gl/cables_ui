@@ -147,19 +147,26 @@ export class glTlRuler extends Events
     {
         if (fade == undefined)fade = 1;
         if (s < 0) return;
-        if (this.count == this.marks.length) return console.log("too many marks");
-        const x = this.view.timeToPixel(s - this.view.offset);
-
-        let mr = this.marks[this.count];
-        let mheight = 7;
 
         if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
             if (title.includes(".")) return;
 
+        let mr = this.timeMarkerLookup[s];
+        if (!mr)
+        {
+            if (this.count == this.marks.length) return console.log("too many marks");
+            mr = this.marks[this.count];
+            mr.setSize(1, 0);
+            this.timeMarkerLookup[s] = mr;
+            this.count++;
+        }
+
+        const x = this.view.timeToPixel(s - this.view.offset);
+        let mheight = 7;
+
         if (showTitle)
         {
             mheight = 20;
-            mr.setColor(0.8, 0.8, 0.8, showTitle ? 1 : 0);
 
             if ((this.timeTitleLookup[s] || 0) < showTitle && this.titleCounter < this.titles.length)// this.titleCounter == 0 || x - this.titles[this.titleCounter - 1].x > this.titles[this.titleCounter - 1].width * 1.8)
             {
@@ -176,17 +183,15 @@ export class glTlRuler extends Events
                 console.log("too many titles...");
             }
         }
-        else
-        {
-            if (special) mheight = 14;
-            mr.setColor(0.5, 0.5, 0.5, fade);
-        }
+        else if (special) mheight = 14;
+
+        if (mheight < mr.h) return;
+
+        if (showTitle) mr.setColor(0.8, 0.8, 0.8, 1);
+        else mr.setColor(0.5, 0.5, 0.5, fade);
 
         mr.setSize(1, mheight);
         mr.setPosition(x, this.height - mheight);
-
-        this.timeMarkerLookup[s] = mr;
-        this.count++;
     }
 
     /**
@@ -244,18 +249,18 @@ export class glTlRuler extends Events
 
         /// /////////////////////////////////////////////////////////////
         // things with title
-        const frameInSeconds = 1 / this.#glTl.fps;
+        const fps = this.#glTl.fps;
         let fade = 0;
         let minWidth = 40;
         let maxWidth = 60;
 
         fade = this.between(widthOneFrame, 10, 15);
         if (fade)
-            for (let s = timeLeft; s < timeRight; s += frameInSeconds) this.addMarker(s, Math.ceil(s / frameInSeconds) + "f", this.between(widthOneFrame, minWidth, maxWidth) * (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES ? 1 : 0) > 0, false, fade);
+            for (let f = Math.ceil(timeLeft * fps); f < timeRight * fps; f++) this.addMarker(f / fps, f + "f", this.between(widthOneFrame, minWidth, maxWidth) * (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES ? 1 : 0) > 0, false, fade);
 
         fade = this.between(widthTenthSecond, 10, 15);
         if (fade)
-            for (let s = timeLeft; s < timeRight; s += 0.1) this.addMarker(s, this.title(s), this.between(widthTenthSecond, minWidth, maxWidth) > 0, false, fade);
+            for (let ts = timeLeft * 10; ts < timeRight * 10; ts++) this.addMarker(ts / 10, this.title(ts / 10), this.between(widthTenthSecond, minWidth, maxWidth) > 0, false, fade);
 
         fade = this.between(widthHalfSecond, 10, 15);
         if (fade)
