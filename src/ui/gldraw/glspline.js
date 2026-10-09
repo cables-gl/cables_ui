@@ -1,4 +1,5 @@
 import GlRect from "./glrect.js";
+import { EventListener } from "cables-shared-client/src/eventlistener.js";
 import { GlSplineDrawer } from "./glsplinedrawer.js";
 
 export default class GlSpline
@@ -19,6 +20,12 @@ export default class GlSpline
 
     #disposed = false;
 
+    /** @type {EventListener} */
+    #listenerCleared = null;
+
+    /** @type {EventListener} */
+    #listenerParentPos = null;
+
     /**
      * @param {GlSplineDrawer} splineDrawer
      * @param {string} name
@@ -31,7 +38,7 @@ export default class GlSpline
         this.#splineIdx = this.#splineDrawer.getSplineIndex(this.#name);
         this.#parentRect = null;
 
-        splineDrawer.on(GlSplineDrawer.EVENT_CLEARED, () =>
+        this.#listenerCleared = splineDrawer.on(GlSplineDrawer.EVENT_CLEARED, () =>
         {
             this.dispose();
         });
@@ -43,10 +50,11 @@ export default class GlSpline
     setParentRect(r)
     {
         if (this.checkDisposed()) return;
-        if (this.#parentRect) this.#parentRect.off(this.rebuild.bind(this));
+        this.#listenerParentPos?.remove();
+        this.#listenerParentPos = null;
 
         this.#parentRect = r;
-        if (this.#parentRect) this.#parentRect.on(GlRect.EVENT_POSITIONCHANGED, this.rebuild.bind(this));
+        if (this.#parentRect) this.#listenerParentPos = this.#parentRect.on(GlRect.EVENT_POSITIONCHANGED, this.rebuild.bind(this));
         this.rebuild();
     }
 
@@ -117,7 +125,12 @@ export default class GlSpline
 
     dispose()
     {
+        if (this.#disposed) return null;
         this.#disposed = true;
+        this.#listenerCleared?.remove();
+        this.#listenerParentPos?.remove();
+        this.#listenerCleared = null;
+        this.#listenerParentPos = null;
         this.#splineDrawer.deleteSpline(this.#splineIdx);
         this.#splineIdx = -1;
         return null;

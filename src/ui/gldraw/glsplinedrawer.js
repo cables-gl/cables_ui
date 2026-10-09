@@ -392,15 +392,25 @@ export class GlSplineDrawer extends Events
                     this.#splines[idx].hidden = false;
                 }
                 else
+                if (points.length == 0 && this.#splines[idx].origPoints.length > 0)
+                {
+                    isDifferent = true;
+                    isDifferentLength = true;
+                    this.rebuildLater("spline emptied");
+                }
+                else
                 if (points.length < this.#splines[idx].origPoints.length)
                 {
                     // if new num of points is smaller than last one just draw last point multiple times and do not rebuild everything...
                     isDifferent = true;
-                    for (let i = points.length / 3; i < this.#splines[idx].origPoints.length / 3; i++)
+                    const lastX = points[points.length - 3];
+                    const lastY = points[points.length - 2];
+                    const lastZ = points[points.length - 1];
+                    for (let i = points.length; i < this.#splines[idx].origPoints.length; i += 3)
                     {
-                        points[i * 3] = points[i * 3];
-                        points[i * 3 + 1] = points[i * 3 + 1];
-                        points[i * 3 + 2] = points[i * 3 + 2];
+                        points[i] = lastX;
+                        points[i + 1] = lastY;
+                        points[i + 2] = lastZ;
                     }
 
                     this.#splines[idx].pointsNeedProgressUpdate = true;

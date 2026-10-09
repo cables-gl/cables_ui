@@ -474,9 +474,17 @@ export class TlAnimLine extends Events
         else
         {
             this.setPosition(this.#rectBg.x, this.#glTl.getFirstLinePosy());
-            this.#rectBg.setSize(this.width, this.height);
+            if (this.hasBackground()) this.#rectBg.setSize(this.width, this.height);
+            else this.#rectBg.setSize(0, 0);
             this.setHeight();
         }
+    }
+
+    hasBackground()
+    {
+        if (this.#hidden) return false;
+        if (this.isGraphLayout()) return this.#glTl.isGraphBackgroundLine(this);
+        return true;
     }
 
     update()
@@ -486,8 +494,8 @@ export class TlAnimLine extends Events
 
         let h = this.height;
 
-        if (this.#hidden) this.#rectBg.setSize(0, 0);
-        else this.#rectBg.setSize(this.width, h);
+        if (this.hasBackground()) this.#rectBg.setSize(this.width, h);
+        else this.#rectBg.setSize(0, 0);
 
         for (let i = 0; i < this.#keys.length; i++) this.#keys[i].update();
         if (this.#valueRuler) this.#valueRuler.update();
@@ -776,28 +784,10 @@ export class TlAnimLine extends Events
 
     render()
     {
-        let skipRendering = false;
-        // if (this.#ports)
-        // {
-        //     for (let j = 0; j < this.#keys.length; j++)
-        //     {
-        //         if (this.#ports[j].renderTimeLine)
-        //         {
-        //             this.#ports[j].renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this });
-        //             skipRendering = true;
-        //         }
-        //     }
-        // }
         this.foreachTlVizPorts((p) =>
         {
             p.renderTimeLine({ "rectInstancer": this.#glTl.rects, "tl": this.#glTl, "animLine": this, "cgl": this.#glTl.cgl });
-            skipRendering = true;
-
         });
-        if (!skipRendering)
-        {
-            for (let j = 0; j < this.#keys.length; j++) this.#keys[j].render();
-        }
     }
 
     testSelected()

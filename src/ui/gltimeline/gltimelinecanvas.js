@@ -8,6 +8,7 @@ import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 /** Canvas of the timeline ({@link GlTimeline}). */
 export class glTimelineCanvas extends GlCanvas
 {
+    #renderFrameListener = null;
 
     /**
      * @param {Patch} _patch
@@ -21,7 +22,7 @@ export class glTimelineCanvas extends GlCanvas
         this.tab = tab;
         this.setSize(100, 100);
         this.activityHigh();
-        _patch?.addEventListener("onRenderFrame", this.render.bind(this));
+        this.#renderFrameListener = _patch?.on("onRenderFrame", this.render.bind(this));
 
         this.glTimeline = new GlTimeline(this.cgl);
 
@@ -31,22 +32,27 @@ export class glTimelineCanvas extends GlCanvas
         }
     }
 
+    dispose()
+    {
+        this.#renderFrameListener?.remove();
+        this.#renderFrameListener = null;
+        super.dispose();
+    }
+
     render()
     {
 
         const startTime = performance.now();
 
         if (this.tab.resizing) return;
-        if (gui && gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
+        const playing = gui && gui.corePatch().timer.isPlaying();
 
-        if (this._targetFps != 0 && performance.now() - this._lastTime < 1000 / this._targetFps) return;
+        if (!playing && this.targetFps != 0 && performance.now() - this._lastTime < 1000 / this.targetFps) return;
 
         const cgl = this.cgl;
         cgl.doGlQueryTiming = true;
 
         if (cgl.lastMesh) cgl.lastMesh.unBind();
-
-        if (this._oldTargetFps != this._targetFps) this._oldTargetFps = this._targetFps;
 
         cgl.renderStart(cgl);
 

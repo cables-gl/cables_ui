@@ -45,6 +45,13 @@ export class GlTimeline extends Events
     static DRAGAREA_SAME_TIME_WIDTH_PIXEL = 20;
     static FRAME_EPSILON = 0.0001;
 
+    /** @type {TlConfig} */
+    static DEFAULT_CONFIG = {
+        "fps": 30,
+        "fadeInFrames": true,
+        "restrictToFrames": true
+    };
+
     static USERSETTING_LAYOUT = "tl_layout";
     static USERSETTING_TL_OPENED = "tl_opened";
     static USERSETTING_SPLITTER_LEFT = "tl_split_left";
@@ -138,11 +145,7 @@ export class GlTimeline extends Events
     loopAreaEnd = 0;
 
     /** @type {TlConfig} */
-    cfg = CABLES.timelineConfig || {
-        "fps": 30,
-        "fadeInFrames": true,
-        "restrictToFrames": true
-    };
+    cfg = { ...GlTimeline.DEFAULT_CONFIG, ...CABLES.timelineConfig };
 
     #selOpsStr = "";
     #lastXnoButton = 0;
@@ -1775,6 +1778,16 @@ export class GlTimeline extends Events
         return posy;
     }
 
+    /**
+     * @param {TlAnimLine} line
+     */
+    isGraphBackgroundLine(line)
+    {
+        for (let i = 0; i < this.#tlAnims.length; i++)
+            if (!this.#tlAnims[i].isHidden) return this.#tlAnims[i] == line;
+        return false;
+    }
+
     setPositions()
     {
         if (this.disposed) return;
@@ -1969,14 +1982,8 @@ export class GlTimeline extends Events
     /** @param {TlConfig} cfg */
     onConfig(cfg)
     {
-        this.cfg = cfg;
+        this.cfg = { ...GlTimeline.DEFAULT_CONFIG, ...cfg };
         this.needsUpdateAll = "on config";
-
-        cfg = CABLES.timelineConfig || {
-            "fps": 30,
-            "fadeInFrames": true,
-            "restrictToFrames": true
-        };
     }
 
     fit()

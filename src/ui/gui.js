@@ -1151,15 +1151,19 @@ export default class Gui extends Events
 
     hideTimeline()
     {
-        if (this.timeLineTab)
-            this.timeLineTab.close();
+        if (this.glTimeLineTab) this.glTimeLineTab.close();
+    }
+
+    showTimeline()
+    {
+        if (this.glTimeLineTab) this.glTimeLineTab.activate();
+        else this.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
     }
 
     toggleTimeline()
     {
         if (this.glTimeline) this.glTimeline.toggle();
-        else
-            this.timeLineTab = new GlTimelineTab(gui.bottomTabs);
+        else this.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
     }
 
     refreshFileManager()

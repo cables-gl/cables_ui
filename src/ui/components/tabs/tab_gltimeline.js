@@ -208,12 +208,22 @@ export default class GlTimelineTab
 
     }
 
+    activate()
+    {
+        gui.bottomTabPanel.show(true);
+        this.#tab.activate();
+    }
+
     close()
     {
+        if (gui.glTimeLineTab == this) gui.glTimeLineTab = null;
         this.#tab.remove();
-        gui.glTimeline.dispose();
-        gui.glTimeline = null;
-        if (this.tlCanvas) this.tlCanvas.dispose();
+        if (this.tlCanvas)
+        {
+            if (gui.glTimeline == this.tlCanvas.glTimeline) gui.glTimeline = null;
+            this.tlCanvas.glTimeline.dispose();
+            this.tlCanvas.dispose();
+        }
         this.tlCanvas = null;
     }
 

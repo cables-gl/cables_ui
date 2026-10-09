@@ -1,5 +1,4 @@
 import { helper } from "cables-shared-client";
-import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { gui } from "../gui.js";
 
@@ -155,7 +154,7 @@ class CmdTimeline
 
     static openGlTimeline()
     {
-        gui.glTimeLineTab = new GlTimelineTab(gui.bottomTabs);
+        gui.showTimeline();
     }
 
     static toggleTimeline()

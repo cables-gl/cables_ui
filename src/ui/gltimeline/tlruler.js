@@ -147,9 +147,7 @@ export class glTlRuler extends Events
     {
         if (fade == undefined)fade = 1;
         if (s < 0) return;
-
-        if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
-            if (title.includes(".")) return;
+        if (!this.isOnFrame(s)) return;
 
         let mr = this.timeMarkerLookup[s];
         if (!mr)
@@ -197,13 +195,18 @@ export class glTlRuler extends Events
     /**
      * @param {number} s
      */
+    isOnFrame(s)
+    {
+        const frame = s * this.#glTl.fps;
+        return Math.abs(frame - Math.round(frame)) < GlTimeline.FRAME_EPSILON;
+    }
+
+    /**
+     * @param {number} s
+     */
     title(s)
     {
-        if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES)
-        {
-            const fr = Math.round(s * 100) / 100 * this.#glTl.fps;
-            return fr + "f";
-        }
+        if (this.#glTl.displayUnits == GlTimeline.DISPLAYUNIT_FRAMES) return Math.round(s * this.#glTl.fps) + "f";
         return Math.round(s * 100) / 100 + "s";
     }
 

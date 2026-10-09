@@ -426,7 +426,6 @@ export class TlKeys extends Events
 
         if (this.shouldDrawSpline() && this.#spline)
         {
-            this.#spline.getDrawer().rebuildLater();
             this.#spline.setPoints(pointsSort);
 
             for (let i = 0; i < pointsSortAfter.length; i += 3)
@@ -434,9 +433,7 @@ export class TlKeys extends Events
             for (let i = 0; i < pointsSortBefore.length; i += 3)
                 pointsSortBefore[i + 2] = z + 0.1;
 
-            this.#splineAfter?.getDrawer().rebuildLater();
             this.#splineAfter?.setPoints(pointsSortAfter);
-            this.#splineBefore?.getDrawer().rebuildLater();
             this.#splineBefore?.setPoints(pointsSortBefore);
         }
 
@@ -972,11 +969,6 @@ export class TlKeys extends Events
         o.animated = this.#glTl.view.isAnimated();
         o.needsupdate = this.#needsUpdate;
         return o;
-    }
-
-    render()
-    {
-        if (this.#glTl.isAnimated) this.update();
     }
 
     getNumSplinePoints()
