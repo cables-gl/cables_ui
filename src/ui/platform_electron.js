@@ -37,7 +37,7 @@ export default class PlatformElectron extends Platform
         this.frontendOptions.opDeleteInEditor =
         this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
-        this.frontendOptions.showFormatCodeButton = false;
+        this.frontendOptions.showFormatCodeButton = true;
 
         this.bindHrTimer();
     }
