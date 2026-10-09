@@ -231,7 +231,7 @@ export default class GlOp extends Events
         {
             if (!this.#visible) return;
             this._updateSelectedRect();
-            if (this.#glRectSelectedBorder) this.updateSize();
+            if (this.selected) this.#updateSelectedBorderSize();
         });
 
     }
@@ -820,6 +820,13 @@ export default class GlOp extends Events
         }
     }
 
+    #updateSelectedBorderSize()
+    {
+        if (!this.#glRectSelectedBorder) return;
+        if (this.#glPatch.getNumSelectedOps() > 1) this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+        else this.#glRectSelectedBorder.setSize(0, 0);
+    }
+
     updateSize()
     {
         let portsWidthIn = 0;
@@ -907,13 +914,7 @@ export default class GlOp extends Events
             this._width += this._height * indicSize;
         }
 
-        if (this.#glRectSelectedBorder)
-        {
-            if (gui.patchView.getNumSelectedOps() > 1)
-                this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
-            else
-                this.#glRectSelectedBorder.setSize(0, 0);
-        }
+        this.#updateSelectedBorderSize();
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this.#glRectBg.w);
 
         perf.finish();

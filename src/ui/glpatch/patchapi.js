@@ -103,6 +103,7 @@ export default class GlPatchAPI
         if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_MAXIMIZED) return;
         if (flowMode == 0) return;
 
+        if (this._glPatch.viewBox.zoom > 2700) return;
         const frameCount = this._glPatch.cgl.fpsCounter.frameCount;
         if (this._flowvisStartFrame == 0) this._flowvisStartFrame = frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;

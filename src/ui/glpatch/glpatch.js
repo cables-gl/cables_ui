@@ -871,6 +871,8 @@ export default class GlPatch extends Events
 
         // this._onCanvasMouseMove(e);
         this.viewBox._onCanvasMouseMove(e);
+        this.#lastMouseX = this.viewBox.mousePatchX;
+        this.#lastMouseY = this.viewBox.mousePatchY;
 
         if (this.mouseState.buttonLeft && !this.isMouseOverOp() && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
 
@@ -878,6 +880,8 @@ export default class GlPatch extends Events
         catch (er) { this._log.log(er); }
 
         this.emitEvent(GlPatch.EVENT_MOUSE_DOWN, e);
+        this.#rectInstancer.interactive = true; // mouseup after a selection drag can return early and leave ops non-interactive, then op drags start a selection instead
+        this.#rectInstancer.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY, 0, e); // refresh hover, it is stale while non-interactive and mouseDown only hits hovered rects
         this.#rectInstancer.mouseDown(e);
         this._canvasMouseDown = true;
         this._canvasMouseDownSelecting = this.mouseState.buttonStateForSelecting;
