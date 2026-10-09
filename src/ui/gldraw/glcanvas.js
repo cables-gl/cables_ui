@@ -53,11 +53,11 @@ export default class GlCanvas
             "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
         });
 
-        if (!this.cgl)
-        {
-            console.error("no cgl in glcanvas constructor");
+        if (!this.cgl) console.error("no cgl in glcanvas constructor");
 
-        }
+        this.cgl.name = "timeline ";
+        this.cgl.perfProfiler = gui.corePatch().perfProfiler;
+
         this.cgl.pixelDensity = window.devicePixelRatio || 1;
         this.cgl.updateSize();
 

@@ -33,12 +33,16 @@ export class glTimelineCanvas extends GlCanvas
 
     render()
     {
+
+        const startTime = performance.now();
+
         if (this.tab.resizing) return;
         if (gui && gui.corePatch().timer.isPlaying()) this._targetFps = 0; // todo check if time is on screen...?
 
         if (this._targetFps != 0 && performance.now() - this._lastTime < 1000 / this._targetFps) return;
 
         const cgl = this.cgl;
+        cgl.doGlQueryTiming = true;
 
         if (cgl.lastMesh) cgl.lastMesh.unBind();
 
@@ -62,5 +66,7 @@ export class glTimelineCanvas extends GlCanvas
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
+
+        gui.corePatch().perfProfiler.setDuration("timeline cpu", performance.now() - startTime);
     }
 }
