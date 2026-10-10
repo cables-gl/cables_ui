@@ -189,7 +189,7 @@ export default class GlPort
         {
             if (showDot)
             {
-                if (this.#port.uiAttribs.notWorking) this.#dot.setColor(0.8, 0.2, 0.2, 1);
+                if (this.#port.uiAttribs.notWorking) this.#dot.setColorArray(gui.theme.colors_patch.opErrorCross);
                 else this.#dot.setColor(0.24, 0.24, 0.24, 1);
 
                 let portOffsetY = this.#rect.y;

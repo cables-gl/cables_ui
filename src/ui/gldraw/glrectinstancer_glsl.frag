@@ -160,11 +160,12 @@ float samp(in vec2 uv, float w) {
     else
     if(shape==7.0) // cross
     {
-        float r = 0.00001;
-        float l = 1.0;
+        float halfWidth = 0.07;
+        float l = 1.0-2.0*halfWidth;
         vec2 p = abs((uv)-0.5);
-        float a = length(p-clamp(p.x+p.y,0.0,l)*0.5) - r;
-        finalColor.a = (1.0-smoothstep(0.0,fwidth(uv.x)+0.1,a));
+        float a = length(p-clamp(p.x+p.y,0.0,l)*0.5);
+        float aa = fwidth(a);
+        finalColor.a = 1.0-smoothstep(halfWidth-aa,halfWidth+aa,a);
     }
     else
     if(shape==8.0) // loading indicator...

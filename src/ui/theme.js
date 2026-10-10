@@ -78,7 +78,7 @@ import defaultTheme from "./defaulttheme.json";
  * @property {Number[]} opErrorWarning
  * @property {Number[]} opError
  * @property {Number[]} opErrorHint
- * @property {Number[]} opNotWorkingCross
+ * @property {Number[]} opErrorCross
  * @property {Number[]} patchComment
  */
 

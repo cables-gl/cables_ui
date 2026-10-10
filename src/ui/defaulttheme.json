@@ -477,8 +477,8 @@
       0.5914843750000001,
       1
     ],
-    "opNotWorkingCross": [
-      1,
+    "opErrorCross": [
+      0,
       0,
       0,
       1
