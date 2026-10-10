@@ -192,7 +192,9 @@ export default class GlPort
                 if (this.#port.uiAttribs.notWorking) this.#dot.setColor(0.8, 0.2, 0.2, 1);
                 else this.#dot.setColor(0.24, 0.24, 0.24, 1);
 
-                let dotPosY = ((-this.#rect.y / 2) - dotHeight / 2);
+                let portOffsetY = this.#rect.y;
+                if (this.direction == Port.DIR_OUT) portOffsetY -= this.#glop.h;
+                let dotPosY = ((-portOffsetY / 2) - dotHeight / 2);
 
                 if (this.#port.type == Port.TYPE_OBJECT)
                 {
