@@ -458,6 +458,7 @@ export default class OpSelect
 
         const perf = gui.uiProfiler.start("opselect.searchLoop");
 
+        const found = [];
         for (let i = 0; i < this.#opSearch.list.length; i++)
         {
             this.#opSearch.list[i].element = this.#opSearch.list[i].element || ele.byId("result_" + this.#opSearch.list[i].id);
@@ -468,6 +469,7 @@ export default class OpSelect
                 this.#opSearch.list[i].element.dataset.scoreDebug = this.#opSearch.list[i].scoreDebug;
                 this.#opSearch.list[i].elementHidden = false;
                 ele.show(this.#opSearch.list[i].element);
+                found.push(this.#opSearch.list[i]);
             }
             else
             {
@@ -480,10 +482,17 @@ export default class OpSelect
 
         perf.finish();
 
-        const perfTinysort = gui.uiProfiler.start("opselect.tinysort");
-        tinysort.defaults.order = "desc";
-        tinysort(".searchresult", { "data": "score" });
-        perfTinysort.finish();
+        const perfSort = gui.uiProfiler.start("opselect.sort");
+        found.sort((a, b) => { return b.score - a.score; });
+
+        if (found.length > 0)
+        {
+            const container = found[0].element.parentElement;
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < found.length; i++) fragment.appendChild(found[i].element);
+            container.insertBefore(fragment, container.firstChild);
+        }
+        perfSort.finish();
 
         this.navigate(0);
 

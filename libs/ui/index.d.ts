@@ -23,7 +23,6 @@ declare global {
     const pako:any
     const MathParser:any
     const socketClusterClient:any
-    const tinysort:any
     const UndoManager:any
     const Sortable:any
 
