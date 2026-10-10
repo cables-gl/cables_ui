@@ -14,6 +14,9 @@ OUT vec4 fcolorBorder;
 IN float speed;
 OUT float fspeed;
 
+IN float speedPhase;
+OUT float fSpeedPhase;
+
 IN float splineProgress;
 OUT float fProgress;
 
@@ -56,6 +59,7 @@ void main()
     float aspect=resX/resY;
 
     fspeed=speed;
+    fSpeedPhase=speedPhase;
     fcolor=vcolor;
     finactiveColor=vcolorInactive;
     fcolorBorder=vcolorBorder;

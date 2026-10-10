@@ -455,11 +455,9 @@ export default class GlPort
 
     setFlowModeActivity()
     {
-        if (this.#activity != this.#port.apf)
-        {
-            this._activity = this.#port.apf;
-            this._updateColor();
-        }
+        const wasActive = this.#activity != 0;
+        this.#activity = this.#port.apf;
+        if (wasActive != (this.#activity != 0)) this._updateColor();
     }
 
     dispose()

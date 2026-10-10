@@ -106,7 +106,6 @@ export default class GlRectInstancer extends Events
         this._uniResY = new Uniform(this.#shader, "f", "resY", 0);
         this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
-        this._unimsdfUnit = new Uniform(this.#shader, "f", "msdfUnit", 8 / 1024);
         this._uniTexture1 = new Uniform(this.#shader, "t", "tex0", 0);
         this._uniTexture2 = new Uniform(this.#shader, "t", "tex1", 1);
         this._uniTexture3 = new Uniform(this.#shader, "t", "tex2", 2);
@@ -260,12 +259,6 @@ export default class GlRectInstancer extends Events
      */
     render(resX, resY, scrollX, scrollY, zoom)
     {
-        // console.log(zoom);
-        if (zoom > 500 && zoom < 800)
-        {
-        }
-        // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
-        gui.patchView._patchRenderer.textWriter.rectDrawer._unimsdfUnit.setValue(8 / zoom);
 
         if (this.doBulkUploads)
         {

@@ -26,6 +26,8 @@ export default class GlLink
     /** @type {GlOp} */
     #glOpOut = null;
 
+    flowStartFrame = 0;
+    flowCount = 0;
     _offsetXInput = 0;
     _offsetXOutput = 0;
 

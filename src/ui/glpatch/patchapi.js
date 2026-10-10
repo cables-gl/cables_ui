@@ -11,6 +11,9 @@ const DEFAULT_ACTIVITY = 0;
 
 export default class GlPatchAPI
 {
+    static MAX_FLOW_SPEED = 25;
+    static FLOW_UPDATE_FRAMES = 5;
+    static FLOW_SMOOTHING = 0.3;
 
     /**
      * @param {Patch} patch
@@ -105,9 +108,10 @@ export default class GlPatchAPI
 
         if (this._glPatch.viewBox.zoom > 2700) return;
         const frameCount = this._glPatch.cgl.fpsCounter.frameCount;
-        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = frameCount;
+        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
-        if (this._glPatch.frameCount % 5 != 0) return;
+        if (this._glPatch.frameCount % GlPatchAPI.FLOW_UPDATE_FRAMES != 0) return;
+        const patchFrame = this._patch.getFrameNum() || 0;
 
         const frames = this._glPatch.frameCount - this._flowvisStartFrame;
 
@@ -174,18 +178,39 @@ export default class GlPatchAPI
                     for (let il = 0; il < thePort.links.length; il++)
                     {
                         const link = thePort.links[il];
-                        let newClass = 0;
+                        const glLink = this._glPatch.links[link.id];
+                        if (!glLink)
+                        {
+                            link.activityCounter = 0;
+                            continue;
+                        }
 
+                        if (glLink.flowStartFrame == 0)
+                        {
+                            glLink.flowStartFrame = patchFrame;
+                            link.activityCounter = 0;
+                            continue;
+                        }
+
+                        const linkFrames = patchFrame - glLink.flowStartFrame;
+                        if (linkFrames <= 0) continue;
+
+                        const count = link.activityCounter / linkFrames * GlPatchAPI.FLOW_UPDATE_FRAMES;
+                        glLink.flowCount += (count - glLink.flowCount) * GlPatchAPI.FLOW_SMOOTHING;
+                        const smoothCount = Math.round(glLink.flowCount);
+
+                        let newClass = 0;
                         if (link.activityCounter >= 1) newClass = 1;
 
                         if (flowMode == 2)
                         {
-                            if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
-                            else if (link.activityCounter >= 5) newClass = 3;
-                            else if (link.activityCounter >= 2) newClass = 2;
+                            if (smoothCount >= 10) newClass = Math.min(Math.floor(smoothCount / 10) + 3, GlPatchAPI.MAX_FLOW_SPEED);
+                            else if (smoothCount >= 5) newClass = 3;
+                            else if (smoothCount >= 2) newClass = 2;
                         }
 
-                        if (this._glPatch.links[link.id]) this._glPatch.links[link.id].setFlowModeActivity(newClass, thePort.get());
+                        glLink.setFlowModeActivity(newClass, thePort.get());
+                        glLink.flowStartFrame = patchFrame;
                         link.activityCounter = 0;
                     }
                 }

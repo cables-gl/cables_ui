@@ -5,6 +5,7 @@ IN vec4 fcolorBorder;
 IN float fProgress;
 IN float fSplineLength;
 IN float fspeed;
+IN float fSpeedPhase;
 IN float zz;
 
 UNI vec4 fadeOutOptions;
@@ -37,7 +38,7 @@ void main()
         if(fspeed>=2.0)
         {
             float ffspeed=clamp(fspeed,0.,25.0);
-            float darken=step(0.5,mod((time*ffspeed/2.0)+fProgress*0.2*(ffspeed*0.1),1.0));
+            float darken=step(0.5,mod((time*ffspeed/2.0)+fSpeedPhase+fProgress*0.2*(ffspeed*0.1),1.0));
 
             if(darken>0.5)finalColor=finactiveColor;
             else finalColor=fcolor;

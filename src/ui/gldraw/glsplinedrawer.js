@@ -48,6 +48,7 @@ export class GlSplineDrawer extends Events
 
     /** @type {Float32Array} */
     #speeds;
+    #speedPhases;
 
     /** @type {Number[]} */
     #thePoints;
@@ -143,6 +144,7 @@ export class GlSplineDrawer extends Events
         this.#points3 = new Float32Array();
         this.#doDraw = new Float32Array();
         this.#speeds = new Float32Array();
+        this.#speedPhases = new Float32Array();
         this.#thePoints = [];
 
         this.#splineIndex = null;
@@ -229,6 +231,7 @@ export class GlSplineDrawer extends Events
             "colorInactive": [0, 1, 0, 1],
             "colorBorder": [0, 0, 0, 0],
             "speed": 1,
+            "speedPhase": 0,
             "index": this.#count,
             "hidden": false,
             "pointsNeedProgressUpdate": true,
@@ -266,6 +269,8 @@ export class GlSplineDrawer extends Events
     {
         if (this.#splines[idx].speed != speed)
         {
+            const time = performance.now() / 1000;
+            this.#splines[idx].speedPhase = (this.#splines[idx].speedPhase + time * (this.#splines[idx].speed - speed) / 2) % 1;
             this.#splines[idx].speed = speed;
             this._updateAttribsSpeed(idx);
         }
@@ -514,9 +519,11 @@ export class GlSplineDrawer extends Events
             {
                 count += 3;
                 this.#speeds[(off + count) / 3] = this.#splines[idx].speed;
+                this.#speedPhases[(off + count) / 3] = this.#splines[idx].speedPhase;
             }
         }
         this.#markDirty("speed", off / 3, (off + count) / 3);
+        this.#markDirty("speedPhase", off / 3, (off + count) / 3);
     }
 
     /**
@@ -538,9 +545,11 @@ export class GlSplineDrawer extends Events
             {
                 count += 3;
                 this.#speeds[(off + count) / 3] = this.#splines[idx].speed;
+                this.#speedPhases[(off + count) / 3] = this.#splines[idx].speedPhase;
             }
         }
         this.#markDirty("speed", off / 3, (off + count) / 3);
+        this.#markDirty("speedPhase", off / 3, (off + count) / 3);
     }
 
     /**
@@ -572,7 +581,8 @@ export class GlSplineDrawer extends Events
             "spline3": this.#points3,
             "splineProgress": this.#pointsProgress,
             "splineLength": this.#pointsSplineLength,
-            "speed": this.#speeds
+            "speed": this.#speeds,
+            "speedPhase": this.#speedPhases
         };
 
         for (const name in this.#dirtyMin)
@@ -688,7 +698,11 @@ export class GlSplineDrawer extends Events
                 const idxArr = (off + count) / 3;
                 const idxArr4 = idxArr * 4;
 
-                if (doSpeed) this.#speeds[idxArr] = spline.speed;
+                if (doSpeed)
+                {
+                    this.#speeds[idxArr] = spline.speed;
+                    this.#speedPhases[idxArr] = spline.speedPhase;
+                }
 
                 if (doColors)
                 {
@@ -734,7 +748,11 @@ export class GlSplineDrawer extends Events
         if (doColors) this.#markDirty("vcolor", start3 * 4, end3 * 4);
         if (doColorsInactive) this.#markDirty("vcolorInactive", start3 * 4, end3 * 4);
         if (doColorsBorder) this.#markDirty("vcolorBorder", start3 * 4, end3 * 4);
-        if (doSpeed) this.#markDirty("speed", start3, end3);
+        if (doSpeed)
+        {
+            this.#markDirty("speed", start3, end3);
+            this.#markDirty("speedPhase", start3, end3);
+        }
 
         if (all)
         {
@@ -815,6 +833,7 @@ export class GlSplineDrawer extends Events
             this.#pointsProgress = new Float32Array(newLength / 3);
             this.#pointsSplineLength = new Float32Array(newLength / 3);
             this.#speeds = new Float32Array(newLength / 3);
+            this.#speedPhases = new Float32Array(newLength / 3);
 
             for (let i = 0; i < this.#splines.length; i++) this.#splines[i].pointsNeedProgressUpdate = true;
         }
@@ -837,8 +856,13 @@ export class GlSplineDrawer extends Events
                 if (this.#splines[this.#splineIndex[i]])
                 {
                     this.#speeds[count / 3] = this.#splines[this.#splineIndex[i]].speed;
+                    this.#speedPhases[count / 3] = this.#splines[this.#splineIndex[i]].speedPhase;
                 }
-                else this.#speeds[count / 3] = 0;
+                else
+                {
+                    this.#speeds[count / 3] = 0;
+                    this.#speedPhases[count / 3] = 0;
+                }
 
                 for (let k = 0; k < 3; k++)
                 {
@@ -860,6 +884,7 @@ export class GlSplineDrawer extends Events
         const perfAttribs = gui.uiProfiler.start("[glspline] rebuild set Attribs");
 
         this.#mesh.setAttribute("speed", this.#speeds, 1);
+        this.#mesh.setAttribute("speedPhase", this.#speedPhases, 1);
 
         this.#mesh.setAttribute("splineDoDraw", this.#doDraw, 1);
 
