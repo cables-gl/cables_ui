@@ -245,6 +245,7 @@ export default class GlCable
         this.#splineDrawer.deleteSpline(this.#splineIdx);
         this.updateVisible();
         this.updateMouseListener();
+        this.#splineIdx = -1;
         return null;
     }
 

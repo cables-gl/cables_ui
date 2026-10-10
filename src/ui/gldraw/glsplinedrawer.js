@@ -222,6 +222,22 @@ export class GlSplineDrawer extends Events
 
     getSplineIndex(name = "")
     {
+        const reuseIdx = this.#findDeletedSpline();
+        if (reuseIdx != -1)
+        {
+            const spline = this.#splines[reuseIdx];
+            spline.name = name;
+            spline.color = [1, 0, 0, 1];
+            spline.colorInactive = [0, 1, 0, 1];
+            spline.colorBorder = [0, 0, 0, 0];
+            spline.speed = 1;
+            spline.speedPhase = 0;
+            spline.hidden = false;
+            spline.pointsNeedProgressUpdate = true;
+            spline.deleted = false;
+            return reuseIdx;
+        }
+
         this.#count++;
         this.#splines[this.#count] =
         {
@@ -241,6 +257,23 @@ export class GlSplineDrawer extends Events
         this.rebuildLater("new spline");
 
         return this.#count;
+    }
+
+    #findDeletedSpline()
+    {
+        let found = -1;
+        let foundLength = 0;
+        for (let i = 0; i < this.#splines.length; i++)
+        {
+            const spline = this.#splines[i];
+            if (!spline || !spline.deleted || !spline.origPoints) continue;
+            if (spline.origPoints.length > foundLength)
+            {
+                found = i;
+                foundLength = spline.origPoints.length;
+            }
+        }
+        return found;
     }
 
     /**
@@ -267,6 +300,7 @@ export class GlSplineDrawer extends Events
      */
     setSplineSpeed(idx, speed)
     {
+        if (!this.#splines[idx]) return;
         if (this.#splines[idx].speed != speed)
         {
             const time = performance.now() / 1000;
@@ -301,6 +335,7 @@ export class GlSplineDrawer extends Events
      */
     setSplineColorBorder(idx, rgba)
     {
+        if (!this.#splines[idx]) return;
         if (
             this._float32Diff(this.#splines[idx].colorBorder[0], rgba[0]) ||
             this._float32Diff(this.#splines[idx].colorBorder[1], rgba[1]) ||
@@ -357,6 +392,7 @@ export class GlSplineDrawer extends Events
      */
     showSpline(idx)
     {
+        if (!this.#splines[idx]) return;
         this.#splines[idx].hidden = false;
     }
 
@@ -365,6 +401,7 @@ export class GlSplineDrawer extends Events
      */
     hideSpline(idx)
     {
+        if (!this.#splines[idx]) return;
         this.#splines[idx].hidden = true;
         if (this.#splines[idx].points) for (let i = 0; i < this.#splines[idx].points.length; i++) this.#splines[idx].points[i] = 0;
         this._updateAttribsCoordinates(idx);
@@ -381,6 +418,7 @@ export class GlSplineDrawer extends Events
             console.log("idx not defined");
             return;
         }
+        if (!this.#splines[idx]) return;
 
         let isDifferent = true;
         let isDifferentLength = false;
