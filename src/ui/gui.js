@@ -1254,6 +1254,12 @@ export default class Gui extends Events
 
     createProject()
     {
+        if (platform.isElectron())
+        {
+
+            platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, { "name": "New patch" });
+            return;
+        }
         if (gui.showGuestWarning()) return;
 
         const randomize = this.userSettings.get(UserSettings.PREF_RANDOMIZE_PATCH_NAME, true);
