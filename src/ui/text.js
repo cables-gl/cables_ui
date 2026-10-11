@@ -99,6 +99,7 @@ export const GuiText =
     "tab_preview": "## Preview\n\nPreview you generated textures",
     "tab_op": "## Op Parameters\n\n",
     "tab_history": "## History\n\n",
+    "tab_opversiondiff": "## Op Version Diff\n\nDifferences between the previous version of an op and this one",
     "tab_keyframes": "## Keyframes\n\n",
     "tab_variables": "## Variables\n\n",
     "tab_patchconnection": "## Patch Connection\n\n",

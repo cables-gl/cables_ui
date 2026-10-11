@@ -1,6 +1,7 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
+import TabOpVersionDiff from "../../components/tabs/tab_opversiondiff.js";
 import { CmdOps } from "../../commands/cmd_op.js";
 import { CmdPatch } from "../../commands/cmd_patch.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
@@ -379,6 +380,15 @@ export default class TabManageOp
                             }
                         });
                     }
+
+                    contextItems.push({
+                        "title": "Diff previous version",
+                        "func": () =>
+                        {
+
+                            new TabOpVersionDiff(gui.mainTabs, opDoc.name);
+                        }
+                    });
 
                     if (opDoc.hasPublicRepo)
                         contextItems.push({

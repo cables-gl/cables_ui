@@ -1,5 +1,6 @@
 import { Op } from "cables";
 import TabManageOp from "../components/tabs/tab_manage_op.js";
+import TabOpVersionDiff from "../components/tabs/tab_opversiondiff.js";
 import { notify } from "../elements/notification.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -27,6 +28,12 @@ class CmdOps
             "icon": "op"
         },
         {
+            "cmd": "Show Diff previous version",
+            "func": CmdOps.showDiff,
+            "category": "op",
+            "icon": "op"
+        },
+        {
             "cmd": "Upgrade selected ops",
             "func": CmdOps.upGradeOps,
             "category": "op",
@@ -47,6 +54,12 @@ class CmdOps
         {
             "cmd": "Create new version of op",
             "func": CmdOps.createVersionSelectedOp,
+            "category": "op",
+            "icon": "op"
+        },
+        {
+            "cmd": "Diff selected op with previous version",
+            "func": CmdOps.diffPreviousVersion,
             "category": "op",
             "icon": "op"
         },
@@ -116,6 +129,17 @@ class CmdOps
 
     }
 
+    static showDiff()
+    {
+        const selops = gui.patchView.getSelectedOps();
+        if (selops.length > 0)
+        {
+            new TabOpVersionDiff(gui.mainTabs, selops[0].objName);
+            gui.maintabPanel.show(true);
+
+        }
+    }
+
     static upGradeOps()
     {
         const selops = gui.patchView.getSelectedOps();
@@ -164,6 +188,13 @@ class CmdOps
     /**
      * @param {string} [opid]
      */
+    static diffPreviousVersion()
+    {
+        const ops = gui.patchView.getSelectedOps();
+        if (ops.length == 0) return notify("select an op first");
+        new TabOpVersionDiff(gui.mainTabs, ops[0].objName);
+    }
+
     static manageOp(opid)
     {
         if (!opid)

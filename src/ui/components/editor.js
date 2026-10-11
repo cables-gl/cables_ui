@@ -7,6 +7,7 @@ import EditorBase from "./tabs/tab_editor.js";
 import EditorTabCodemirror from "./tabs/tab_editor_codemirror.js";
 import EditorTabTextArea from "./tabs/tab_editor_textarea.js";
 import TabManageOp from "./tabs/tab_manage_op.js";
+import TabOpVersionDiff from "./tabs/tab_opversiondiff.js";
 import { UserSettings, userSettings } from "./usersettings.js";
 
 /**
@@ -15,6 +16,7 @@ import { UserSettings, userSettings } from "./usersettings.js";
  * @property {string} [name]
  * @property {string} [dataId]
  * @property {string} [syntax]
+ * @property {string} [attachmentName]
  * @property {boolean} [singleton]
  * @property {string} [allowEditReason]
  * @property {string} [content]

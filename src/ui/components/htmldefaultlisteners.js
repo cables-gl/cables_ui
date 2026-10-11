@@ -86,6 +86,7 @@ export default function setHtmlDefaultListeners()
     window.addEventListener("unhandledrejection", function (e)
     {
         if (e.reason && e.reason.message && e.reason.message == "The user has exited the lock before this request was completed.") return true; // ignore this......
+        if (e.reason && e.reason.message && e.reason.message == "Pointer lock cannot be acquired immediately after the user has exited the lock.") return true;
 
         _log.error(e);
     });

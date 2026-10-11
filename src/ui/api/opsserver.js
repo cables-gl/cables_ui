@@ -1425,6 +1425,7 @@ export default class ServerOps
         const editorTab = createEditor({
             "title": title,
             "name": opId, // "content": content,
+            "attachmentName": attachmentName,
             "loading": true,
             "syntax": syntax,
             "editorObj": editorObj,
