@@ -17,6 +17,8 @@
         <br/> <br/>
         {{opname}}{{#if visibilityString}}<span class="visibilityString"> - {{{visibilityString}}}</span>{{/if}}
 
+
+
         <br/> <br/>
 
         <a class="button-small button-icon iconbuttontext" target="_blank" href="{{url}}/op/{{opname}}"><span class="icon icon-external"></span>Op Page / Documentation</a>
@@ -25,6 +27,19 @@
 
         <br/>
         <br/>
+
+        {{#if opDoc.opDirFull}}
+            <!-- this will only show in electron -->
+            <hr/>
+            {{#if opDoc.created}}<br/>Created {{displaydate opDoc.created}}{{/if}}
+            <br/>
+            <span class="icon icon-folder"></span>
+            <a class="link" onclick="CABLES.CMD.ELECTRON.openOpDir( '{{opname}}')">{{opDoc.opDirFull}}</a>
+            <br/>
+
+            <hr/>
+        {{/if}}
+
 
         {{#if warns}}
             <div class="groupSpacer"><h3>Warnings</h3></div>
