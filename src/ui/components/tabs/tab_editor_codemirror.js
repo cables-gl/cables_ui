@@ -363,7 +363,7 @@ export default class EditorTabCodemirror extends EditorBase
         if (this._options.syntax == "glsl") extensions.push(glsl());
         if (this._options.syntax == "css") extensions.push(css());
         if (this._options.syntax == "md") extensions.push(markdown());
-        if (this._options.syntax == "js")
+        if (this._options.syntax == "js" || this._options.syntax == "json")
         {
             extensions.push(syntaxErrorLinter);
             extensions.push(javascript());
