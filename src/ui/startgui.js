@@ -27,10 +27,8 @@ export default function startUi(cfg)
 
     const gui = new Gui(cfg);
 
-    if (gui.isRemoteClient)
-        new NoPatchEditor();
-    else
-        new GlGuiFull();
+    if (gui.isRemoteClient) new NoPatchEditor();
+    else new GlGuiFull();
 
     incrementStartup();
     gui.serverOps = new ServerOps(cfg.patchId, () =>
@@ -44,9 +42,6 @@ export default function startUi(cfg)
 
         if (gui.patchView.patchRenderer && gui.patchView.patchRenderer.cgl && !gui.patchView.patchRenderer.cgl.gl)
         {
-            // ele.byId("loadingstatus").remove();
-            // ele.byId("loadingstatusLog").remove();
-
             new ModalDialog({ "title": "GL Error", "html": "Could not initialize webgl, or it crashed. Try to restart your browser, or try another one..." });
             return;
         }
@@ -80,19 +75,13 @@ export default function startUi(cfg)
 
                     editorSession.open();
 
-                    if (userSettings.get(Gui.PREF_AUDIO_MUTE))
-                    {
-                        CmdUi.muteAudio(false);
-                    }
+                    if (userSettings.get(Gui.PREF_AUDIO_MUTE)) CmdUi.muteAudio(false);
 
                     gui.setFontSize(userSettings.get(UserSettings.PREF_FONT_SIZE_OFF));
 
                     userSettings.on(UserSettings.EVENT_CHANGE, function (key, v)
                     {
-                        if (key == "fontSizeOff")
-                        {
-                            gui.setFontSize(v);
-                        }
+                        if (key == "fontSizeOff") gui.setFontSize(v);
 
                         if (key == "bgpattern")
                         {
@@ -100,10 +89,7 @@ export default function startUi(cfg)
                             gui.setElementBgPattern(ele.byId("bgpreview"));
                         }
 
-                        if (key == "hideSizeBar")
-                        {
-                            gui.setLayout();
-                        }
+                        if (key == "hideSizeBar") gui.setLayout();
                     });
 
                     gui.bindKeys();
@@ -145,7 +131,7 @@ export default function startUi(cfg)
                         for (let i = 0; i < selectedOpIds.length; i++) gui.patchView.selectOpId(selectedOpIds[i]);
                     });
 
-                    ele.byId("patchnavhelperEmpty").innerHTML = GuiText.patch_hint_overlay_empty;
+                    ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY).innerHTML = GuiText.patch_hint_overlay_empty;
                     ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
 
                     document.getElementById("loadingstatusLog").style.display = "none";
@@ -173,6 +159,7 @@ export default function startUi(cfg)
                         "correctLevel": QRCode.CorrectLevel.H
                     });
 
+                    console.log("text", gui.user.activityFeed);
                     if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
 
                     CABLES.UI.loaded = true;
@@ -180,8 +167,6 @@ export default function startUi(cfg)
 
                     gui.corePatch().clearSubPatchCache();
                     gui.patchView.highlightExamplePatchOps();
-
-                    // for (let i = 0; i < gui.corePatch().ops.length; i++) if (gui.corePatch().ops[i].checkLinkTimeWarnings)gui.corePatch().ops[i].checkLinkTimeWarnings();
 
                     const selectedOps = gui.patchView.getSelectedOps();
                     if (selectedOps.length == 1) gui.opParams.show(selectedOps[0]);

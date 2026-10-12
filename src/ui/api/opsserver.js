@@ -31,10 +31,11 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {boolean} isAdmin
  * @property {boolean} isSupporter
  * @property {boolean} hasWriteRights
+ * @property {import("cables-shared-client").activityFeed} activityFeed
  */
 
 /**
- * @typedef {Object} LinterDiag
+ * @typedef  LinterDiag
  * @property {string} message
  * @property {number} line
  * @property {number} [column]

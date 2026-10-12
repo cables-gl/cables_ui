@@ -295,7 +295,7 @@ export default class PatchView extends Events
                 if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
                 {
                     this._showingNavHelperEmpty = true;
-                    ele.show(ele.byId("patchnavhelperEmpty"));
+                    ele.show(ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY));
                 }
             }
 
@@ -531,10 +531,7 @@ export default class PatchView extends Events
 
             if (!op) return;
 
-            if (this._showingNavHelperEmpty)
-            {
-                document.getElementById("patchnavhelperEmpty").style.display = "none";
-            }
+            if (this._showingNavHelperEmpty) ele.hide(ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY)); // document.getElementById("patchnavhelperEmpty").style.display = "none";
 
             // todo options:
             // - putIntoLink
@@ -1757,6 +1754,7 @@ export default class PatchView extends Events
         const undoGroup = undo.startGroup();
 
         if (!pastedJson || !pastedJson.ops) return;
+        ele.hide(ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY));
 
         if (currentSubPatch)
         {

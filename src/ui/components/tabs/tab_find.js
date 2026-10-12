@@ -929,7 +929,7 @@ FindTab.searchSelected = (ops, results) =>
 {
     for (let i = 0; i < ops.length; i++)
     {
-        if (ops[i].uiAttribs.selected)
+        if (ops[i] && ops[i].uiAttribs.selected)
             results.push({ "op": ops[i], "score": 1 });
     }
 

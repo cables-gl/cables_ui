@@ -102,6 +102,9 @@ export default class Gui extends Events
     static PREF_LAYOUT_BOTTOM_PANEL_HEIGHT = "bottomPanelHeight";
     static PREF_AUDIO_MUTE = "editorAudioMute";
     static TABSESSION_NAME_PATCHSETTINGS = "patchsettings";
+
+    static ELEID_PATCH_HEPER_EMPTY = "patchnavhelperEmpty";
+
     hasAnims = false;
     unload = false;
     defaultOps = defaultOps;

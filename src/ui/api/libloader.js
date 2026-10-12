@@ -226,7 +226,7 @@ export default class LibLoader
         }
         else if (module.type === "corelib")
         {
-            return platform.getSandboxUrl() + "/api/corelib/" + module.src + ".js";
+            return platform.noCacheUrl(platform.getSandboxUrl() + "/api/corelib/" + module.src + ".js");
         }
         return platform.getSandboxUrl() + "/api/lib/" + module.src;
     }
