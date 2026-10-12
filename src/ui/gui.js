@@ -54,6 +54,7 @@ import PatchView from "./components/patchview.js";
 import { CmdPatch } from "./commands/cmd_patch.js";
 import { CmdRenderer } from "./commands/cmd_renderer.js";
 import { CmdUi } from "./commands/cmd_ui.js";
+import TestsTab from "./components/tabs/tab_tests.js";
 import { CmdTimeline } from "./commands/cmd_timeline.js";
 import { GuiText } from "./text.js";
 import { setUpTheme } from "./theme.js";
@@ -153,6 +154,7 @@ export default class Gui extends Events
 
         editorSession.addListener(Gui.TABSESSION_NAME_PATCHSETTINGS, () => { this.showSettings(); });
         editorSession.addListener(CmdUi.TABSESSION_NAME_BUILDINFO, () => { CmdUi.showBuildInfo(); });
+        editorSession.addListener(TestsTab.TABSESSION_NAME, () => { new TestsTab(this.mainTabs); });
 
         this._log = new Logger("gui");
 

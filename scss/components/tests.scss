@@ -1,0 +1,38 @@
+.cablesCssUi {
+    .testsTab
+    {
+        .testsSummary
+        {
+            margin-bottom: 10px;
+            .pass { color: var(--color-special); }
+            .fail { color: var(--color-error); }
+        }
+
+        .testsSuite
+        {
+            margin-top: 10px;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+
+        .testsTest
+        {
+            padding: 2px 0 2px 10px;
+            border-left: 3px solid var(--color-hint);
+            margin-bottom: 2px;
+            a { cursor: pointer; }
+
+            &.pass { border-left-color: var(--color-special); }
+            &.fail { border-left-color: var(--color-error); }
+            &.pending { opacity: 0.5; }
+
+            pre
+            {
+                white-space: pre-wrap;
+                background-color: var(--color-bg-error);
+                padding: 5px;
+                margin: 5px 0;
+            }
+        }
+    }
+}

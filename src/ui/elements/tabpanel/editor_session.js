@@ -55,7 +55,7 @@ export default class EditorSession
 
     store()
     {
-        userSettings.set(UserSettings.PREF_OPEN_EDITORS, this.#openEditors);
+        userSettings.set(UserSettings.PREF_OPEN_EDITORS, this.#openEditors.slice());
     }
 
     loaded()

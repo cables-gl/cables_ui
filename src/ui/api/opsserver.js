@@ -55,6 +55,7 @@ function capitalize(str)
 
 export default class ServerOps
 {
+    static EVENT_OP_RENAME_FINISHED = "OpWasRenamed";
 
     /** @type {import("cables-shared-client").OpDoc[]} */
     #opDocs = [];
@@ -78,14 +79,6 @@ export default class ServerOps
             {
                 editorSession.startLoadingTab();
                 const lastTab = userSettings.get(UserSettings.PREF_EDITORTAB);
-
-                // if (data && data.opId)
-                // {
-                //     name = {
-                //         "opId": data.opId,
-                //         "objName": name
-                //     };
-                // }
 
                 this.edit(name, false, () =>
                 {
@@ -113,6 +106,26 @@ export default class ServerOps
             {
                 this.#log.log("no data", data);
             }
+        });
+        gui.corePatch().on(ServerOps.EVENT_OP_RENAME_FINISHED, (newOp) =>
+        {
+
+            this.#log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
+            this.loadOp(newOp, () =>
+            {
+                let properties = newOp.oldName.split(".");
+                properties.shift();
+                const path = properties.join(".");
+                this._deletePropertyByPath(Ops, path);
+                const usedOps = gui.corePatch()
+                    .getOpsByOpId(newOp.opId);
+                usedOps.forEach((usedOp) =>
+                {
+                    gui.patchView.replaceOp(usedOp.id, newOp.objName);
+                });
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
+            }, true);
         });
 
         CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) =>
@@ -189,7 +202,7 @@ export default class ServerOps
     // }
 
     /**
-     * @param {any} name
+     * @param {import("cables/src/core/core_op.js").OpName} name
      * @param {function} cb
      * @param {boolean} openEditor
      */
@@ -996,19 +1009,23 @@ export default class ServerOps
         });
         const iframeEle = modal.iframeEle;
         const talkerAPI = new TalkerAPI(iframeEle.contentWindow);
-        const renameListenerId = talkerAPI.addEventListener(TalkerAPI.CMD_UI_OP_RENAMED, (newOp) =>
-        {
-            talkerAPI.removeEventListener(renameListenerId);
-            const renameDoneListenerId = talkerAPI.addEventListener(TalkerAPI.CMD_UI_CLOSE_RENAME_DIALOG, () =>
+        const renameListenerId = talkerAPI.addEventListener(TalkerAPI.CMD_UI_OP_RENAMED,
+            (newOp) =>
             {
-                talkerAPI.removeEventListener(renameDoneListenerId);
-                gui.closeModal();
+                talkerAPI.off(renameListenerId);
+                const renameDoneListenerId = talkerAPI.addEventListener(TalkerAPI.CMD_UI_CLOSE_RENAME_DIALOG, () =>
+                {
+                    talkerAPI.off(renameDoneListenerId);
+                    gui.closeModal();
+                });
+                gui.corePatch().emitEvent(ServerOps.EVENT_OP_RENAME_FINISHED, newOp);
             });
-            this._afterOpRename(newOp);
-        });
     }
 
-    // rename dialog for non-api platforms like electron
+    /**
+     * rename dialog for non-api platforms like electron
+     * @param {string} oldName
+     */
     renameDialog(oldName)
     {
         if (!platform.frontendOptions.opRenameInEditor) return;
@@ -1061,7 +1078,8 @@ export default class ServerOps
                 else
                 {
                     gui.closeModal();
-                    this._afterOpRename(res.data);
+
+                    gui.corePatch().emitEvent(ServerOps.EVENT_OP_RENAME_FINISHED, res.data);
                 }
             });
         });
@@ -1121,15 +1139,9 @@ export default class ServerOps
      */
     _deletePropertyByPath(obj, path)
     {
-        if (!obj || !path)
-        {
-            return;
-        }
+        if (!obj || !path) return;
 
-        if (typeof path === "string")
-        {
-            path = path.split(".");
-        }
+        if (typeof path === "string") path = path.split(".");
 
         for (let i = 0; i < path.length - 1; i++)
         {
@@ -1142,27 +1154,6 @@ export default class ServerOps
         }
 
         delete obj[path.pop()];
-    }
-
-    _afterOpRename(newOp)
-    {
-
-        this.#log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
-        this.loadOp(newOp, () =>
-        {
-            let properties = newOp.oldName.split(".");
-            properties.shift();
-            const path = properties.join(".");
-            this._deletePropertyByPath(Ops, path);
-            const usedOps = gui.corePatch()
-                .getOpsByOpId(newOp.opId);
-            usedOps.forEach((usedOp) =>
-            {
-                gui.patchView.replaceOp(usedOp.id, newOp.objName);
-            });
-            gui.opSelect().reload();
-            gui.opSelect().prepare();
-        }, true);
     }
 
     cloneDialog(oldName, origOp)

@@ -18,6 +18,7 @@ import { UserSettings, userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";
 import TabThreeDebug from "../components/tabs/tab_threedebug.js";
+import TestsTab from "../components/tabs/tab_tests.js";
 
 const log = new Logger("CMD DEBUG");
 export { CmdDebug };
@@ -48,6 +49,12 @@ class CmdDebug
                 "userSetting": UserSettings.SETTING_GLUI_DEBUG_COLORS,
                 "func": CmdDebug.debugGlUiColors,
                 "icon": "command"
+            },
+            {
+                "cmd": "Run tests",
+                "category": "debug",
+                "func": CmdDebug.runTests,
+                "icon": "check"
             },
             {
                 "cmd": "Test all ops",
@@ -278,6 +285,12 @@ class CmdDebug
     {
         if (gui) gui.showBottomTabs();
         else log.warn("couldnot open bottomtabs");
+    }
+
+    static runTests()
+    {
+        new TestsTab(gui.mainTabs);
+        gui.maintabPanel.show(true);
     }
 
     static logging()

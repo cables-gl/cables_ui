@@ -49,6 +49,7 @@ import { GuiText } from "./text.js";
  * @property {boolean} [hasOpDirectories]
  * @property {boolean} [showWelcome]
  * @property {boolean} [showOpenPatch]
+ * @property {boolean} [opRenameInEditor]
  */
 
 /**
