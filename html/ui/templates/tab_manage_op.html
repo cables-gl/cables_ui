@@ -29,14 +29,13 @@
         <br/>
 
         {{#if opDoc.opDirFull}}
-            <!-- this will only show in electron -->
+            <!-- this will only show in electron/local dev -->
             <hr/>
             {{#if opDoc.created}}<br/>Created {{displaydate opDoc.created}}{{/if}}
             <br/>
-            <span class="icon icon-folder"></span>
-            <a class="link" onclick="CABLES.CMD.ELECTRON.openOpDir( '{{opname}}')">{{opDoc.opDirFull}}</a>
+            {{opDoc.opDirFull}}
+            <a class="button-small" onclick="CABLES.CMD.ELECTRON.openOpDir( '{{opname}}')"><span class="icon icon-folder"></span> open</a>
             <br/>
-
             <hr/>
         {{/if}}
 
