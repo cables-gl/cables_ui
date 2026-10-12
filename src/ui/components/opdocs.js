@@ -408,6 +408,11 @@ export default class OpDocs
                 this._opDocs[oldDoc] = doc;
             }
 
+            if (!doc.id)
+            {
+                this.#log.error("op has no id! ", doc.name, doc);
+            }
+
             if (defaultOps.hideInOpSelect.indexOf(doc.name) > -1)
             {
                 doc.hidden = true;
