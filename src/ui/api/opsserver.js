@@ -56,6 +56,7 @@ function capitalize(str)
 export default class ServerOps
 {
     static EVENT_OP_RENAME_FINISHED = "OpWasRenamed";
+    static EVENT_OP_FILE_DELETE_FINISHED = "OpFilesWereDeleted";
 
     /** @type {import("cables-shared-client").OpDoc[]} */
     #opDocs = [];
@@ -126,6 +127,27 @@ export default class ServerOps
                 gui.opSelect().reload();
                 gui.opSelect().prepare();
             }, true);
+        });
+
+        gui.corePatch().on(ServerOps.EVENT_OP_FILE_DELETE_FINISHED, (deletedOp) =>
+        {
+            const patch = gui.corePatch();
+
+            const ops = patch.getOpsByObjName(deletedOp.name);
+            ops.forEach((op) =>
+            {
+                patch.deleteOp(op.id, true);
+            });
+
+            // remove the op class from code, opsearch also lists all ops found in the Ops namespace
+            const path = deletedOp.name.split(".");
+            path.shift();
+            this._deletePropertyByPath(Ops, path);
+            delete CABLES.OPS[deletedOp.id];
+
+            gui.opDocs.removeOpDoc(deletedOp);
+            gui.opSelect().reload();
+            gui.opSelect().prepare();
         });
 
         CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) =>
@@ -1054,13 +1076,11 @@ export default class ServerOps
         {
             const opname = newName;
 
-            let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
-            if (doc && doc.id) nameOrId = doc.id;
             cbOptions = cbOptions || { "openEditor": true };
             const renameRequest = {
-                "opname": nameOrId,
-                "name": opname,
+                "oldId": doc.id,
+                "newName": opname,
                 "namespace": newNamespace
             };
             if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
@@ -1078,7 +1098,6 @@ export default class ServerOps
                 else
                 {
                     gui.closeModal();
-
                     gui.corePatch().emitEvent(ServerOps.EVENT_OP_RENAME_FINISHED, res.data);
                 }
             });
@@ -1110,24 +1129,7 @@ export default class ServerOps
                 }
                 else
                 {
-                    const patch = gui.corePatch();
-
-                    const ops = patch.getOpsByObjName(opDoc.name);
-                    ops.forEach((op) =>
-                    {
-                        patch.deleteOp(op.id, true);
-                    });
-
-                    // remove the op class from code, opsearch also lists all ops found in the Ops namespace
-                    const path = opDoc.name.split(".");
-                    path.shift();
-                    this._deletePropertyByPath(Ops, path);
-                    delete CABLES.OPS[opDoc.id];
-
-                    gui.opDocs.removeOpDoc(opDoc);
-                    gui.opSelect().reload();
-                    gui.opSelect().prepare();
-
+                    gui.corePatch().emitEvent(ServerOps.EVENT_OP_FILE_DELETE_FINISHED, res.data);
                 }
             });
         });

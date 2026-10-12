@@ -1,10 +1,10 @@
 import mocha from "mocha/mocha.js";
 import { expect } from "chai";
-// import Gui, { Platform } from "cables-ui";
 import { TalkerAPI } from "cables-shared-client/index.js";
 import Gui from "../gui.js";
 import talkerApiPatchTests from "./talkerapi/patch.test.js";
 import talkerApiOpsTests from "./talkerapi/ops.test.js";
+import electronTests from "./electron/electron.test.js";
 import guiTests from "./ui/gui.test.js";
 import { Platform } from "../platform.js";
 
@@ -19,6 +19,7 @@ import { Platform } from "../platform.js";
 const testFiles = [
     talkerApiPatchTests,
     talkerApiOpsTests,
+    electronTests,
     guiTests
 ];
 
