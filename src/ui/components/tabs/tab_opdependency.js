@@ -153,7 +153,7 @@ export default class OpDependencyTab extends Tab
                 {
                     if (!err)
                     {
-                        gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, this.#sourceType, exportName, (addErr) =>
+                        gui.serverOps.addOpDependency(opDoc.id, "./" + newFilename, this.#jsType, exportName, (addErr) =>
                         {
                             if (!addErr)
                             {
@@ -195,7 +195,7 @@ export default class OpDependencyTab extends Tab
         }
         else
         {
-            gui.serverOps.addOpDependency(opDoc.id, src, this.#sourceType, exportName, (addErr) =>
+            gui.serverOps.addOpDependency(opDoc.id, src, this.#jsType, exportName, (addErr) =>
             {
                 if (!addErr)
                 {
