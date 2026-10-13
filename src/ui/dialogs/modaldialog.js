@@ -217,7 +217,7 @@ export default class ModalDialog extends Events
             html += "<a class=\"" + this.#options.okButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CHOICE_OK_BUTTON_ID + "\">";
             html += "&nbsp;&nbsp;&nbsp;" + this.#options.okButton.text + "&nbsp;&nbsp;&nbsp;";
             html += "</a>";
-            html += "&nbsp;&nbsp;<a class=\"" + this.#options.cancelButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CANCEL_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"" + this.#options.cancelButton.cssClasses + "\" id=\"" + ModalDialog.MODAL_CHOICE_CANCEL_BUTTON_ID + "\">&nbsp;&nbsp;&nbsp;" + this.#options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this.#options.showOkButton)
