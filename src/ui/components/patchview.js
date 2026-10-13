@@ -151,6 +151,7 @@ export default class PatchView extends Events
     focusSubpatchOp(subPatchId)
     {
         const outerOp = gui.corePatch().getSubPatchOuterOp(subPatchId);
+        if (!outerOp) return;
         gui.patchView.setCurrentSubPatch(outerOp.uiAttribs.subPatch, () =>
         {
             gui.patchView.centerSelectOp(outerOp.id);
