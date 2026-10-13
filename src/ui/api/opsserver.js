@@ -2361,7 +2361,7 @@ export default class ServerOps
                 modalOptions.showOkButton = false;
                 modalOptions.cancelButton = {
                     "text": "Open empty patch",
-                    "callback": () => { console.log("YAY"); platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, {}); }
+                    "callback": () => { platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, {}); }
                 };
             }
         }
