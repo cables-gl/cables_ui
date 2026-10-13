@@ -5,6 +5,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import { gui } from "../../gui.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 import { logFilter } from "../../utils/logfilter.js";
+import { platform } from "../../platform.js";
 
 /** Tab that shows the output of the cables logger. */
 export default class LogTab extends Events
@@ -159,7 +160,7 @@ export default class LogTab extends Events
             }
         }
 
-        if (this._hasError && !this.hasErrorButton)
+        if (this._hasError && !this.hasErrorButton && platform.frontendOptions.sendErrorReports)
         {
             this.hasErrorButton = true;
             this.#tab.addButton("Send Error Report", () =>

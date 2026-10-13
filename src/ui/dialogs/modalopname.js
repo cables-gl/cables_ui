@@ -31,7 +31,7 @@ import defaultOps from "../defaultops.js";
  * @callback ModalOpNameCallback
  * @param {String} newNamespace
  * @param {String} newName
- * @param {{replace: boolean, opTargetDir?: string}} callbackOptions
+ * @param {{openEditor?:boolean,replace?: boolean, opTargetDir?: string}} callbackOptions
  */
 
 /**

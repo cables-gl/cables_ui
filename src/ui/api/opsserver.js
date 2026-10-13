@@ -1077,6 +1077,7 @@ export default class ServerOps
             const opname = newName;
 
             const doc = gui.opDocs.getOpDocByName(oldName);
+            if (!doc) return this.#log.error("doc not found for ", oldName);
             cbOptions = cbOptions || { "openEditor": true };
             const renameRequest = {
                 "oldId": doc.id,

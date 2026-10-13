@@ -1040,7 +1040,7 @@ export default class PatchSaveServer extends Events
      */
     sendErrorReport(report, manualSend = true)
     {
-        if (!userSettings.get(UserSettings.PREF_SEND_ERROR_REPORTS)) return;
+        if (!manualSend && !userSettings.get(UserSettings.PREF_SEND_ERROR_REPORTS)) return;
 
         const doneCallback = (err, res) =>
         {
