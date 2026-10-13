@@ -11,6 +11,10 @@ import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
 import { glsl } from "codemirror-lang-glsl";
 import { css } from "@codemirror/lang-css";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
+import { html } from "@codemirror/lang-html";
+import { xml } from "@codemirror/lang-xml";
+import { sql } from "@codemirror/lang-sql";
+import { python } from "@codemirror/lang-python";
 
 import { oneDark } from "@codemirror/theme-one-dark";
 import { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
@@ -442,8 +446,12 @@ export default class EditorTabCodemirror extends EditorBase
     #getLanguageExtensions(syntax)
     {
         if (syntax == "glsl") return [glsl()];
-        if (syntax == "css") return [css()];
-        if (syntax == "md") return [markdown()];
+        if (syntax == "css" || syntax == "inline-css") return [css()];
+        if (syntax == "md" || syntax == "markdown") return [markdown()];
+        if (syntax == "html") return [html()];
+        if (syntax == "xml") return [xml()];
+        if (syntax == "sql") return [sql()];
+        if (syntax == "python") return [python()];
         if (syntax == "json") return [json(), linter(jsonParseLinter())];
         if (syntax == "js")
         {

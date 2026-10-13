@@ -134,6 +134,7 @@ class CmdRenderer
 
     static canvasMagnifier()
     {
+        if (!gui.canvasManager.currentCanvas()) return notifyError("no canvas found");
         gui.canvasMagnifier = new CanvasLens();
     }
 

@@ -323,6 +323,7 @@ class CmdUi
 
     static canvasLens()
     {
+        if (!gui.canvasManager.currentCanvas()) return notify("no canvas found");
         new CanvasLens();
     }
 

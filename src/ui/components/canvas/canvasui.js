@@ -110,7 +110,7 @@ export default class CanvasUi
             }, 1000);
         }
 
-        this.#canvasEle.setAttribute("tabindex", 0);
+        this.#canvasEle.setAttribute("tabindex", "0");
 
         this.#canvasEle.addEventListener("focus", () =>
         {
