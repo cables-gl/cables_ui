@@ -10,6 +10,7 @@ import { markdown } from "@codemirror/lang-markdown";
 import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
 import { glsl } from "codemirror-lang-glsl";
 import { css } from "@codemirror/lang-css";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
 
 import { oneDark } from "@codemirror/theme-one-dark";
 import { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
@@ -443,7 +444,8 @@ export default class EditorTabCodemirror extends EditorBase
         if (syntax == "glsl") return [glsl()];
         if (syntax == "css") return [css()];
         if (syntax == "md") return [markdown()];
-        if (syntax == "js" || syntax == "json")
+        if (syntax == "json") return [json(), linter(jsonParseLinter())];
+        if (syntax == "js")
         {
             const syntaxErrorLinter = linter((view) =>
             {
