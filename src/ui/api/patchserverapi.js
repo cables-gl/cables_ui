@@ -398,8 +398,9 @@ export default class PatchSaveServer extends Events
                                     modalOptions.showOkButton = false;
                                     modalOptions.cancelButton = {
                                         "text": "Convert",
-                                        "callback": () =>
+                                        "callback": (done) =>
                                         {
+                                            done();
                                             gui.patchView.unselectAllOps();
                                             err.data.forEach((opName) =>
                                             {
@@ -682,8 +683,9 @@ export default class PatchSaveServer extends Events
 
                                 modalOptions.cancelButton = {
                                     "text": "Convert",
-                                    "callback": () =>
+                                    "callback": (done) =>
                                     {
+                                        done();
                                         gui.patchView.unselectAllOps();
                                         r.data.forEach((opName) =>
                                         {

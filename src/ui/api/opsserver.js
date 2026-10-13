@@ -2345,10 +2345,7 @@ export default class ServerOps
         {
             modalOptions.choice = true;
             modalOptions.okButton = { "text": otherEnvButton };
-            modalOptions.cancelButton = {
-                "text": "Continue loading",
-                "callback": continueLoadingCallback
-            };
+            modalOptions.cancelButton = { "text": "Continue loading" };
         }
         else
         {
