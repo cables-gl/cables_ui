@@ -69,6 +69,7 @@ export default class EditorTabCodemirror extends EditorBase
     #log = new Logger("editorTabCm");
     helix = false;
     #highlightCompartment = new Compartment();
+    #languageCompartment = new Compartment();
     #lastStoredLine = 0;
 
     /**
@@ -309,25 +310,6 @@ export default class EditorTabCodemirror extends EditorBase
             ));
 
         extensions.push(this.#highlightCompartment.of([]));
-        const syntaxErrorLinter = linter((view) =>
-        {
-            const diagnostics = [];
-            syntaxTree(view.state).iterate({
-                "enter": function (node)
-                {
-                    if (node.type.isError)
-                    {
-                        diagnostics.push({
-                            "from": node.from,
-                            "to": node.to,
-                            "severity": "error",
-                            "message": "Syntax error"
-                        });
-                    }
-                }
-            });
-            return diagnostics;
-        });
 
         // extensions.push(customCommands);
         extensions.push(highlightActiveLine());
@@ -360,20 +342,7 @@ export default class EditorTabCodemirror extends EditorBase
                 }]));
         }
 
-        if (this._options.syntax == "glsl") extensions.push(glsl());
-        if (this._options.syntax == "css") extensions.push(css());
-        if (this._options.syntax == "md") extensions.push(markdown());
-        if (this._options.syntax == "js" || this._options.syntax == "json")
-        {
-            extensions.push(syntaxErrorLinter);
-            extensions.push(javascript());
-            extensions.push(
-                javascriptLanguage.data.of({
-                    "autocomplete": this.getSnippets()
-                }),
-                autocompletion()
-            );
-        }
+        extensions.push(this.#languageCompartment.of(this.#getLanguageExtensions(this._options.syntax)));
 
         if (!this._options.allowEdit)
         {
@@ -405,6 +374,58 @@ export default class EditorTabCodemirror extends EditorBase
         createOpDocButton(this.tab, this);
         cb();
 
+    }
+
+    /**
+     * @param {string} syntax
+     */
+    #getLanguageExtensions(syntax)
+    {
+        if (syntax == "glsl") return [glsl()];
+        if (syntax == "css") return [css()];
+        if (syntax == "md") return [markdown()];
+        if (syntax == "js" || syntax == "json")
+        {
+            const syntaxErrorLinter = linter((view) =>
+            {
+                const diagnostics = [];
+                syntaxTree(view.state).iterate({
+                    "enter": function (node)
+                    {
+                        if (node.type.isError)
+                        {
+                            diagnostics.push({
+                                "from": node.from,
+                                "to": node.to,
+                                "severity": "error",
+                                "message": "Syntax error"
+                            });
+                        }
+                    }
+                });
+                return diagnostics;
+            });
+
+            return [
+                syntaxErrorLinter,
+                javascript(),
+                javascriptLanguage.data.of({
+                    "autocomplete": this.getSnippets()
+                })
+            ];
+        }
+        return [];
+    }
+
+    /**
+     * @param {string} syntax
+     */
+    setSyntax(syntax)
+    {
+        if (this._options.syntax == syntax) return;
+        super.setSyntax(syntax);
+        if (!this.cmView) return;
+        this.cmView.dispatch({ "effects": this.#languageCompartment.reconfigure(this.#getLanguageExtensions(syntax)) });
     }
 
     setInactive()

@@ -106,4 +106,12 @@ export default class EditorBase extends Events
         throw new Error("Method not implemented.");
     }
 
+    /**
+     * @param {string} syntax
+     */
+    setSyntax(syntax)
+    {
+        this._options.syntax = syntax;
+    }
+
 }

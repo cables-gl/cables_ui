@@ -240,6 +240,7 @@ export class ParamInputListeners
             port.on(Port.EVENT_UIATTRCHANGE, () =>
             {
                 updateDiags();
+                editor.setSyntax(port.uiAttribs.editorSyntax);
             });
 
             gui.corePatch().on(Patch.EVENT_OP_DELETED, (deletedOp) =>
