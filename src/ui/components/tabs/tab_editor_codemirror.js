@@ -1,5 +1,5 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
-import { linter, lintGutter } from "@codemirror/lint";
+import { linter, lintGutter, forEachDiagnostic, setDiagnosticsEffect } from "@codemirror/lint";
 import { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration } from "@codemirror/view";
 import { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
 import { helix } from "codemirror-helix";
@@ -70,6 +70,12 @@ export default class EditorTabCodemirror extends EditorBase
     helix = false;
     #highlightCompartment = new Compartment();
     #languageCompartment = new Compartment();
+
+    /** @type {import("../../api/opsserver.js").LinterDiag[]} */
+    #externalDiags = [];
+
+    /** @type {import("../../api/opsserver.js").LinterDiag[]} */
+    #editorDiags = [];
     #lastStoredLine = 0;
 
     /**
@@ -205,6 +211,7 @@ export default class EditorTabCodemirror extends EditorBase
      */
     #onEditorUpdate(update)
     {
+        if (this.#hasLintUpdate(update)) queueMicrotask(() => { this.#updateEditorDiags(update.state); });
         if (!update.selectionSet || !this.#cursorLineKey()) return;
 
         const line = update.state.doc.lineAt(update.state.selection.main.head).number;
@@ -212,6 +219,58 @@ export default class EditorTabCodemirror extends EditorBase
 
         this.#lastStoredLine = line;
         storeCursorLine(this.#cursorLineKey(), line);
+    }
+
+    /**
+     * @param {import("@codemirror/view").ViewUpdate} update
+     */
+    #hasLintUpdate(update)
+    {
+        for (let i = 0; i < update.transactions.length; i++)
+        {
+            const effects = update.transactions[i].effects;
+            for (let j = 0; j < effects.length; j++)
+                if (effects[j].is(setDiagnosticsEffect)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param {EditorState} state
+     */
+    #updateEditorDiags(state)
+    {
+        const severities = { "error": 2, "warning": 1 };
+        const diags = [];
+        forEachDiagnostic(state, (d, from) =>
+        {
+            const line = state.doc.lineAt(from);
+            diags.push({
+                "line": line.number,
+                "column": from - line.from + 1,
+                "severity": severities[d.severity] || 0,
+                "message": d.message
+            });
+        });
+        this.#editorDiags = diags;
+        super.setDiags(this.#getAllDiags(), false);
+    }
+
+    #getAllDiags()
+    {
+        const diags = this.#externalDiags.concat(this.#editorDiags);
+        diags.sort((a, b) => { return a.line - b.line; });
+        return diags;
+    }
+
+    /**
+     * @param {import("../../api/opsserver.js").LinterDiag[]} arr
+     * @param {boolean} [jumpToError]
+     */
+    setDiags(arr = [], jumpToError = true)
+    {
+        this.#externalDiags = arr;
+        super.setDiags(this.#getAllDiags(), jumpToError);
     }
 
     getContent()

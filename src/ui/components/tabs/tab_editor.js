@@ -28,8 +28,9 @@ export default class EditorBase extends Events
 
     /**
      * @param {import("../../api/opsserver.js").LinterDiag[]} arr
+     * @param {boolean} [jumpToError]
      */
-    setDiags(arr = [])
+    setDiags(arr = [], jumpToError = true)
     {
         const eleDiagId = "editordiag" + this.tab.id;
         this.eleDiag = ele.byId(eleDiagId);
@@ -67,7 +68,7 @@ export default class EditorBase extends Events
                 if (d.fatal)
                 {
 
-                    if (lineNumsErr.length == 0) this.gotoLine(d.line);
+                    if (jumpToError && lineNumsErr.length == 0) this.gotoLine(d.line);
                     lineNumsErr.push(d.line);
                 }
                 else
