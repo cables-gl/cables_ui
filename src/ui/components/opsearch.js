@@ -311,10 +311,12 @@ export default class OpSearch extends Events
                             }
                     }
 
-                    if (list[i].nameSpace.startsWith("Ops.Graphics") &&
-                             (this.newOpOptions.linkNewOpToPort && this.newOpOptions.linkNewOpToPort.op.objName.startsWith("Ops.Gl")) ||
-                             (linkPortIn && linkPortIn.op.objName.startsWith("Ops.Gl")) ||
-                             (linkPortIn && linkPortOut.op.objName.startsWith("Ops.Gl")))
+                    const linksToGl =
+                        (this.newOpOptions.linkNewOpToPort && this.newOpOptions.linkNewOpToPort.op && this.newOpOptions.linkNewOpToPort.op.objName.startsWith("Ops.Gl")) ||
+                        (linkPortIn && linkPortIn.op.objName.startsWith("Ops.Gl")) ||
+                        (linkPortOut && linkPortOut.op.objName.startsWith("Ops.Gl"));
+
+                    if (list[i].nameSpace.startsWith("Ops.Graphics") && linksToGl)
                     {
                         scoreDebug += "+2 compatible namespace similarity<br/>";
                         nspoints += 2;
