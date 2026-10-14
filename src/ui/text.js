@@ -291,6 +291,9 @@ export const GuiText =
         "title_authorName": "Author name for created ops",
         "subtitle_authorName": "",
 
+        "title_opLicense": "License for created ops",
+        "subtitle_opLicense": "",
+
         "title_downloadPath": "Custom download folder",
         "subtitle_downloadPath": "",
 

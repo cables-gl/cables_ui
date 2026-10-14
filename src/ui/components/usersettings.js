@@ -74,6 +74,7 @@ export class UserSettings extends Events
     static PREF_MAXIMIZERENDERER = "maximizerenderer";
     static PREF_TRANSPARENTPOPOUT = "transparentpopout";
     static PREF_AUTHOR_NAME = "authorName";
+    static PREF_OP_LICENSE = "opLicense";
     static PREF_ACE_KEYMODE = "ace_keymode";
     static PREF_DOWNLOAD_PATH = "downloadPath";
     static PREF_PATCH_PANSPEED = "patch_panspeed";

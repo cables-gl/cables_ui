@@ -124,6 +124,7 @@ export default class Preferences
         this.setSwitchValue("transparentpopout", userSettings.get(UserSettings.PREF_TRANSPARENTPOPOUT) || false);
 
         this.setInputValue("authorName", userSettings.get(UserSettings.PREF_AUTHOR_NAME) || "");
+        this.setInputValue("opLicense", userSettings.get(UserSettings.PREF_OP_LICENSE) || "");
         this.setSwitchValue("escape_closetabs", userSettings.get(UserSettings.PREF_ESCAPE_CLOSETABS) || false);
 
         this.setSwitchValue("ace_keymode", userSettings.get(UserSettings.PREF_ACE_KEYMODE) || "");
