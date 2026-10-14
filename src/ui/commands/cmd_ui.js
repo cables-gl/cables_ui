@@ -374,7 +374,7 @@ class CmdUi
         document.getElementById("timelineVolume").classList.add("icon-volume-x");
         document.getElementById("timelineVolume").classList.add("icon-highlight");
 
-        gui.corePatch().setVolume(0.0);
+        gui.corePatch().setMuted(true);
         userSettings.set(Gui.PREF_AUDIO_MUTE, true);
         if (showNotify)notify("Audio Muted");
 
@@ -385,14 +385,14 @@ class CmdUi
         document.getElementById("timelineVolume").classList.add("icon-volume-2");
         document.getElementById("timelineVolume").classList.remove("icon-volume-x");
         document.getElementById("timelineVolume").classList.remove("icon-highlight");
-        gui.corePatch().setVolume(1.0);
+        gui.corePatch().setMuted(false);
         userSettings.set(Gui.PREF_AUDIO_MUTE, false);
         notify("Audio Unmuted");
     }
 
     static toggleMute()
     {
-        if (gui.corePatch().config.masterVolume > 0.0)
+        if (!gui.corePatch().isMuted())
         {
             this.muteAudio(true);
         }
