@@ -50,6 +50,8 @@ import { GuiText } from "./text.js";
  * @property {boolean} [showWelcome]
  * @property {boolean} [showOpenPatch]
  * @property {boolean} [opRenameInEditor]
+ * @property {boolean} [uploadFiles]
+ * @property {boolean} [dragDropLocalFiles]
  */
 
 /**
