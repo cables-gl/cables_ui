@@ -2071,7 +2071,7 @@ export default class ServerOps
                             gui.patchView.store.sendErrorReport(errorReport, false);
                         }
                     }
-                    this._opNotFoundModal(opIdentifier, oldName, err, cb);
+                    this._opNotFoundError(opIdentifier, oldName, err, cb);
                 }
                 else
                 {
@@ -2153,7 +2153,8 @@ export default class ServerOps
                         "before": (path, scriptEl) => { scriptEl.setAttribute("crossorigin", "use-credentials"); },
                         "error": (urls) =>
                         {
-                            this._opNotFoundModal(opIdentifier, oldName, err, cb);
+                            gui.jobs().finish("missingops");
+                            this._opNotFoundError(opIdentifier, oldName, err, cb);
                         }
                     });
                 }
@@ -2274,7 +2275,7 @@ export default class ServerOps
         return opDoc ? opDoc.name : undefined;
     }
 
-    _opNotFoundModal(opIdentifier, oldName, err = {}, cb = null)
+    _opNotFoundError(opIdentifier, oldName, err = {}, cb = null)
     {
         let title = "Failed to load op";
         let footer = "";
@@ -2323,55 +2324,14 @@ export default class ServerOps
             }
         }
 
-        const continueLoadingCallback = (done) =>
-        {
-            gui.patchView.store.opCrashed = true;
-            if (cb) cb([]);
-            if (done) done();
-        };
+        // no dialog, the errors go to the log
+        this.#log.error(title + (errMsg ? ": " + errMsg : ""));
+        opLinks.forEach((opLink) => { this.#log.error(opLink); });
+        if (footer) this.#log.error(footer);
+        if (!hideEnvButton && editorLink) this.#log.error("<a href=\"" + editorLink + "\" target=\"_blank\">" + otherEnvButton + "</a>");
 
-        const tryOtherEnvCallback = () =>
-        {
-            window.open(editorLink);
-        };
-
-        const modalOptions = {
-            "title": title,
-            "footer": footer,
-            "text": errMsg,
-            "notices": opLinks
-        };
-        if (!hideEnvButton)
-        {
-            modalOptions.choice = true;
-            modalOptions.okButton = { "text": otherEnvButton };
-            modalOptions.cancelButton = {
-                "text": "Continue loading",
-                "callback": continueLoadingCallback
-            };
-        }
-        else
-        {
-            modalOptions.okButton = { "text": "Continue loading", "callback": continueLoadingCallback };
-            modalOptions.showOkButton = true;
-
-            if (platform.isElectron())
-            {
-                modalOptions.choice = true;
-                modalOptions.showOkButton = false;
-                modalOptions.cancelButton = {
-                    "text": "Open empty patch",
-                    "callback": () => { platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, {}); }
-                };
-            }
-        }
-
-        const modal = new ModalDialog(modalOptions);
-        if (!hideEnvButton)
-        {
-            modal.on("onSubmit", tryOtherEnvCallback);
-            modal.on("onClose", () => { continueLoadingCallback(); });
-        }
+        gui.patchView.store.opCrashed = true;
+        if (cb) cb([]);
     }
 
     /**
