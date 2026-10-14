@@ -1112,11 +1112,14 @@ export default class ServerOps
         if (gui.showGuestWarning()) return;
 
         const opDoc = gui.opDocs.getOpDocById(opId);
+        if (!opDoc) return this.#log.error("no opdoc found for opid");
+
         const modal = new ModalDialog({
             "title": "Really delete op?",
             "text": "Delete " + opDoc.name + "?",
             "choice": true
         });
+
         modal.on("onSubmit", () =>
         {
             platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opId": opDoc.id }, (err, res) =>
@@ -1125,7 +1128,7 @@ export default class ServerOps
                 {
                     new ModalDialog({
                         "title": "Failed to delete op",
-                        "text": err.message
+                        "text": err.msg
                     });
                 }
                 else
@@ -1150,10 +1153,7 @@ export default class ServerOps
         {
             obj = obj[path[i]];
 
-            if (typeof obj === "undefined")
-            {
-                return;
-            }
+            if (typeof obj === "undefined") return;
         }
 
         delete obj[path.pop()];
