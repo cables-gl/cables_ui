@@ -2314,14 +2314,8 @@ export default class ServerOps
         if (!editorLink) hideEnvButton = true;
         else
         {
-            if (oldName)
-            {
-                opLinks.push(oldName);
-            }
-            else
-            {
-                opLinks.push(opIdentifier);
-            }
+            const opText = oldName || opIdentifier;
+            if (!opLinks.includes(opText)) opLinks.push(opText);
         }
 
         // no dialog, the errors go to the log
