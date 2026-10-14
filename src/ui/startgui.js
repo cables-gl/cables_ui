@@ -159,7 +159,6 @@ export default function startUi(cfg)
                         "correctLevel": QRCode.CorrectLevel.H
                     });
 
-                    console.log("text", gui.user.activityFeed);
                     if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
 
                     CABLES.UI.loaded = true;
