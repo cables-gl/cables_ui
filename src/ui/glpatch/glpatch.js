@@ -751,27 +751,16 @@ export default class GlPatch extends Events
      */
     #onCanvasDblClick(e)
     {
-        let isOverSubPatchOp = false;
-        let isOverArea = false;
+        let hoverOp = null;
+        if (this._hoverOps.length > 0) hoverOp = this._hoverOps[0].op;
 
-        if (this._hoverOps.length > 0)
+        if (hoverOp && hoverOp.uiAttribs.hasArea)
         {
-            isOverSubPatchOp = this._hoverOps[0].op && this._hoverOps[0].op.isSubPatchOp();
-            isOverArea = this._hoverOps[0].op.uiAttribs.hasArea;
-        }
-
-        if (isOverArea)
-        {
-
-            const hoverOp = this._hoverOps[0].op;
             const colPort = hoverOp.getPortByName("Collapse");
             if (colPort)colPort._onTriggered();
-
         }
-        else
-        if (isOverSubPatchOp)
+        else if (hoverOp && hoverOp.isSubPatchOp())
         {
-            const hoverOp = this._hoverOps[0].op;
             gui.patchView.setCurrentSubPatch(hoverOp.patchId.get());
             gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
         }
