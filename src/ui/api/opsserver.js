@@ -2354,7 +2354,18 @@ export default class ServerOps
         {
             modalOptions.okButton = { "text": "Continue loading", "callback": continueLoadingCallback };
             modalOptions.showOkButton = true;
+
+            if (platform.isElectron())
+            {
+                modalOptions.choice = true;
+                modalOptions.showOkButton = false;
+                modalOptions.cancelButton = {
+                    "text": "Open empty patch",
+                    "callback": () => { platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, {}); }
+                };
+            }
         }
+
         const modal = new ModalDialog(modalOptions);
         if (!hideEnvButton)
         {
