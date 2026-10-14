@@ -85,7 +85,8 @@ export default class FileUploader
     {
         if (gui.isRemoteClient) return;
 
-        if (platform.frontendOptions.uploadFiles || CABLES.reuploadName) // allow reupload in electron via `|| CABLES.reuploadName`
+        // always upload file when reuploading or adding it to an op (even in electron)
+        if (platform.frontendOptions.uploadFiles || CABLES.reuploadName || opId)
         {
             CABLES.reuploadName = null;
             const reader = new FileReader();

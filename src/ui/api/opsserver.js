@@ -1281,12 +1281,12 @@ export default class ServerOps
 
         const editorTab = createEditor({
             "title": title,
-            "name": opId, // "content": content,
+            "name": opId,
             "loading": true,
             "syntax": "js",
             "editorObj": editorObj,
-            "allowEdit": !!readOnly,
-            "showSaveButton": true,
+            "allowEdit": false, // dependency files are read only for now - cables-gl/cables/issues/8796
+            "showSaveButton": false,
             "onClose": (which) =>
             {
                 if (editorObj && editorObj.name) editorSession.remove(editorObj.type, editorObj.name);
