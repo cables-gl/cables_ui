@@ -87,6 +87,7 @@ export default class GlPatch extends Events
 
     /** @type {Object<string,GlOp>} */
     _glOpz = {};
+    #numGlOps = 0;
 
     #opStackOrder = 0;
 
@@ -1041,6 +1042,7 @@ export default class GlPatch extends Events
 
         if (this._selectedGlOps[opid]) this.unSelectOpId(opid);
         delete this._glOpz[opid];
+        this.#numGlOps--;
         glop.dispose();
     }
 
@@ -1159,6 +1161,7 @@ export default class GlPatch extends Events
         {
             glOp = new GlOp(this, this.#rectInstancer, op);
             this._glOpz[op.id] = glOp;
+            this.#numGlOps++;
         }
         else
         {
@@ -1287,7 +1290,7 @@ export default class GlPatch extends Events
         this.updateSubPatchOpAnim();
         this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 
-        if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
+        if (this.#numGlOps != gui.corePatch().ops.length)
         {
             for (let j = 0; j < gui.corePatch().ops.length; j++)
             {
@@ -1953,6 +1956,7 @@ export default class GlPatch extends Events
 
         this.links = {};
         this._glOpz = {};
+        this.#numGlOps = 0;
 
         if (this.#rectInstancer) this.#rectInstancer.dispose();
         if (this.#lines) this.#lines.dispose();
