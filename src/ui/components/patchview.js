@@ -532,7 +532,7 @@ export default class PatchView extends Events
 
             if (!op) return;
 
-            if (this._showingNavHelperEmpty) ele.hide(ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY)); // document.getElementById("patchnavhelperEmpty").style.display = "none";
+            if (this._showingNavHelperEmpty) ele.hide(ele.byId(Gui.ELEID_PATCH_HELPER_EMPTY)); // document.getElementById("patchnavhelperEmpty").style.display = "none";
 
             // todo options:
             // - putIntoLink
