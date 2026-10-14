@@ -287,6 +287,12 @@ class CmdPatch
                 "icon": "op"
             },
             {
+                "cmd": "Set op summary",
+                "func": CmdPatch.editSelectedOpSummary,
+                "category": "patch",
+                "icon": "op"
+            },
+            {
                 "cmd": "Show glop information",
                 "func": CmdPatch.watchGlOp,
                 "category": "patch",
@@ -1459,6 +1465,10 @@ class CmdPatch
                 {
                     if (!err)
                     {
+                        const opDoc = gui.opDocs.getOpDocByName(opName);
+                        if (opDoc) opDoc.summary = summary;
+                        gui.opSelect().reload();
+
                         gui.serverOps.loadOpDependencies(opName, () =>
                         {
                             gui.savingTitleAnimEnd();
@@ -1468,6 +1478,15 @@ class CmdPatch
                 });
             }
         });
+    }
+
+    static editSelectedOpSummary()
+    {
+        const op = gui.patchView.getSelectedOps()[0];
+        if (!op) return;
+
+        const opDoc = gui.opDocs.getOpDocByName(op.objName);
+        CmdPatch.editOpSummary(op.opId, op.objName, opDoc ? opDoc.summary : "");
     }
 
     static uncollideOps(ops)

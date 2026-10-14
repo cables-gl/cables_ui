@@ -28,12 +28,6 @@ class CmdOps
             "icon": "op"
         },
         {
-            "cmd": "Show Diff previous version",
-            "func": CmdOps.showDiff,
-            "category": "op",
-            "icon": "op"
-        },
-        {
             "cmd": "Upgrade selected ops",
             "func": CmdOps.upGradeOps,
             "category": "op",
@@ -58,8 +52,8 @@ class CmdOps
             "icon": "op"
         },
         {
-            "cmd": "Diff selected op with previous version",
-            "func": CmdOps.diffPreviousVersion,
+            "cmd": "Show Diff previous version",
+            "func": CmdOps.showDiff,
             "category": "op",
             "icon": "op"
         },
@@ -183,16 +177,6 @@ class CmdOps
         const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
         new TabManageOp(gui.mainTabs, subOuter.opId);
-    }
-
-    /**
-     * @param {string} [opid]
-     */
-    static diffPreviousVersion()
-    {
-        const ops = gui.patchView.getSelectedOps();
-        if (ops.length == 0) return notify("select an op first");
-        new TabOpVersionDiff(gui.mainTabs, ops[0].objName);
     }
 
     static manageOp(opid)
