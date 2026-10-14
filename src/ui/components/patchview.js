@@ -296,7 +296,7 @@ export default class PatchView extends Events
                 if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
                 {
                     this._showingNavHelperEmpty = true;
-                    ele.show(ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY));
+                    ele.show(ele.byId(Gui.ELEID_PATCH_HELPER_EMPTY));
                 }
             }
 
@@ -1755,7 +1755,7 @@ export default class PatchView extends Events
         const undoGroup = undo.startGroup();
 
         if (!pastedJson || !pastedJson.ops) return;
-        ele.hide(ele.byId(Gui.ELEID_PATCH_HEPER_EMPTY));
+        ele.hide(ele.byId(Gui.ELEID_PATCH_HELPER_EMPTY));
 
         if (currentSubPatch)
         {
