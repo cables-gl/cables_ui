@@ -158,7 +158,7 @@ export default class GlCanvas
 
     activityIdle()
     {
-        this.targetFps = 10;
+        this.targetFps = 25;
     }
 
     activityHigh()
@@ -170,7 +170,7 @@ export default class GlCanvas
 
     activityMedium()
     {
-        this.targetFps = 30;
+        this.targetFps = 50;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }
