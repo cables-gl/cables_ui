@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import { PatchConnectionReceiver } from "./patchconnection.js";
 import { gui } from "../gui.js";
+import ScConnection from "./sc_connection.js";
 
 export default class PacoConnector extends Events
 {
@@ -24,7 +25,7 @@ export default class PacoConnector extends Events
     static PACO_OP_RELOAD = 16;
 
     /**
-     * @param {} connection
+     * @param {ScConnection} connection
      * @param {any} paco
      */
     constructor(connection, paco)
@@ -40,7 +41,7 @@ export default class PacoConnector extends Events
         this._timeouts = {};
     }
 
-    send(event, vars, sendOnEmptyClientList = false)
+    send(event, vars, sendOnEmptyClientList = null)
     {
         if (!this._connection || this._connection.client.isRemoteClient)
         {

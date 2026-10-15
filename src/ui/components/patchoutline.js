@@ -6,6 +6,13 @@ import { contextMenu } from "../elements/contextmenu.js";
 import { patchStructureQuery } from "./patchstructurequery.js";
 import { CmdPatch } from "../commands/cmd_patch.js";
 
+/**
+ * @typedef SubPatchContextMenuItem
+ * @property {String} subPatchId
+ * @property {Number} blueprintVer
+ * @property {String} subPatchVer
+ */
+
 export default class PatchOutline extends Events
 {
     constructor()
@@ -236,7 +243,7 @@ export default class PatchOutline extends Events
     }
 
     /**
-     * @param {} item
+     * @param {SubPatchContextMenuItem} item
      * @param {HTMLElement} el
      */
     subPatchContextMenu(item, el)
