@@ -25,7 +25,7 @@ export default class ElectronOpDirs
         editorSession.rememberOpenEditor(ElectronOpDirs.TABSESSION_NAME, ElectronOpDirs.TABSESSION_NAME, {}, true);
         this._tab.on(Tab.EVENT_CLOSE, () => { editorSession.remove(ElectronOpDirs.TABSESSION_NAME, ElectronOpDirs.TABSESSION_NAME); });
 
-        this._tab.on("onActivate", this.show);
+        this._tab.on(Tab.EVENT_ACTIVATE, () => { this.show(); });
     }
 
     show()
@@ -35,8 +35,9 @@ export default class ElectronOpDirs
         {
             if (!err && r.data)
             {
+                const opDirs = r.data;
                 const templateVars = [];
-                r.data.forEach((dir) =>
+                opDirs.forEach((dir) =>
                 {
                     if (dir.removeable) dir.showOptions = true;
                     templateVars.push(dir);
@@ -69,6 +70,31 @@ export default class ElectronOpDirs
                 ele.clickables(this._tab.contentEle, ".opdirthreedot", (e, dataset) =>
                 {
                     const contextItems = [];
+                    if (dataset.index !== "0")
+                    {
+                        contextItems.push({
+                            "title": "Move to top",
+                            "func": () =>
+                            {
+                                const dirIndex = opDirs.findIndex((opDir) => { return opDir.dir === dataset.dir; });
+                                if (dirIndex > 0)
+                                {
+                                    const order = opDirs.map((d) => { return d.dir; });
+                                    order.unshift(order.splice(dirIndex, 1)[0]);
+                                    platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SAVE_OPDIRS_ORDER, order, (orderErr) =>
+                                    {
+                                        if (orderErr)
+                                        {
+                                            new ModalDialog({ "showOkButton": true, "warning": true, "title": "Warning", "text": orderErr.msg });
+                                            this._log.info(orderErr.msg);
+                                        }
+                                        this.show();
+                                        this._loadOpsInDirs();
+                                    });
+                                }
+                            }
+                        });
+                    }
                     contextItems.push({
                         "title": "Remove",
                         "func": () =>
