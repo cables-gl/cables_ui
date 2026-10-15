@@ -6,6 +6,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { contextMenu } from "../../elements/contextmenu.js";
+import { CmdPatch } from "../../commands/cmd_patch.js";
 
 export default class ElectronOpDirs
 {
@@ -35,11 +36,14 @@ export default class ElectronOpDirs
         {
             if (!err && r.data)
             {
+
+                /** @type import("cables-shared-client").OpDirInfo[] */
                 const opDirs = r.data;
                 const templateVars = [];
                 opDirs.forEach((dir) =>
                 {
-                    if (dir.removeable) dir.showOptions = true;
+                    if (dir.removable) dir.showOptions = true;
+                    if (dir.numUsedOps) dir.showOptions = true;
                     templateVars.push(dir);
                 });
                 const html = getHandleBarHtml("tab_electron_opdirs", { "dirs": templateVars });
@@ -70,13 +74,16 @@ export default class ElectronOpDirs
                 ele.clickables(this._tab.contentEle, ".opdirthreedot", (e, dataset) =>
                 {
                     const contextItems = [];
-                    if (dataset.index !== "0")
+                    const opDir = opDirs[dataset.index];
+                    if (!opDir) return;
+
+                    if (opDir.type === "user" && dataset.index !== "0")
                     {
                         contextItems.push({
                             "title": "Move to top",
                             "func": () =>
                             {
-                                const dirIndex = opDirs.findIndex((opDir) => { return opDir.dir === dataset.dir; });
+                                const dirIndex = opDirs.findIndex((moveDir) => { return moveDir.dir === dataset.dir; });
                                 if (dirIndex > 0)
                                 {
                                     const order = opDirs.map((d) => { return d.dir; });
@@ -95,18 +102,32 @@ export default class ElectronOpDirs
                             }
                         });
                     }
-                    contextItems.push({
-                        "title": "Remove",
-                        "func": () =>
-                        {
-                            const dir = dataset.dir;
-                            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_REMOVE_OPDIR, dir, () =>
+                    if (opDir.numUsedOps)
+                    {
+                        contextItems.push({
+                            "title": "Show used ops",
+                            "func": () =>
                             {
-                                this.show();
-                                this._loadOpsInDirs();
-                            });
-                        }
-                    });
+                                CmdPatch.analyze();
+                            }
+                        });
+                    }
+                    if (opDir.removable)
+                    {
+                        contextItems.push({
+                            "title": "Remove",
+                            "func": () =>
+                            {
+                                const dir = dataset.dir;
+                                platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_REMOVE_OPDIR, dir, () =>
+                                {
+                                    this.show();
+                                    this._loadOpsInDirs();
+                                });
+                            }
+                        });
+                    }
+
                     contextMenu.show({ "items": contextItems }, e.target);
                 });
             }
@@ -129,9 +150,6 @@ export default class ElectronOpDirs
                 }
                 gui.opSelect().reload();
             }
-        }, (response) =>
-        {
-            this._log.error("preloading error", response);
         });
     }
 }

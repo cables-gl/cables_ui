@@ -14,7 +14,7 @@
                     <th></th>
                     <th>Type</th>
                     <th>Directory</th>
-                    <th>Num Ops</th>
+                    <th>Ops</th>
                     <th>Used</th>
                     <th></th>
                 </thead>
@@ -24,8 +24,8 @@
                         <td><a class="icon icon-folder icon-0_75x" data-dir="{{dir}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir});"></a></td>
                         <td>{{type}}</td>
                         <td><span class="dir">{{dir}}</span></td>
-                        <td>{{numOps}}</td>
-                        <td>{{#if numUsedOps}}{{numUsedOps}}{{/if}}</td>
+                        <td style="text-align: right;">{{numOps}}</td>
+                        <td style="text-align: right;">{{#if numUsedOps}}{{numUsedOps}}{{/if}}</td>
                         <td>{{#if showOptions}}<a class="opdirthreedot" data-tt="more options" data-dir="{{dir}}" data-index="{{@index}}"><span class="icon icon-three-dots"></span></a>{{/if}}</td>
                     </tr>
                     {{/each}}

@@ -1,16 +1,22 @@
-import { Events } from "cables-shared-client";
+import { Events, Logger, TalkerAPI } from "cables-shared-client";
 import { Port } from "cables";
 import Tab from "../../elements/tabpanel/tab.js";
 import FindTab from "./tab_find.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
+import { escapeHTML } from "../../utils/helper.js";
 
 /**
  * tab panel analyze patch shows information and statistics about the current patch
  */
 export default class AnalyzePatchTab extends Events
 {
+
+    #log = new Logger("AnalyzePatchTab");
+
+    /** @type import("cables-shared-client").OpDirInfo[] */
+    #opdirs;
 
     /**
      * @param {TabPanel} tabs
@@ -20,11 +26,29 @@ export default class AnalyzePatchTab extends Events
         super();
         this._tabs = tabs || gui.mainTabs;
 
-        this._tab = new Tab("Analyze", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true" });
+        this._tab = new Tab("Analyze", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": true });
         this._tabs.addTab(this._tab, true);
         gui.maintabPanel.show(true);
 
-        this._html();
+        if (platform.frontendOptions.hasOpDirectories)
+        {
+            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_GET_PROJECT_OPDIRS, {}, (err, r) =>
+            {
+                if (err)
+                {
+                    this.#log.warn("failed to get opdirectories", err);
+                }
+                else if (r && r.data)
+                {
+                    this.#opdirs = r.data.filter((opDir) => { return opDir.type === "user" || opDir.type === "patch"; });
+                }
+                this._html();
+            });
+        }
+        else
+        {
+            this._html();
+        }
     }
 
     _checkPortTypes(ports)
@@ -70,8 +94,6 @@ export default class AnalyzePatchTab extends Events
         report += "<h2>Ops</h2>";
 
         const opsCount = {};
-        const hasOpDirs = platform.frontendOptions.hasOpDirectories;
-
         for (let i = 0; i < patch.ops.length; i++)
         {
             const opName = patch.ops[i].objName;
@@ -81,6 +103,32 @@ export default class AnalyzePatchTab extends Events
 
         report += patch.ops.length + " Ops total<br/>";
         report += Object.keys(opsCount).length + " unique ops<br/>";
+
+        const ops = patch.ops;
+        const assets = {};
+        let assetCount = 0;
+        for (let i = 0; i < ops.length; i++)
+        {
+            for (let j = 0; j < ops[i].portsIn.length; j++)
+            {
+                if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display === "file")
+                {
+                    const asset = ops[i].portsIn[j].get();
+                    if (asset && asset !== "0")
+                    {
+                        assets[asset] = assets[asset] || 0;
+                        assets[asset]++;
+                        assetCount++;
+                    }
+                }
+            }
+        }
+
+        report += "<hr/>";
+        report += "<h2>Used Assets</h2>";
+
+        report += assetCount + " Assets total<br/>";
+        report += Object.keys(assets).length + " unique assets<br/>";
 
         report += "<hr/>";
         report += "<h2>Op Types</h2>";
@@ -155,10 +203,41 @@ export default class AnalyzePatchTab extends Events
         report += "<table>";
         for (let i = 0; i < Math.min(25, opscountSorted.length); i++)
             report += "<tr><td> " + opscountSorted[i].count + "x </td><td><a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, '" + opscountSorted[i].name + "');\">" + opscountSorted[i].name + "</td></tr>";
-
         report += "</table>";
 
-        // ---
+        if (platform.frontendOptions.hasOpDirectories)
+        {
+            report += "<hr/>";
+            report += "<h2>Used Op Directories</h2>";
+            if (this.#opdirs)
+            {
+                let hasUsedOpDirs = false;
+                this.#opdirs.forEach((opDir) =>
+                {
+                    if (opDir.numUsedOps)
+                    {
+                        hasUsedOpDirs = true;
+                        report += "<h3><a class=\"icon icon-folder icon-0_75x\" data-dir=\"" + escapeHTML(opDir.dir) + "\" onClick=\"CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir });\"></a>&nbsp;" + escapeHTML(opDir.dir) + "</h3>";
+                        report += "<table>";
+
+                        const dirOpNames = opDir.opNames;
+                        dirOpNames.forEach((dirOpName) =>
+                        {
+                            if (opsCount[dirOpName])
+                            {
+                                report += "<tr><td> " + opsCount[dirOpName] + "x </td><td><a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, '" + dirOpName + "');\">" + dirOpName + "</td></tr>";
+                            }
+                        });
+                        report += "</table>";
+                    }
+                });
+                if (!hasUsedOpDirs) report += "No ops from op directories used.<br/>";
+            }
+            else
+            {
+                report += "<br/><div class=\"highlightBlock warn\">Failed to get op directories!</div>";
+            }
+        }
 
         report += "<hr/>";
         report += "<h2>Subpatches</h2>";
