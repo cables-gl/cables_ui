@@ -18,6 +18,7 @@ import { UserSettings, userSettings } from "../components/usersettings.js";
 import { createEditor } from "../components/editor.js";
 import { ModalOpName } from "../dialogs/modalopname.js";
 import { CmdOps } from "../commands/cmd_op.js";
+import ModalOpNotFound from "../dialogs/modalopnotfound.js";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -41,6 +42,21 @@ import { CmdOps } from "../commands/cmd_op.js";
  * @property {number} [column]
  * @property {number} [severity]
  * @property {boolean} [fatal]
+ */
+
+/**
+ * @typedef OpNotFoundErrorData
+ * @property {string} [text]
+ * @property {string} [otherEnvName]
+ * @property {string} [otherEnvUrl]
+ * @property {string} [otherEnvButton]
+ * @property {string} [editorLink]
+ * @property {boolean} [hideEnvButton]
+ * @property {{name: string, env: string}[]} [ops]
+ */
+
+/**
+ * @typedef {import("cables-shared-client").ApiError & { data: OpNotFoundErrorData }} OpNotFoundApiError
  */
 
 /**
@@ -2275,54 +2291,39 @@ export default class ServerOps
         return opDoc ? opDoc.name : undefined;
     }
 
-    _opNotFoundError(opIdentifier, oldName, err = {}, cb = null)
+    /**
+     *
+     * @param {String} opIdentifier
+     * @param {String} oldName
+     * @param {OpNotFoundApiError} [apiError]
+     * @param {Function} [cb]
+     */
+    _opNotFoundError(opIdentifier, oldName, apiError = null, cb = null)
     {
-        let title = "Failed to load op";
-        let footer = "";
-        let otherEnvName = "dev.cables.gl";
-        const project = gui.project();
-        let editorLink = "";
-        if (project) editorLink = "https://" + otherEnvName + "/edit/" + project.shortId;
-        let otherEnvButton = "Try " + otherEnvName;
-        let errMsg = "";
-        let opLinks = [];
-        let hideEnvButton = !platform.frontendOptions.suggestOtherEnvironmentsForOps;
-        if (err && err.data)
+        // only show dialog when ui is done (i.e. when pasting an unknown op)
+        if (gui.finishedLoading())
         {
-            if (err.data.text) errMsg = err.data.text;
-            if (err.data.footer) footer = err.data.footer;
-            if (err.data.otherEnvName)
+            new ModalOpNotFound(opIdentifier, oldName, apiError, cb);
+        }
+        else
+        {
+            let errMsg = "Failed to load op " + (oldName || opIdentifier);
+            let opTexts = [];
+            if (apiError && apiError.data)
             {
-                otherEnvButton = "Try " + err.data.otherEnvName;
-            }
-            if (err.data.reasons)
-            {
-                opLinks = err.data.reasons;
-                if (oldName)
+                if (apiError.data.text) errMsg += ". " + apiError.data.text;
+                if (apiError.data.ops)
                 {
-                    for (let i = 0; i < opLinks.length; i++)
+                    for (let i = 0; i < apiError.data.ops.length; i++)
                     {
-                        if (opLinks[i] === opIdentifier) opLinks[i] = oldName;
+                        const op = apiError.data.ops[i];
+                        opTexts[i] = "Found " + op.name + " on " + op.env;
                     }
                 }
             }
-            if (err.data.otherEnvUrl && project) editorLink = err.data.otherEnvUrl + "/edit/" + project.shortId;
-            if (err.data.otherEnvButton) otherEnvButton = err.data.otherEnvButton;
-            if (err.data.editorLink) editorLink = err.data.editorLink;
-            if (err.data.hideEnvButton) hideEnvButton = true;
+            this.#log.error(errMsg);
+            opTexts.forEach((opText) => { this.#log.error(opText); });
         }
-        if (!editorLink) hideEnvButton = true;
-        else
-        {
-            const opText = oldName || opIdentifier;
-            if (!opLinks.includes(opText)) opLinks.push(opText);
-        }
-
-        // no dialog, the errors go to the log
-        this.#log.error(title + (errMsg ? ": " + errMsg : ""));
-        opLinks.forEach((opLink) => { this.#log.error(opLink); });
-        if (footer) this.#log.error(footer);
-        if (!hideEnvButton && editorLink) this.#log.error("<a href=\"" + editorLink + "\" target=\"_blank\">" + otherEnvButton + "</a>");
 
         gui.patchView.store.opCrashed = true;
         if (cb) cb([]);
