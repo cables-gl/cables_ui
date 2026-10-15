@@ -260,7 +260,7 @@ export default class ServerOps
             {
                 if (err.msg !== "CANCELLED") gui.serverOps.showApiError(err);
                 gui.savingTitleAnimEnd();
-                if (cb) cb();
+                if (cb) cb(null, err);
             }
             else
             {

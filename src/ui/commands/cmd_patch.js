@@ -583,14 +583,21 @@ class CmdPatch
                     if (selops[i].storage && selops[i].storage.subPatchVer != 2)
                     {
                         new ModalDialog({ "title": "Can not create subPatchOp", "text": "not possible To create a subpatch op containing old subpatches. ", "showOkButton": true });
-
+                        gui.patchView.patchRenderer.subPatchOpAnimEndBounds(origOpsBounds);
                         return;
                     }
                 }
             }
 
-            gui.serverOps.create(newOpname, () =>
+            gui.serverOps.create(newOpname, (newOpRes, createErr) =>
             {
+                if (!newOpRes)
+                {
+                    if (createErr && createErr.msg === "CANCELLED") notifyError("Please save your new project before creating ops!");
+                    gui.patchView.patchRenderer.subPatchOpAnimEndBounds(origOpsBounds);
+                    return;
+                }
+
                 let newselectedOpIds = [];
 
                 for (let i = 0; i < selectedOpIds.length; i++)
