@@ -155,6 +155,8 @@ export default class PlatformElectron extends Platform
                 "title": "Patch Export"
             };
             gui.jobs().finish("exportPatch");
+            if (err && err.msg === "CANCELLED") return;
+
             if (err || result.error)
             {
                 const message = err?.msg || result?.msg || "";

@@ -812,6 +812,8 @@ export default class PatchSaveServer extends Events
             },
             (error, re) =>
             {
+                if (error && error.msg === "CANCELLED") return;
+
                 const newName = re?.data?.name;
                 if (error || !newName)
                 {

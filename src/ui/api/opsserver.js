@@ -258,7 +258,7 @@ export default class ServerOps
         {
             if (err)
             {
-                gui.serverOps.showApiError(err);
+                if (err.msg !== "CANCELLED") gui.serverOps.showApiError(err);
                 gui.savingTitleAnimEnd();
                 if (cb) cb();
             }
@@ -931,6 +931,12 @@ export default class ServerOps
             "opname": opname
         }, (err3, res) =>
         {
+            if (err3)
+            {
+                if (err3.msg !== "CANCELLED") this.showApiError(err3);
+                CABLES.shittyTest = 0;
+                return;
+            }
             platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_OP, {
                 "opname": opname,
                 "update": {
