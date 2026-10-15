@@ -3876,7 +3876,8 @@ class ColorRick
 
         this._inputHex.addEventListener("input",(e)=>
         {
-            if(this.validateHexInput()) this.setColor(this.validateHexInput())
+            const hex=this.validateHexInput();
+            if(hex) this.setColor(hex);
         });
 
         this._inputHex.addEventListener("blur",(e)=>
@@ -3991,7 +3992,8 @@ class ColorRick
                 picker.then((a) =>
                 {
                     this._inputHex.value=a.sRGBHex;
-                    this.setColor(this.validateHexInput())
+                    const hex=this.validateHexInput();
+                    if(hex) this.setColor(hex);
                 });
         });
 
@@ -4010,9 +4012,9 @@ class ColorRick
 
     validateHexInput()
     {
-        let v=this._inputHex.value;
-        if(v.indexOf("#")==-1) v="#"+v;
-        const valid=v.length==7;
+        let v=String(this._inputHex.value||"").trim();
+        if(v.charAt(0)!="#") v="#"+v;
+        const valid=/^#[0-9a-fA-F]{6}$/.test(v);
 
         if(valid) 
         {
