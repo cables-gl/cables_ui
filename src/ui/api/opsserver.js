@@ -46,13 +46,14 @@ import ModalOpNotFound from "../dialogs/modalopnotfound.js";
 
 /**
  * @typedef OpNotFoundErrorData
- * @property {string} [text]
- * @property {string} [otherEnvName]
- * @property {string} [otherEnvUrl]
- * @property {string} [otherEnvButton]
- * @property {string} [editorLink]
- * @property {boolean} [hideEnvButton]
- * @property {{name: string, env: string}[]} [ops]
+ * @property {String} [text]
+ * @property {String} [otherEnvName]
+ * @property {String} [otherEnvUrl]
+ * @property {String} [otherEnvButton]
+ * @property {String} [editorLink]
+ * @property {String} [footer]
+ * @property {Boolean} [hideEnvButton]
+ * @property {{name: string, env: string, opDir: string}[]} [ops]
  */
 
 /**
@@ -2309,20 +2310,32 @@ export default class ServerOps
         {
             let errMsg = "Failed to load op " + (oldName || opIdentifier);
             let opTexts = [];
+            let footer = "";
             if (apiError && apiError.data)
             {
+                if (apiError.data.footer) footer = apiError.data.footer;
                 if (apiError.data.text) errMsg += ". " + apiError.data.text;
                 if (apiError.data.ops)
                 {
                     for (let i = 0; i < apiError.data.ops.length; i++)
                     {
                         const op = apiError.data.ops[i];
-                        opTexts[i] = "Found " + op.name + " on " + op.env;
+                        if (op.env === "electron")
+                        {
+                            opTexts[i] = op.opDir;
+
+                        }
+                        else
+                        {
+                            opTexts[i] = "Found " + op.name + " on " + op.env;
+                        }
                     }
                 }
             }
             this.#log.error(errMsg);
             opTexts.forEach((opText) => { this.#log.error(opText); });
+            if (footer) this.#log.error(footer);
+
         }
 
         gui.patchView.store.opCrashed = true;

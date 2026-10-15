@@ -65,27 +65,27 @@ export default class ModalOpNotFound
         const modalOptions = {
             "title": title,
             "text": errMsg,
-            "notices": opLinks
+            "notices": opLinks,
+            "choice": true
         };
 
         if (!hideEnvButton)
         {
-            modalOptions.choice = true;
-            modalOptions.okButton = { "text": otherEnvButton };
-            modalOptions.cancelButton = {
+            modalOptions.okButton = {
                 "text": "Continue loading",
                 "callback": this.#continueLoadingCallback.bind(this)
             };
+            modalOptions.cancelButton = { "text": otherEnvButton, "callback": () => { this.#tryOtherEnvCallback(editorLink); } };
         }
         else
         {
             modalOptions.okButton = { "text": "Continue loading", "callback": this.#continueLoadingCallback.bind(this) };
-            modalOptions.showOkButton = true;
+            modalOptions.cancelButton = {
+                "cssClasses": "hidden"
+            };
 
-            if (platform.isElectron())
+            if (platform.isElectron() && !gui.finishedLoading())
             {
-                modalOptions.choice = true;
-                modalOptions.showOkButton = false;
                 modalOptions.cancelButton = {
                     "text": "Open empty patch",
                     "callback": () => { platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, {}); }
@@ -96,7 +96,6 @@ export default class ModalOpNotFound
         this.#modal = new ModalDialog(modalOptions);
         if (!hideEnvButton)
         {
-            this.#modal.on("onSubmit", () => { this.#tryOtherEnvCallback(editorLink); });
             this.#modal.on("onClose", () => { this.#continueLoadingCallback(); });
         }
     }
