@@ -92,7 +92,7 @@ export default class OpSelect
 
     updateStatusBar()
     {
-        if (!this._eleSearchinfo) return;
+        if (!this._eleSearchinfo || !this.#opSearch.list) return;
 
         this.#opSearch.hideUserOps = gui.project().isOpExample || gui.getPatchSummary()?.isPublic;
         const perf = gui.uiProfiler.start("opselect.udpateOptions");
