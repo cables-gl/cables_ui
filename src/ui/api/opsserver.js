@@ -148,13 +148,12 @@ export default class ServerOps
 
         gui.corePatch().on(ServerOps.EVENT_OP_FILE_DELETE_FINISHED, (deletedOp) =>
         {
-            const patch = gui.corePatch();
-
-            const ops = patch.getOpsByObjName(deletedOp.name);
-            ops.forEach((op) =>
-            {
-                patch.deleteOp(op.id, true);
-            });
+            // const patch = gui.corePatch();
+            // const ops = patch.getOpsByObjName(deletedOp.name);
+            // ops.forEach((op) =>
+            // {
+            //     patch.deleteOp(op.id, true);
+            // });
 
             // remove the op class from code, opsearch also lists all ops found in the Ops namespace
             const path = deletedOp.name.split(".");
@@ -2314,7 +2313,7 @@ export default class ServerOps
         }
         else
         {
-            let errMsg = "Failed to load op " + (oldName || opIdentifier);
+            let errMsg = "Failed to find op " + (oldName || opIdentifier);
             let opTexts = [];
             let footer = "";
             if (apiError && apiError.data)
