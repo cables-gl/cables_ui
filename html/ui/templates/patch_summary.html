@@ -83,7 +83,7 @@
             <a class="iconbutton info" aria-label="analyze patch"  id="btn_analyze_patch" data-info="summary_analyze"><span class="icon icon-pie-chart"></span></a>
 
             {{#if frontendOptions.hasCommunity}}
-                <a class="iconbutton" id="btn_toggle_patch_like" aria-label="favs"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
+                <a class="iconbutton" id="btn_toggle_patch_like" aria-label="favs"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span><span class="numFavs">{{project.summary.numFavs}}</span></a>
             {{/if}}
             {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" target="_blank" aria-label="open in new window" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>

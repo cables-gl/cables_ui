@@ -1525,26 +1525,44 @@ class CmdPatch
         }
     }
 
-    static togglePatchLike(targetElement = null)
+    /**
+     *
+     * @param {Event} [event]
+     */
+    static togglePatchLike(event = null)
     {
         platform.talkerAPI.send(TalkerAPI.CMD_TOGGLE_PATCH_FAVS, {}, (err, res) =>
         {
-            if (!err && res.success && targetElement)
+            if (!err && res.success && event)
             {
-                if (targetElement.target)targetElement = targetElement.target;
-                const icon = targetElement.querySelector(".icon");
-                if (icon)
+
+                if (event)
                 {
-                    if (res.favstate)
+
+                    /** @type {HTMLElement} */
+                    let targetElement = null;
+                    if (event.target) targetElement = /** @type {HTMLElement} */ (event.target);
+                    if (!targetElement) return;
+                    const icon = targetElement.querySelector(".icon");
+                    if (icon)
                     {
-                        icon.classList.remove("icon-heart");
-                        icon.classList.add("icon-heart-fill");
+                        if (res.favstate)
+                        {
+                            icon.classList.remove("icon-heart");
+                            icon.classList.add("icon-heart-fill");
+                        }
+                        else
+                        {
+                            icon.classList.remove("icon-heart-fill");
+                            icon.classList.add("icon-heart");
+                        }
                     }
-                    else
-                    {
-                        icon.classList.remove("icon-heart-fill");
-                        icon.classList.add("icon-heart");
-                    }
+                }
+
+                if (res.numFavs || res.numFavs === 0)
+                {
+                    const numEle = ele.byQuery("#btn_toggle_patch_like .numFavs");
+                    if (numEle) numEle.innerText = res.numFavs;
                 }
             }
         });
