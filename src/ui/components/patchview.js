@@ -599,7 +599,7 @@ export default class PatchView extends Events
                     port1 = options.linkNewLink.p1.thePort;
                     port2 = options.linkNewLink.p2.thePort;
                 }
-                else
+                else if (options.linkNewLink.portIn && options.linkNewLink.portOut)
                 {
                     // core link
                     op2 = options.linkNewLink.portIn.op;
@@ -608,8 +608,13 @@ export default class PatchView extends Events
                     port1 = options.linkNewLink.portOut;
                 }
 
-                const foundPort1 = op.findFittingPort(port1);
-                const foundPort2 = op.findFittingPort(port2);
+                let foundPort1 = null;
+                let foundPort2 = null;
+                if (port1 && port2)
+                {
+                    foundPort1 = op.findFittingPort(port1);
+                    foundPort2 = op.findFittingPort(port2);
+                }
 
                 if (foundPort2 && foundPort1)
                 {
