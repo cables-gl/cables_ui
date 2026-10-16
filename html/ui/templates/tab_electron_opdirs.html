@@ -32,7 +32,8 @@
                         {{#each opNames}}
                         <tr class="row">
                             <td></td>
-                            <td colspan="5">{{.}}</td>
+                            <td></td>
+                            <td colspan="4"><a class="link" onclick="CABLES.CMD.OP.manageOp('{{.}}');">{{.}}</a></td>
                         </tr>
                         {{/each}}
                     {{/compare}}
