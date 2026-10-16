@@ -28,12 +28,12 @@
         <br/>
         <br/>
 
-        {{#if opDoc.opDirFull}}
+        {{#if opDoc.opDir}}
             <!-- this will only show in electron/local dev -->
             <hr/>
             {{#if opDoc.created}}<br/>Created {{displaydate opDoc.created}}{{/if}}
             <br/>
-            {{opDoc.opDirFull}}
+            {{opDoc.opDir.type}} - {{opDoc.opDir.dir}}
             <a class="button-small" onclick="CABLES.CMD.ELECTRON.openOpDir( '{{opname}}')"><span class="icon icon-folder"></span> open</a>
             <br/>
             <hr/>

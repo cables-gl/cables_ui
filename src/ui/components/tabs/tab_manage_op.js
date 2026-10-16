@@ -1,7 +1,7 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
-import TabOpVersionDiff from "../../components/tabs/tab_opversiondiff.js";
+import TabOpVersionDiff from "./tab_opversiondiff.js";
 import { CmdOps } from "../../commands/cmd_op.js";
 import { CmdPatch } from "../../commands/cmd_patch.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
@@ -361,9 +361,8 @@ export default class TabManageOp
 
                     let opDoc = gui.opDocs.getOpDocById(this.#opId);
 
-                    if (platform.isElectron())
+                    if (platform.isElectron() && opDoc && opDoc.opDir)
                     {
-
                         contextItems.push({
                             "title": "Open folder",
                             // "iconClass": "icon icon-folder",
@@ -376,7 +375,7 @@ export default class TabManageOp
                             "title": "Copy path",
                             "func": () =>
                             {
-                                window.CABLES.CMD.ELECTRON.copyOpDirToClipboard(opDoc.opDirFull);
+                                window.CABLES.CMD.ELECTRON.copyOpDirToClipboard(opDoc.opDir?.dir);
                             }
                         });
                     }

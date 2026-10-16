@@ -10,17 +10,17 @@
         <br/><br/>
         {{#if dirs}}
             <table class="table">
-                <thead>
-                    <th></th>
-                    <th>Type</th>
-                    <th>Directory</th>
-                    <th>Ops</th>
-                    <th>Used</th>
-                    <th></th>
-                </thead>
                 <tbody>
-                    {{#each dirs}}
                     <tr>
+                        <th></th>
+                        <th>Type</th>
+                        <th>Directory</th>
+                        <th>Ops</th>
+                        <th>Used</th>
+                        <th></th>
+                    </tr>
+                    {{#each dirs}}
+                    <tr class="row">
                         <td><a class="icon icon-folder icon-0_75x" data-dir="{{dir}}" onclick="CABLESUILOADER.talkerAPI.send('openDir', { 'dir': this.dataset.dir});"></a></td>
                         <td>{{type}}</td>
                         <td><span class="dir">{{dir}}</span></td>
@@ -28,6 +28,14 @@
                         <td style="text-align: right;">{{#if numUsedOps}}{{numUsedOps}}{{/if}}</td>
                         <td>{{#if showOptions}}<a class="opdirthreedot" data-tt="more options" data-dir="{{dir}}" data-index="{{@index}}"><span class="icon icon-three-dots"></span></a>{{/if}}</td>
                     </tr>
+                    {{#compare type '!=' 'dev' }}
+                        {{#each opNames}}
+                        <tr class="row">
+                            <td></td>
+                            <td colspan="5">{{.}}</td>
+                        </tr>
+                        {{/each}}
+                    {{/compare}}
                     {{/each}}
                 </tbody>
             </table>
