@@ -194,7 +194,7 @@
 
 
                             {{#each port.uiAttribs.values}}
-                                <option {{#compare this '==' ../port.value }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{#if ../port.uiAttribs.showIndex}}{{@key}} - {{/if}}{{ this }}</option>
+                                <option {{#compare this '==' ../port.value }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{#if ../port.uiAttribs.showIndex}}{{@key}} - {{/if}}{{#if (lookup ../port.uiAttribs.valueLabels @index)}}{{lookup ../port.uiAttribs.valueLabels @index}}{{else}}{{ this }}{{/if}}</option>
                             {{/each}}
                         </select>
 
