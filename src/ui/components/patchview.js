@@ -178,48 +178,167 @@ export default class PatchView extends Events
     {
         this.checkPatchErrorsSoon();
 
-        (function (opname, _opid)
-        {
-            const oldValues = {};
-            for (let i = 0; i < op.portsIn.length; i++)
+        const ser = this.serializeOpsForUndo([op]);
+        const opId = op.id;
+
+        undo.add({
+            "title": "delete op",
+            "context": {
+                "opname": op.objName
+            },
+            "undo": () =>
             {
-                oldValues[op.portsIn[i].name] = op.portsIn[i].get();
-                if (op.portsIn[i].anim) oldValues[op.portsIn[i].name + "_anim"] = op.portsIn[i].anim.getSerialized();
+                this.restoreOpsForUndo(ser);
+            },
+            "redo": () =>
+            {
+                this._p.deleteOp(opId, false);
             }
+        });
+    }
 
-            undo.add({
-                "title": "delete op",
-                "context": {
-                    "opname": opname
-                },
-                "undo": function ()
-                {
-                    const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
-                    if (newop)
-                    {
-                        for (const i in oldValues)
-                        {
-                            const port = newop.getPortByName(i);
-                            if (port)
-                            {
-                                port.set(oldValues[i]);
-                                gui.emitEvent("portValueEdited", newop, port, oldValues[i]);
-                                if (oldValues[i + "_anim"])
-                                {
-                                    port.setAnimated(true);
-                                    port.anim.deserialize(oldValues[i + "_anim"]);
+    /**
+     * @param {Op[]} ops
+     */
+    serializeOpsForUndo(ops)
+    {
+        const opIds = [];
+        for (let i = 0; i < ops.length; i++) opIds.push(ops[i].id);
 
-                                }
-                            }
-                        }
-                    }
-                },
-                "redo": function ()
+        const serOps = [];
+        for (let i = 0; i < ops.length; i++)
+        {
+            const serOp = structuredClone(ops[i].getSerialized());
+            const ports = (serOp.portsIn || []).concat(serOp.portsOut || []);
+            for (let j = 0; j < ports.length; j++)
+            {
+                if (!ports[j].links) continue;
+                const links = [];
+                for (let k = 0; k < ports[j].links.length; k++)
                 {
-                    gui.corePatch().deleteOp(_opid, false);
+                    const l = ports[j].links[k];
+                    if (opIds.includes(l.objIn) && opIds.includes(l.objOut)) links.push(l);
                 }
+                ports[j].links = links;
+            }
+            serOps.push(serOp);
+        }
+        return { "ops": serOps };
+    }
+
+    /**
+     * @param {Object} ser
+     */
+    restoreOpsForUndo(ser)
+    {
+        this._p.deSerialize(structuredClone(ser));
+        this.unselectAllOps();
+
+        for (let i = 0; i < ser.ops.length; i++)
+        {
+            const op = this._p.getOpById(ser.ops[i].id);
+            if (!op) continue;
+            if (op.uiAttribs.subPatch == this.getCurrentSubPatch()) this.selectOpId(op.id);
+            for (let j = 0; j < op.portsIn.length; j++)
+                if (!op.portsIn[j].isLinked()) gui.emitEvent("portValueEdited", op, op.portsIn[j], op.portsIn[j].get());
+        }
+    }
+
+    /**
+     * @param {string} title
+     * @param {string[]} opIds
+     */
+    addUndoCreatedOps(title, opIds)
+    {
+        let ser = null;
+        undo.add({
+            "title": title,
+            "undo": () =>
+            {
+                const ops = [];
+                for (let i = 0; i < opIds.length; i++)
+                {
+                    const op = this._p.getOpById(opIds[i]);
+                    if (op) ops.push(op);
+                }
+                ser = this.serializeOpsForUndo(ops);
+                for (let i = 0; i < opIds.length; i++) this._p.deleteOp(opIds[i], false);
+            },
+            "redo": () =>
+            {
+                if (ser) this.restoreOpsForUndo(ser);
+            }
+        });
+    }
+
+    /**
+     * @param {string} title
+     * @param {UiOp[]} ops
+     * @param {Object} attribs
+     */
+    setOpsUiAttribsUndoable(title, ops, attribs)
+    {
+        const opIds = [];
+        const oldAttribs = [];
+        for (let i = 0; i < ops.length; i++)
+        {
+            const old = {};
+            for (const key in attribs) old[key] = ops[i].uiAttribs.hasOwnProperty(key) ? ops[i].uiAttribs[key] : null;
+            opIds.push(ops[i].id);
+            oldAttribs.push(old);
+            ops[i].setUiAttrib(attribs);
+        }
+
+        undo.add({
+            "title": title,
+            "undo": () =>
+            {
+                for (let i = 0; i < opIds.length; i++)
+                {
+                    const op = this._p.getOpById(opIds[i]);
+                    if (op) op.setUiAttrib(oldAttribs[i]);
+                }
+            },
+            "redo": () =>
+            {
+                for (let i = 0; i < opIds.length; i++)
+                {
+                    const op = this._p.getOpById(opIds[i]);
+                    if (op) op.setUiAttrib(attribs);
+                }
+            }
+        });
+    }
+
+    /**
+     * @param {UiOp[]} ops
+     * @param {string} title
+     */
+    setOpTitles(ops, title)
+    {
+        const applyTitle = (opId, t) =>
+        {
+            const op = this._p.getOpById(opId);
+            if (!op) return;
+            op.setTitle(t);
+            if (op.storage && op.storage.subPatchVer) op.patch.emitEvent("subpatchesChanged");
+        };
+
+        const undoGroup = undo.startGroup();
+        for (let i = 0; i < ops.length; i++)
+        {
+            const opId = ops[i].id;
+            const oldTitle = ops[i].getTitle();
+            if (oldTitle == title) continue;
+
+            applyTitle(opId, title);
+            undo.add({
+                "title": "Set op title",
+                "undo": () => { applyTitle(opId, oldTitle); },
+                "redo": () => { applyTitle(opId, title); }
             });
-        }(op.objName, op.id));
+        }
+        undo.endGroup(undoGroup, "Set op title");
     }
 
     setProject(proj, cb)
@@ -532,6 +651,9 @@ export default class PatchView extends Events
 
             if (!op) return;
 
+            const undoGroup = undo.startGroup();
+            this.addUndoCreatedOps("Add op", [op.id]);
+
             if (this._showingNavHelperEmpty) ele.hide(ele.byId(Gui.ELEID_PATCH_HELPER_EMPTY)); // document.getElementById("patchnavhelperEmpty").style.display = "none";
 
             // todo options:
@@ -640,6 +762,7 @@ export default class PatchView extends Events
             }
 
             if (options.onOpAdd) options.onOpAdd(op);
+            undo.endGroup(undoGroup, "Add op");
         });
     }
 
@@ -1757,8 +1880,6 @@ export default class PatchView extends Events
         }
         this.newPatchOpPaste = null;
 
-        const undoGroup = undo.startGroup();
-
         if (!pastedJson || !pastedJson.ops) return;
         ele.hide(ele.byId(Gui.ELEID_PATCH_HELPER_EMPTY));
 
@@ -1822,21 +1943,6 @@ export default class PatchView extends Events
                         project.ops[i].uiAttribs.translate.x = x;
                         project.ops[i].uiAttribs.translate.y = y;
                     }
-
-                    (function (opid)
-                    {
-                        undo.add({
-                            "title": "paste op",
-                            "undo": function ()
-                            {
-                                gui.corePatch().deleteOp(opid, true);
-                            },
-                            "redo": function ()
-                            {
-                                gui.patchView.clipboardPaste(e);
-                            }
-                        });
-                    }(project.ops[i].id));
                 }
             }
             notify("Pasted " + project.ops.length + " ops");
@@ -1846,14 +1952,19 @@ export default class PatchView extends Events
                 if (newOps.length > 1) notifyText += "s";
                 notifyWarn(notifyText, "clipboard cleared");
             }
+            const undoGroup = undo.startGroup();
+            const pastedIds = [];
+            for (let i = 0; i < project.ops.length; i++) pastedIds.push(project.ops[i].id);
+            this.addUndoCreatedOps("Paste ops", pastedIds);
+
             gui.corePatch().deSerialize(project);
             this.isPasting = false;
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             this.currentOpPaste = null;
             if (next) next(project.ops, focusSubpatchop);
+            undo.endGroup(undoGroup, "Paste");
         });
-        undo.endGroup(undoGroup, "Paste");
 
         this.setCurrentSubPatch(currentSubPatch);
         this.unselectOpsFromOtherSubpatches();
@@ -1916,6 +2027,10 @@ export default class PatchView extends Events
 
         const undoGroup = undo.startGroup();
 
+        const duplicatedIds = [];
+        for (const oldId in newIds) duplicatedIds.push(newIds[oldId]);
+        this.addUndoCreatedOps("Duplicate ops", duplicatedIds);
+
         this._p.deSerialize(ser);
 
         for (let i = 0; i < externalLinks.length; i++)
@@ -1924,23 +2039,6 @@ export default class PatchView extends Events
             const otherPort = externalLinks[i].otherPort;
             if (newOp) this._p.link(newOp, externalLinks[i].portName, otherPort.op, otherPort.name);
         }
-
-        const originalIds = [];
-        for (let i = 0; i < selectedOps.length; i++) originalIds.push(selectedOps[i].id);
-
-        undo.add({
-            "title": "duplicate ops",
-            "undo": () =>
-            {
-                for (const oldId in newIds) this._p.deleteOp(newIds[oldId], true);
-            },
-            "redo": () =>
-            {
-                this.patchRenderer.unselectAll();
-                for (let i = 0; i < originalIds.length; i++) this.patchRenderer.selectOpId(originalIds[i]);
-                this.duplicateSelectedOps();
-            }
-        });
 
         undo.endGroup(undoGroup, "Duplicate");
 
@@ -2941,6 +3039,7 @@ export default class PatchView extends Events
         if (!newPortIn || !newPortOut) return;
         if (newPortIn.isLinked() || newPortOut.isLinked()) return;
 
+        const undoGroup = undo.startGroup();
         let portIn = oldLink.portIn;
         let portOut = oldLink.portOut;
 
@@ -2986,6 +3085,7 @@ export default class PatchView extends Events
                 gui.corePatch().link(portIn.op, portIn.getName(), portOut.op, portOut.getName());
             }
         }
+        undo.endGroup(undoGroup, "Insert op into link");
     }
 
     pause()
@@ -3122,10 +3222,9 @@ export default class PatchView extends Events
 
         for (let i = 0; i < selectedOps.length; i++)
             if (selectedOps[i].uiAttribs.hasArea)
-                return selectedOps[i].setUiAttrib({ "color": col });
+                return this.setOpsUiAttribsUndoable("Set op color", [selectedOps[i]], { "color": col });
 
-        for (let i = 0; i < selectedOps.length; i++)
-            selectedOps[i].setUiAttrib({ "color": col });
+        this.setOpsUiAttribsUndoable("Set op color", selectedOps, { "color": col });
     }
 
     /**
@@ -3141,35 +3240,43 @@ export default class PatchView extends Events
             return;
         }
 
-        if (portname)
+        const ports = [];
+        if (portname) ports.push(op.getPortByName(portname));
+        else
+            for (let i = 0; i < op.portsIn.length; i++)
+                if (op.portsIn[i].defaultValue != null) ports.push(op.portsIn[i]);
+
+        const portNames = [];
+        const oldValues = [];
+        const newValues = [];
+        for (let i = 0; i < ports.length; i++)
         {
-            const p = op.getPortByName(portname);
-            const oldValue = p.get();
+            if (!ports[i] || ports[i].get() == ports[i].defaultValue) continue;
+            portNames.push(ports[i].name);
+            oldValues.push(ports[i].get());
+            newValues.push(ports[i].defaultValue);
+        }
+
+        const setValues = (values) =>
+        {
+            const uop = this._p.getOpById(opid);
+            if (!uop) return;
+            for (let i = 0; i < portNames.length; i++)
+            {
+                const p = uop.getPortByName(portNames[i]);
+                if (p) p.set(values[i]);
+            }
+            gui.opParams.show(uop);
+        };
+
+        if (portNames.length > 0)
             undo.add({
                 "title": "reset defaultvalue",
-                "undo": function ()
-                {
-                    p.set(oldValue);
-                    gui.opParams.show(op);
-                },
-                "redo": function ()
-                {
-                    p.set(p.defaultValue);
-                    gui.opParams.show(op);
-                }
+                "undo": () => { setValues(oldValues); },
+                "redo": () => { setValues(newValues); }
             });
 
-            p.set(p.defaultValue);
-        }
-        else
-        {
-            // all ops
-            for (let i = 0; i < op.portsIn.length; i++)
-                if (op.portsIn[i].defaultValue != null)
-                    op.portsIn[i].set(op.portsIn[i].defaultValue);
-        }
-
-        gui.opParams.show(op);
+        setValues(newValues);
     }
 
     // getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)

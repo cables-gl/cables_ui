@@ -1078,7 +1078,7 @@ class ParamsListener extends Events
 
             if (!CABLES.mouseDraggingValue)
             {
-                const undoAdd = (function (oldv, newv, opid, portname)
+                const undoAdd = ((oldv, newv, opid, portname) =>
                 {
                     if (oldv != newv)
                         undo.add({
@@ -1086,7 +1086,7 @@ class ParamsListener extends Events
                             "context": {
                                 "portname": portname
                             },
-                            "undo": function ()
+                            "undo": () =>
                             {
                                 try
                                 {
@@ -1095,7 +1095,7 @@ class ParamsListener extends Events
                                     gui.patchView.showDefaultPanel();
 
                                     p.set(oldv);
-                                    gui.emitEvent("portValueEdited", op, p, oldv);
+                                    gui.emitEvent("portValueEdited", uop, p, oldv);
                                     gui.opParams.show(uop);
                                     // gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
@@ -1103,7 +1103,7 @@ class ParamsListener extends Events
                                 }
                                 catch (ex) { this._log.warn("undo failed"); }
                             },
-                            "redo": function ()
+                            "redo": () =>
                             {
                                 try
                                 {
@@ -1112,7 +1112,7 @@ class ParamsListener extends Events
                                     gui.patchView.showDefaultPanel();
 
                                     p.set(newv);
-                                    gui.emitEvent("portValueEdited", op, p, newv);
+                                    gui.emitEvent("portValueEdited", rop, p, newv);
                                     gui.opParams.show(rop);
                                     // gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
@@ -1121,7 +1121,7 @@ class ParamsListener extends Events
                                 catch (ex) { this._log.warn("undo failed"); }
                             }
                         });
-                }(ports[index].get(), vstr, ports[index].op.id, ports[index].name));
+                })(ports[index].get(), vstr, ports[index].op.id, ports[index].name);
             }
 
             if (ports[index].uiAttribs.type == "string")

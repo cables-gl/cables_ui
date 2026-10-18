@@ -725,10 +725,7 @@ class OpParampanel extends Events
      */
     setCurrentOpTitle(t)
     {
-        if (this._currentOp) this._currentOp.setTitle(t);
-
-        if (this._currentOp && this._currentOp.storage && this._currentOp.storage.subPatchVer)
-            this._currentOp.patch.emitEvent("subpatchesChanged");
+        if (this._currentOp) gui.patchView.setOpTitles([this._currentOp], t);
     }
 
     /**

@@ -397,11 +397,7 @@ class CmdPatch
 
         if (!ops || ops.length == 0) return;
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            const op = gui.corePatch().getOpById(ops[i].id);
-            op.setTitle("");
-        }
+        gui.patchView.setOpTitles(ops, "");
     }
 
     static selectChilds()
@@ -1370,7 +1366,7 @@ class CmdPatch
 
     static alignOpsLeft()
     {
-        gui.patchView.alignSelectedOpsVert(gui.patchView.getSelectedOps());
+        gui.patchView.alignOps(gui.patchView.getSelectedOps());
     }
 
     static watchGlOp()

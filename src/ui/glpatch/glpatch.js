@@ -30,10 +30,8 @@ import { InputBindings } from "../inputbindings.js";
 import GlPatchAPI from "./patchapi.js";
 import { UiOp } from "../core_extend_op.js";
 import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
-import undo from "../utils/undo.js";
 
 let idleSoon = null;
-const SELECTION_UNDO_DELAY_MS = 300;
 let lastUpdate = 0;
 
 /** Renders the patchfield. */
@@ -61,14 +59,8 @@ export default class GlPatch extends Events
 
     #cgl = null;
 
-    /** @type {string[]} */
-    #selectionUndoIds = [];
-
     /** @type {Set<GlLink>} */
     #queuedLinks = new Set();
-    #selectionUndoTimeout = null;
-    #selectionUndoIndex = -1;
-    #selectionUndoLength = 0;
 
     hoverPort = null;
     paused = false;
@@ -1258,11 +1250,6 @@ export default class GlPatch extends Events
     render(resX, resY)
     {
         if (!gui || !gui.canvasManager) return;
-        if (!this.#selectionUndoTimeout)
-        {
-            this.#selectionUndoIndex = undo.getIndex();
-            this.#selectionUndoLength = undo.getCommands().length;
-        }
         if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
         {
             this.#cgl.gl.clearColor(0, 0, 0, 0);
@@ -1734,38 +1721,6 @@ export default class GlPatch extends Events
             this._glOpz[id].selected = false;
             this.#cachedNumSelectedOps--;
         }
-    }
-
-    selectionChanged()
-    {
-        clearTimeout(this.#selectionUndoTimeout);
-        this.#selectionUndoTimeout = setTimeout(() => { this.#recordSelectionUndo(); }, SELECTION_UNDO_DELAY_MS);
-    }
-
-    #recordSelectionUndo()
-    {
-        this.#selectionUndoTimeout = null;
-        const before = this.#selectionUndoIds;
-        const after = gui.patchView.getSelectedOps().map((op) => op.id).sort();
-        const changedByOtherAction = undo.getIndex() != this.#selectionUndoIndex || undo.getCommands().length != this.#selectionUndoLength;
-        this.#selectionUndoIds = after;
-
-        if (changedByOtherAction || before.join() == after.join()) return;
-        undo.add({
-            "title": "Select ops",
-            "undo": () => { this.#restoreSelection(before); },
-            "redo": () => { this.#restoreSelection(after); }
-        });
-    }
-
-    /**
-     * @param {string[]} ids
-     */
-    #restoreSelection(ids)
-    {
-        gui.patchView.unselectAllOps();
-        for (const id of ids) gui.patchView.selectOpId(id);
-        this.#selectionUndoIds = ids;
     }
 
     updateSubPatchOpAnim()
