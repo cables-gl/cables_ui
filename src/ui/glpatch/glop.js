@@ -1094,7 +1094,7 @@ export default class GlOp extends Events
 
         for (let i = 0; i < ports.length; i++)
         {
-            if (ports[i].uiAttribs.colorPick && !this._glColorSwatch)
+            if (ports[i].uiAttribs.colorPick)
             {
                 if (!this._glColorSwatch)
                 {
