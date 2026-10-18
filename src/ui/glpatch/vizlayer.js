@@ -79,7 +79,7 @@ export default class VizLayer extends Events
                 const scrollPort = item.op.getPortByName("Scroll");
                 if (scrollPort)
                 {
-                    scrollPort.setValue(scrollPort.get() + delta);
+                    scrollPort.setValue(Math.min(1, Math.max(0, scrollPort.get() + delta)));
                 }
             }
         });
@@ -375,7 +375,7 @@ export default class VizLayer extends Events
             {
                 charCount += words[j].length + 1;
 
-                if (charCount >= max - 2)
+                if (charCount - 1 > max && lineWords.length > 0)
                 {
                     newLines.push(lineWords.join(space));
                     newLinesIdx.push(i);
@@ -409,18 +409,14 @@ export default class VizLayer extends Events
         let padding = fs * 0.25;
         const lineHeight = fs + padding;
         let numLines = Math.floor(layer.height / layer.scale / lineHeight);
-        let offset = Math.floor((options.scroll || 0) * lines.length);
-
-        offset = Math.max(offset, 0);
-        offset = Math.min(offset, lines.length - numLines);
-        if (lines.length < numLines)offset = 0;
 
         ctx.font = "normal " + fs + "px sourceCodePro";
         ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
-        if (options.showLineNum) for (let i = 0; i < (offset + numLines + " ").length; i++) indent += " ";
+        if (options.showLineNum) for (let i = 0; i < (lines.length + " ").length; i++) indent += " ";
 
-        let numChars = Math.ceil(layer.width / layer.scale / 6) - indent.length;
+        const charWidth = ctx.measureText("M").width;
+        const numChars = Math.floor((layer.width / layer.scale - padding * 2) / charWidth) - indent.length;
 
         ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
@@ -437,6 +433,11 @@ export default class VizLayer extends Events
             linesIdx = r.linesIdx;
         }
 
+        let offset = Math.floor((options.scroll || 0) * lines.length);
+        offset = Math.max(offset, 0);
+        offset = Math.min(offset, lines.length - numLines);
+        if (lines.length < numLines) offset = 0;
+
         let lastline = -1;
 
         let redlines = {};
@@ -449,14 +450,14 @@ export default class VizLayer extends Events
         {
             if (i >= lines.length || i < 0) continue;
 
+            let line = lines[i];
             if (options.showWhitespace)
             {
-                lines[i] = lines[i].replaceAll(" ", "·");
-                lines[i] = lines[i].replaceAll("\t", "⇿");
-                lines[i] = lines[i].replaceAll("\n", "⏎\n");
+                line = line.replaceAll(" ", "·");
+                line = line.replaceAll("\t", "⇿");
+                line = line.replaceAll("\n", "⏎\n");
             }
-            const maxChars = layer.width / layer.scale / fs * 3;
-            if (lines[i].length > maxChars)lines[i] = lines[i].substring(0, maxChars) + "...";
+            if (line.length > numChars) line = line.substring(0, Math.max(0, numChars - 3)) + "...";
 
             if (options.highlightLines && options.highlightLines.lines && options.highlightLines.lines.includes(i))
             {
@@ -503,7 +504,7 @@ export default class VizLayer extends Events
             }
             if (hl)
             {
-                const data = hljs.highlight(lines[i], { "language": options.syntax });
+                const data = hljs.highlight(line, { "language": options.syntax });
 
                 let fake = "";
                 for (let j = 0; j < data._emitter.rootNode.children.length; j++)
@@ -550,7 +551,7 @@ export default class VizLayer extends Events
             }
             else
             {
-                ctx.fillText(indent + lines[i],
+                ctx.fillText(indent + line,
                     layer.x / layer.scale + padding,
                     layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
             }
