@@ -751,6 +751,7 @@ class CmdPatch
                                                     if (selectedOpIds.length == 0) newOp.setPos(0, 0);
                                                     else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
 
+                                                    gui.patchView.avoidSamePosition(newOp);
                                                     gui.patchView.testCollision(newOp);
                                                     gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
 

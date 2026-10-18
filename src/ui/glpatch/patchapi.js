@@ -325,7 +325,11 @@ export default class GlPatchAPI
     _onAddOp(op, fromDeserialize)
     {
         this._glPatch.addOp(op, fromDeserialize);
-        if (!fromDeserialize) gui.patchView.testCollision(op);
+        if (!fromDeserialize)
+        {
+            gui.patchView.avoidSamePosition(op);
+            gui.patchView.testCollision(op);
+        }
 
         if (op.checkLinkTimeWarnings)op.checkLinkTimeWarnings();
 

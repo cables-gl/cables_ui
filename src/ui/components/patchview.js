@@ -474,6 +474,31 @@ export default class PatchView extends Events
     /**
      * @param {UiOp} op
      */
+    avoidSamePosition(op)
+    {
+        if (!op || !op.uiAttribs || !op.uiAttribs.translate) return;
+
+        const taken = new Set();
+        const ops = this._p.ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            const b = ops[i];
+            if (b == op || b.deleted || !b.uiAttribs.translate) continue;
+            if (b.uiAttribs.subPatch != op.uiAttribs.subPatch) continue;
+            taken.add(b.uiAttribs.translate.x + "_" + b.uiAttribs.translate.y);
+        }
+
+        const x = op.uiAttribs.translate.x;
+        let y = op.uiAttribs.translate.y;
+        if (!taken.has(x + "_" + y)) return;
+
+        while (taken.has(x + "_" + y)) y += gluiconfig.newOpDistanceY;
+        op.setUiAttribs({ "translate": { "x": x, "y": y } });
+    }
+
+    /**
+     * @param {UiOp} op
+     */
     testCollision(op)
     {
         if (userSettings.get(UserSettings.PREF_CHECK_OP_COLLISIONS) === false) return;
@@ -794,6 +819,7 @@ export default class PatchView extends Events
                     "subPatch": this.getCurrentSubPatch()
                 });
 
+                this.avoidSamePosition(newOp);
                 this.testCollision(newOp);
                 if (cb) cb(newOp);
             }
@@ -2210,6 +2236,7 @@ export default class PatchView extends Events
 
         let y = opAbove.uiAttribs.translate.y + 0;
         opBelow.setUiAttribs({ "translate": { "x": opAbove.uiAttribs.translate.x, "y": y } });
+        this.avoidSamePosition(opBelow);
         this.testCollision(opBelow);
     }
 
