@@ -241,7 +241,7 @@ export default class GlPatchAPI
 
         if (!fromDeserialize)
         {
-            const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+            const undofunc = ((patch, p1Name, p2Name, op1Id, op2Id) =>
             {
                 undo.add({
                     "title": "Link port",
@@ -249,7 +249,7 @@ export default class GlPatchAPI
                         "p1Name": p1Name,
                         "p2Name": p2Name
                     },
-                    "undo": function ()
+                    "undo": () =>
                     {
                         const op1 = patch.getOpById(op1Id);
                         const op2 = patch.getOpById(op2Id);
@@ -261,18 +261,18 @@ export default class GlPatchAPI
                         if (op1.getPortByName(p1Name))
                             op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
                     },
-                    "redo": function ()
+                    "redo": () =>
                     {
                         patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
                     }
                 });
-            }(
+            })(
                 link.portOut.op.patch,
                 p1.name,
                 p2.name,
                 p1.op.id,
                 p2.op.id
-            ));
+            );
         }
 
         let visible = true;// p1.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
@@ -283,7 +283,7 @@ export default class GlPatchAPI
     {
         if (!link) return;
 
-        const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+        const undofunc = ((patch, p1Name, p2Name, op1Id, op2Id) =>
         {
             undo.add({
                 "title": "Unlink port",
@@ -291,11 +291,11 @@ export default class GlPatchAPI
                     "p1Name": p1Name,
                     "p2Name": p2Name
                 },
-                "undo": function ()
+                "undo": () =>
                 {
                     patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
                 },
-                "redo": function ()
+                "redo": () =>
                 {
                     const op1 = patch.getOpById(op1Id);
                     const op2 = patch.getOpById(op2Id);
@@ -307,13 +307,13 @@ export default class GlPatchAPI
                     op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
                 }
             });
-        }(
+        })(
             link.portOut.op.patch,
             link.portIn.getName(),
             link.portOut.getName(),
             link.portIn.op.id,
             link.portOut.op.id
-        ));
+        );
 
         this._glPatch.deleteLink(link.id);
     }
