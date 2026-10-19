@@ -482,6 +482,7 @@ export default class ServerOps
             {
                 this.#log.log("err res", res);
                 gui.savingTitleAnimEnd();
+                if (options.onError) return options.onError(err.msg || "clone failed");
                 const dialogOptions = {
                     "title": "Could not create new op",
                     "text": err.msg
@@ -1098,32 +1099,54 @@ export default class ServerOps
         {
             const opname = newName;
 
-            const doc = gui.opDocs.getOpDocByName(oldName);
-            if (!doc) return this.#log.error("doc not found for ", oldName);
             cbOptions = cbOptions || { "openEditor": true };
-            const renameRequest = {
-                "oldId": doc.id,
-                "newName": opname,
-                "namespace": newNamespace
-            };
-            if (cbOptions.opTargetDir) renameRequest.opTargetDir = cbOptions.opTargetDir;
 
-            platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_RENAME_OP, renameRequest, (err, res) =>
+            this.rename(oldName, opname, (err) =>
             {
                 if (err)
                 {
-                    this.#log.log("err res", res);
                     new ModalDialog({
                         "warning": true,
-                        "title": "Could not rename op"
+                        "title": "Could not rename op",
+                        "text": err
                     });
                 }
-                else
-                {
-                    gui.closeModal();
-                    gui.corePatch().emitEvent(ServerOps.EVENT_OP_RENAME_FINISHED, res.data);
-                }
-            });
+                else gui.closeModal();
+            }, cbOptions.opTargetDir);
+        });
+    }
+
+    /**
+     * @param {string} oldName
+     * @param {string} newName
+     * @param {function(string,object):void} cb
+     * @param {string} [opTargetDir]
+     */
+    rename(oldName, newName, cb, opTargetDir)
+    {
+        if (!platform.frontendOptions.opRenameInEditor) return cb("renaming ops is not possible on this platform");
+
+        const doc = gui.opDocs.getOpDocByName(oldName);
+        if (!doc) return cb("op not found: " + oldName);
+
+        const renameRequest = {
+            "oldId": doc.id,
+            "newName": newName
+        };
+        if (opTargetDir) renameRequest.opTargetDir = opTargetDir;
+
+        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_RENAME_OP, renameRequest, (err, res) =>
+        {
+            if (err)
+            {
+                this.#log.log("err res", res);
+                let msg = err.msg || "rename failed";
+                if (err.data && err.data.problems) msg = err.data.problems.join(", ");
+                cb(msg, res);
+                return;
+            }
+            gui.corePatch().emitEvent(ServerOps.EVENT_OP_RENAME_FINISHED, res.data);
+            cb(null, res.data);
         });
     }
 

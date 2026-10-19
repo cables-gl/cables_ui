@@ -892,7 +892,8 @@ export default class PatchSaveServer extends Events
 
             let url = null;
 
-            url = gui.canvasManager.currentCanvas()?.toDataURL();
+            const canvas = this._getTopmostCanvas(gui.corePatch().containerElement) || gui.canvasManager.currentCanvas();
+            if (canvas) url = canvas.toDataURL();
 
             const finished =
                 (error, re) =>
@@ -917,6 +918,35 @@ export default class PatchSaveServer extends Events
             else finished();
 
         }, 200);
+    }
+
+    /**
+     * @param {HTMLElement} container
+     * @returns {HTMLCanvasElement}
+     */
+    _getTopmostCanvas(container)
+    {
+        if (!container) return null;
+
+        const canvases = container.querySelectorAll("canvas");
+        let topmost = null;
+        let topmostZ = -Infinity;
+        for (let i = 0; i < canvases.length; i++)
+        {
+            const canvas = canvases[i];
+            const style = window.getComputedStyle(canvas);
+            const rect = canvas.getBoundingClientRect();
+            if (style.display == "none" || style.visibility == "hidden" || parseFloat(style.opacity) == 0) continue;
+            if (rect.width == 0 || rect.height == 0 || canvas.width == 0 || canvas.height == 0) continue;
+
+            const z = parseInt(style.zIndex) || 0;
+            if (z >= topmostZ)
+            {
+                topmost = canvas;
+                topmostZ = z;
+            }
+        }
+        return topmost;
     }
 
     /**
