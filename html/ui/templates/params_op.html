@@ -140,7 +140,7 @@
         <input spellcheck="off" id="tagInput" style="width:95%;" onInput="gui.opParams.setCurrentOpTags(this.value);" value="{{op.attribs.tags}}"></textarea>
 
         Comment:
-        <textarea id="commentTextarea" style="height:60px;width:100%;" onInput="gui.opParams.setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
+        <textarea id="commentTextarea" style="height:60px;width:100%;" onFocus="gui.opParams.startCurrentOpComment();" onBlur="gui.opParams.finishCurrentOpComment();" onInput="gui.opParams.setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
 
         <br/>
         {{#each commentColors}}
