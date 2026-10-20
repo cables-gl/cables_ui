@@ -294,6 +294,9 @@ export const GuiText =
         "title_opLicense": "License for created ops",
         "subtitle_opLicense": "",
 
+        "title_apiKey": "cables.gl API key",
+        "subtitle_apiKey": "",
+
         "title_downloadPath": "Custom download folder",
         "subtitle_downloadPath": "",
 

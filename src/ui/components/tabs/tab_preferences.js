@@ -125,6 +125,7 @@ export default class Preferences
 
         this.setInputValue("authorName", userSettings.get(UserSettings.PREF_AUTHOR_NAME) || "");
         this.setInputValue("opLicense", userSettings.get(UserSettings.PREF_OP_LICENSE) || "");
+        this.setInputValue("apiKey", userSettings.get(UserSettings.PREF_API_KEY) || "");
         this.setSwitchValue("escape_closetabs", userSettings.get(UserSettings.PREF_ESCAPE_CLOSETABS) || false);
 
         this.setSwitchValue("ace_keymode", userSettings.get(UserSettings.PREF_ACE_KEYMODE) || "");
