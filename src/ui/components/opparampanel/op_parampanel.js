@@ -15,6 +15,7 @@ import { contextMenu } from "../../elements/contextmenu.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdOps } from "../../commands/cmd_op.js";
 import uiconfig from "../../uiconfig.js";
+import undo from "../../utils/undo.js";
 
 /** Panel showing the parameters (ports) of the selected op. */
 class OpParampanel extends Events
@@ -718,6 +719,41 @@ class OpParampanel extends Events
         {
             this._log.warn("no current op comment");
         }
+    }
+
+    startCurrentOpComment()
+    {
+        if (this._currentOp) this._commentEditStart = { "opId": this._currentOp.id, "comment": this._currentOp.uiAttribs.comment || null };
+    }
+
+    finishCurrentOpComment()
+    {
+        const start = this._commentEditStart;
+        this._commentEditStart = null;
+        if (!start) return;
+
+        const patch = gui.corePatch();
+        const op = patch.getOpById(start.opId);
+        if (!op) return;
+
+        const newComment = op.uiAttribs.comment || null;
+        if (newComment == start.comment) return;
+
+        const applyComment = (comment) =>
+        {
+            const commentOp = patch.getOpById(start.opId);
+            if (!commentOp) return;
+            commentOp.setUiAttrib({ "comment": comment });
+            patch.emitEvent("commentChanged");
+            gui.savedState.setUnSaved("op comment", commentOp.uiAttribs.subPatch);
+            if (this.isCurrentOp(commentOp)) this.refresh();
+        };
+
+        undo.add({
+            "title": "Set op comment",
+            "undo": () => { applyComment(start.comment); },
+            "redo": () => { applyComment(newComment); }
+        });
     }
 
     /**
