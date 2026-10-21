@@ -118,7 +118,6 @@ export default class opCleaner
         const other = op.testTempCollision(gui.corePatch().getSubPatchOps(gui.patchView.getCurrentSubPatch()), this._glpatch);
         if (other)
         {
-            console.log("yes colliding...", gluiconfig.newOpDistanceY);
 
             if (op.hasAnyOutLinked() && !op.hasAnyInLinked()) // eg mainloop
             {
@@ -136,7 +135,6 @@ export default class opCleaner
         const other = op.testTempCollision(gui.corePatch().ops, this._glpatch);
         if (other)
         {
-            console.log("yes colliding...", gluiconfig.newOpDistanceY);
 
             if (op.hasAnyOutLinked() && !op.hasAnyInLinked()) // eg mainloop
             {
