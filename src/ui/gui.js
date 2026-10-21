@@ -584,7 +584,6 @@ export default class Gui extends Events
     {
         if (document.body.scrollTop > 0)
         {
-            console.log("page is scrolled wtf...");
             document.body.scrollTo(0, 0);
         }
 
@@ -1782,7 +1781,6 @@ export default class Gui extends Events
             const elePromptOk = ele.byId(ModalDialog.MODAL_OK_BUTTON_ID);
             if (elePromptOk)
             {
-                console.log("enterrr YES");
                 // elePromptOk.click();
                 elePromptOk.dispatchEvent(new PointerEvent("pointerdown"));
             }
