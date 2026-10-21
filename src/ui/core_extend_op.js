@@ -493,7 +493,8 @@ class UiOp extends Op
                     !uri.startsWith("file:/") &&
                     !uri.startsWith("/") &&
                     !uri.startsWith("./") && // needed for local files in standalone that are relative to the projectfolder, file-urls can't contain relative paths
-                    !uri.startsWith("data:")
+                    !uri.startsWith("data:") &&
+                    !uri.startsWith("blob:")
                 )
                     this.setUiError("protocol", "Invalid URL, should start with https:// or file:/ or a slash, etc.", 1);
                 else
