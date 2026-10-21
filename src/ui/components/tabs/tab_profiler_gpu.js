@@ -41,7 +41,6 @@ export class GpuProfiler
             {
                 this._foundPerfOp = true;
 
-                console.log("found perf op!!!!cxcsdcsd");
             }
             else
             {

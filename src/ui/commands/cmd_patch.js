@@ -1178,7 +1178,6 @@ class CmdPatch
         {
             gui.showVarSelect((e) =>
             {
-                console.log("text", e);
                 p.setVariable(e.cmd);
                 gui.opParams.show(p.op.id);
             });

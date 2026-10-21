@@ -218,7 +218,6 @@ class CmdOps
                 }
                 op.renameopto = newOpname;
 
-                console.log("new renameto name:", newOpname);
             }
 
             if (ops.length == 0) return;

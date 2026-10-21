@@ -403,7 +403,6 @@ class ParamsListener extends Events
 
         ele.clickable(colEle, () =>
         {
-            console.log("clickedg");
             const ge = new GradientEditor(thePort.op.id, thePort.name, { "openerEle": colEle });
             ge.show(() =>
             {

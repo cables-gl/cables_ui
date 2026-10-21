@@ -583,7 +583,6 @@ class OpParampanel extends Events
                     else
                     {
                         console.error("err level not numeric", err.level);
-                        console.log((new Error().stack));
                     }
 
                     el.appendChild(div);
@@ -695,7 +694,6 @@ class OpParampanel extends Events
     {
         if (this._currentOp)
         {
-            console.log(t.split(","));
             this._currentOp.tags = t.split(",");
         }
         else

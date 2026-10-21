@@ -171,7 +171,6 @@ export function createOpDocButton(tab, editor)
         tab.addButton("<span class=\"info nomargin icon icon-1_25x icon-copy\"  ></span>", () =>
         {
             let path = opname + "/" + opname + ".js";
-            console.log("op path", path);
             navigator.clipboard.writeText(path);
         });
 

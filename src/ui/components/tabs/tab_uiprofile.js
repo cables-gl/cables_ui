@@ -37,7 +37,6 @@ export class UiProfilerTab extends Events
         ele.byId("uiPerfFilter").value = this.#filter;
         ele.byId("uiPerfFilter").addEventListener("input", () =>
         {
-            console.log("on input", ele.byId("uiPerfFilter").value);
             this.filter(ele.byId("uiPerfFilter").value);
 
         });

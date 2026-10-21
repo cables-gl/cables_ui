@@ -415,7 +415,6 @@ export default class CanvasManager
                     "id": uuid()
                 };
                 this.#updateTitle(cc);
-                console.log("found ctx", cc);
 
                 this.#contexts.push(cc);
                 if (this.#contexts.length == 1) this.setCurrentCanvas(canvasEles[i]);

@@ -910,7 +910,6 @@ FindTab.searchOutDated = (ops, results) =>
 
 FindTab.searchAnimated = (/** @type {Op[]} */ ops, /** @type {Object} */ results) =>
 {
-    console.log("animaaaa");
     for (let i = 0; i < ops.length; i++)
     {
         for (let j = 0; j < ops[i].portsIn.length; j++)

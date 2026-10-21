@@ -45,7 +45,6 @@ export class ProfilerDrawCalls
 
             const l2 = cgl.on("endFrame", () =>
             {
-                console.log("sresresr", gui.corePatch().cgl.profileData.profileDrawCalls);
                 cgl.off(l2);
                 const calls = gui.corePatch().cgl.profileData.profileDrawCalls;
 
