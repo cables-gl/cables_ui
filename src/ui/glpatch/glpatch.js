@@ -326,7 +326,7 @@ export default class GlPatch extends Events
         gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdPatch.gotoParentSubpatch(); });
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (_e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
-        gui.keys.key("a", "Auto arrange selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
+        gui.keys.key("a", "Arrange selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
         {
             const ops = gui.patchView.getSelectedOps();
             if (ops.length) gui.patchView.tidyUpOps(ops);
@@ -1008,6 +1008,7 @@ export default class GlPatch extends Events
      */
     focusOpAnim(opid)
     {
+        if (userSettings.get(UserSettings.PREF_REDUCE_MOTION)) return;
         this._focusRectOp = this._glOpz[opid];
 
         this._focusRectAnim.clear();
@@ -1678,19 +1679,12 @@ export default class GlPatch extends Events
     }
 
     /**
-     * @param {Map<UiOp,{x:number,y:number}>} fromPositions
-     */
-    animateOpsFrom(fromPositions)
-    {
-        for (const op of fromPositions.keys()) this.animateOpFrom(op, fromPositions.get(op));
-    }
-
-    /**
      * @param {UiOp} op
      * @param {{x:number,y:number}} from
      */
     animateOpFrom(op, from)
     {
+        if (userSettings.get(UserSettings.PREF_REDUCE_MOTION)) return;
         const glop = this._glOpz[op.id];
         if (!glop || !op.uiAttribs.translate) return;
         if (from.x == op.uiAttribs.translate.x && from.y == op.uiAttribs.translate.y) return;
@@ -1756,6 +1750,12 @@ export default class GlPatch extends Events
      */
     subPatchOpAnimStart(bounds, next)
     {
+        if (userSettings.get(UserSettings.PREF_REDUCE_MOTION))
+        {
+            if (next) next();
+            return;
+        }
+
         this._subpatchAnimFade = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
         this._subpatchAnimOutX = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
         this._subpatchAnimOutY = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
@@ -1825,6 +1825,7 @@ export default class GlPatch extends Events
     {
         // clearTimeout(this.pauseTimeOut);
         this.paused = false;
+        if (!this._subpatchoprect) return;
         const dur = 0.25;
 
         this._subpatchAnimOutX.clear();

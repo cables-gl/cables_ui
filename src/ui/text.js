@@ -70,7 +70,7 @@ export const GuiText =
     "portMouseCreate": "|| [DRAG_LMB] Create and link new op",
     "portObjectSnapshot": "See an object data snapshot",
 
-    "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their children\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical spacing\n* `DEL` delete selected ops\n* [cmd_ctrl]`c` copy selected op ",
+    "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their children\n* `a` arrange ops\n* `c` center ops\n* [shift]`a` reduce vertical spacing\n* `DEL` delete selected ops\n* [cmd_ctrl]`c` copy selected op ",
     "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and children\n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
 
     "projectSettingsPublic": "Make patch public - Everyone can see it",
@@ -263,6 +263,8 @@ export const GuiText =
 
         "title_fadeOutCables": "Fade Cables",
         "subtitle_fadeOutCables": "Fade out long cables",
+        "title_reduceMotion": "UI Animations",
+        "subtitle_reduceMotion": "Animate moving ops, scrolling and zooming in the patch field",
 
         "title_patchLineWidth": "Cable Width",
         "title_fontsize": "Text Size",

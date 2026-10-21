@@ -234,7 +234,7 @@ class CmdPatch
                 "icon": "list"
             },
             {
-                "cmd": "Auto arrange ops",
+                "cmd": "Arrange ops",
                 "keybindable": true,
                 "func": CmdPatch.tidyUpOps,
                 "category": "patch",

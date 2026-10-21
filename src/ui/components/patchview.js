@@ -2068,6 +2068,13 @@ export default class PatchView extends Events
 
         undo.endGroup(undoGroup, "Duplicate");
 
+        for (const oldId in newIds)
+        {
+            const newOp = this._p.getOpById(newIds[oldId]);
+            const oldGlop = this.patchRenderer.getGlOp(this._p.getOpById(oldId));
+            if (newOp && oldGlop) this.patchRenderer.animateOpFrom(newOp, { "x": oldGlop.x, "y": oldGlop.y });
+        }
+
         this.patchRenderer.unselectAll();
         for (const oldId in newIds) this.patchRenderer.selectOpId(newIds[oldId]);
 
@@ -2084,7 +2091,7 @@ export default class PatchView extends Events
         for (let j = 0; j < ops.length; j++)
         {
             const diffX = ops[j].uiAttribs.translate.x - centerX;
-            this.setOpPos(ops[j], Snap.snapOpPosX(centerX + (diffX * 1.2)), ops[j].uiAttribs.translate.y);
+            this.setOpPosAnimated(ops[j], Snap.snapOpPosX(centerX + (diffX * 1.2)), ops[j].uiAttribs.translate.y);
         }
         undo.endGroup(undoGroup, "add space x");
     }
@@ -2099,7 +2106,7 @@ export default class PatchView extends Events
         for (let j = 0; j < ops.length; j++)
         {
             const diffY = ops[j].uiAttribs.translate.y - centerY;
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, Snap.snapOpPosY(centerY + (diffY * 1.8)));
+            this.setOpPosAnimated(ops[j], ops[j].uiAttribs.translate.x, Snap.snapOpPosY(centerY + (diffY * 1.8)));
         }
         undo.endGroup(undoGroup, "add space y");
     }
@@ -2133,22 +2140,15 @@ export default class PatchView extends Events
         if (layoutOps.length === 0) return;
 
         const pos = this.getTidyUpPositions(layoutOps);
-        if (typeof pos == "string") return notifyWarn("Could not auto arrange ops", pos);
+        if (typeof pos == "string") return notifyWarn("Could not arrange ops", pos);
 
-        const fromPositions = new Map();
         const undoGroup = undo.startGroup();
         for (const op of pos.keys())
         {
             const p = pos.get(op);
-            if (op.uiAttribs.translate.x == p.x && op.uiAttribs.translate.y == p.y) continue;
-
-            const glop = this.patchRenderer.getGlOp(op);
-            if (glop) fromPositions.set(op, { "x": glop.x, "y": glop.y });
-            this.setOpPos(op, p.x, p.y);
+            if (op.uiAttribs.translate.x != p.x || op.uiAttribs.translate.y != p.y) this.setOpPosAnimated(op, p.x, p.y);
         }
-        undo.endGroup(undoGroup, "Auto arrange ops");
-
-        this.patchRenderer.animateOpsFrom(fromPositions);
+        undo.endGroup(undoGroup, "Arrange ops");
     }
 
     /**
@@ -2169,7 +2169,6 @@ export default class PatchView extends Events
         if (!ops || ops.length === 0) return;
 
         const bounds = this.getOpBounds(ops);
-        const fromPositions = new Map();
         const undoGroup = undo.startGroup();
         for (const op of ops)
         {
@@ -2178,12 +2177,9 @@ export default class PatchView extends Events
             const h = glop ? glop.h : gluiconfig.opHeight;
             const x = bounds.minX + Math.random() * Math.max(0, bounds.maxX - bounds.minX - w);
             const y = bounds.minY + Math.random() * Math.max(0, bounds.maxY - bounds.minY - h);
-            if (glop) fromPositions.set(op, { "x": glop.x, "y": glop.y });
-            this.setOpPos(op, Snap.snapOpPosX(x), Snap.snapOpPosY(y));
+            this.setOpPosAnimated(op, Snap.snapOpPosX(x), Snap.snapOpPosY(y));
         }
         undo.endGroup(undoGroup, "Scramble ops");
-
-        this.patchRenderer.animateOpsFrom(fromPositions);
     }
 
     /**
@@ -2273,6 +2269,25 @@ export default class PatchView extends Events
         opBelow.setUiAttribs({ "translate": { "x": opAbove.uiAttribs.translate.x, "y": y } });
         this.avoidSamePosition(opBelow);
         this.testCollision(opBelow);
+    }
+
+    /**
+     * @param {UiOp} op
+     * @param {number} x
+     * @param {number} y
+     */
+    setOpPosAnimated(op, x, y)
+    {
+        const glop = this.patchRenderer.getGlOp(op);
+        if (!glop)
+        {
+            this.setOpPos(op, x, y);
+            return;
+        }
+
+        const from = { "x": glop.x, "y": glop.y };
+        this.setOpPos(op, x, y);
+        this.patchRenderer.animateOpFrom(op, from);
     }
 
     /**
