@@ -172,8 +172,8 @@ float samp(in vec2 uv, float w) {
     else
     if(shape==8.0) // loading indicator...
     {
-        float s = sin(time*10.0);
-        float c = cos(time*10.0);
+        float s = sin(time*-10.0);
+        float c = cos(time*-10.0);
         mat2 m = mat2(c, -s, s, c);
         vec2 uvRot=m*(uv-0.5);
 
