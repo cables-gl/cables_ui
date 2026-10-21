@@ -241,6 +241,13 @@ class CmdPatch
                 "icon": "list"
             },
             {
+                "cmd": "Scramble ops",
+                "keybindable": true,
+                "func": CmdPatch.scrambleOps,
+                "category": "patch",
+                "icon": "list"
+            },
+            {
                 "cmd": "Add space x",
                 "keybindable": true,
                 "func": CmdPatch.addSpaceX,
@@ -1362,6 +1369,11 @@ class CmdPatch
     static tidyUpOps()
     {
         gui.patchView.tidyUpOps(gui.patchView.getSelectedOps());
+    }
+
+    static scrambleOps()
+    {
+        gui.patchView.scrambleOps(gui.patchView.getSelectedOps());
     }
 
     static alignOpsLeft()

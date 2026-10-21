@@ -239,6 +239,18 @@ export default class PatchLayout
     /**
      * @param {UiOp} o
      */
+    #isSelectionRoot(o)
+    {
+        if (!this.#selected.has(o)) return false;
+        const links = this.#linksFromSet(o);
+        if (!links.length) return false;
+        for (const link of links) if (this.#selected.has(link.parent)) return false;
+        return true;
+    }
+
+    /**
+     * @param {UiOp} o
+     */
     #isUnconnected(o)
     {
         return !this.#linksFromSet(o).length && !this.#childOpsInSet(o).length;
@@ -529,6 +541,7 @@ export default class PatchLayout
                 const p = pos.get(link.parent);
                 y = Math.max(y, p.y + p.h + this.#childGap(link.parent));
             }
+            if (this.#isSelectionRoot(o)) return Math.max(snapNearest(o.uiAttribs.translate.y, GRID_Y), snapUp(y, GRID_Y));
             return snapUp(y, GRID_Y);
         }
         if (hints.has(o)) return hints.get(o).y;
@@ -559,6 +572,7 @@ export default class PatchLayout
             {
                 const parent = this.#primaryParent(o);
                 if (!this.#selected.has(o)) desired.set(o, o.uiAttribs.translate.x);
+                else if (this.#isSelectionRoot(o)) desired.set(o, snapNearest(o.uiAttribs.translate.x, GRID_X));
                 else if (this.#sideChains.has(o)) desired.set(o, this.#sideChainRect(o, this.#sideChains.get(o), pos, fanSlots).x);
                 else if (parent) desired.set(o, this.#childX(o, pos, fanSlots));
                 else desired.set(o, hints.has(o) ? hints.get(o).x : snapNearest(o.uiAttribs.translate.x, GRID_X));
@@ -577,9 +591,10 @@ export default class PatchLayout
                     continue;
                 }
                 const parent = this.#primaryParent(o);
-                const fanSlot = fanSlots.get(o);
-                const sideChain = this.#sideChains.get(o);
-                const sibling = parent && !fanSlot && !sideChain ? lastChild.get(parent) : null;
+                const selectionRoot = this.#isSelectionRoot(o);
+                const fanSlot = selectionRoot ? null : fanSlots.get(o);
+                const sideChain = selectionRoot ? null : this.#sideChains.get(o);
+                const sibling = parent && !fanSlot && !sideChain && !selectionRoot ? lastChild.get(parent) : null;
                 const rect = sideChain ? this.#sideChainRect(o, sideChain, pos, fanSlots) : this.#opRect(o, desired.get(o), this.#opY(o, pos, startY, hints));
                 if (sibling) rect.x = Math.max(rect.x, snapUp(this.#siblingMinX(sibling, o), GRID_X));
                 if (fanSlot && fanRows.has(fanSlot.parent)) rect.y = Math.max(rect.y, snapUp(pos.get(fanSlot.parent).y + fanRows.get(fanSlot.parent), GRID_Y));
@@ -588,7 +603,7 @@ export default class PatchLayout
                 if (!this.#moveToNearestFreeSpot(rect, placed, allowLeft, !parent && !sideChain)) return "no free place found for op " + o.getTitle();
                 placed.push(rect);
                 pos.set(o, rect);
-                if (parent && !fanSlot && !sideChain) lastChild.set(parent, { "x": rect.x, "op": o });
+                if (parent && !fanSlot && !sideChain && !selectionRoot) lastChild.set(parent, { "x": rect.x, "op": o });
                 this.#addFanSlots(o, rect, fanSlots);
             }
         }

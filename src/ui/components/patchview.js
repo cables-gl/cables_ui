@@ -2152,6 +2152,27 @@ export default class PatchView extends Events
     }
 
     /**
+     * @param {UiOp[]} ops
+     */
+    scrambleOps(ops)
+    {
+        if (!ops || ops.length === 0) return;
+
+        const bounds = this.getOpBounds(ops);
+        const undoGroup = undo.startGroup();
+        for (const op of ops)
+        {
+            const glop = this.patchRenderer.getGlOp(op);
+            const w = glop ? glop.w : gluiconfig.opWidth;
+            const h = glop ? glop.h : gluiconfig.opHeight;
+            const x = bounds.minX + Math.random() * Math.max(0, bounds.maxX - bounds.minX - w);
+            const y = bounds.minY + Math.random() * Math.max(0, bounds.maxY - bounds.minY - h);
+            this.setOpPos(op, Snap.snapOpPosX(x), Snap.snapOpPosY(y));
+        }
+        undo.endGroup(undoGroup, "Scramble ops");
+    }
+
+    /**
      * @param {UiOp} op
      * @param {boolean} collapsed
      */
