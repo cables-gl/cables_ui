@@ -234,11 +234,12 @@ class CmdPatch
                 "icon": "list"
             },
             {
-                "cmd": "Tidy up ops",
+                "cmd": "Auto arrange ops",
                 "keybindable": true,
                 "func": CmdPatch.tidyUpOps,
                 "category": "patch",
-                "icon": "list"
+                "icon": "list",
+                "hotkey": "a"
             },
             {
                 "cmd": "Scramble ops",

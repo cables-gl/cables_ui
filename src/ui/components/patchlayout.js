@@ -113,8 +113,15 @@ export default class PatchLayout
             if (!this.#selected.has(o)) this.#fixed.push(this.#opRect(o));
 
         const result = new Map();
+        const unconnected = [];
         for (const group of this.#connectedGroups(all))
         {
+            if (group.length == 1)
+            {
+                if (this.#selected.has(group[0])) unconnected.push(group[0]);
+                continue;
+            }
+
             let hasSelected = false;
             for (const o of group) if (this.#selected.has(o)) hasSelected = true;
             if (!hasSelected) continue;
@@ -129,7 +136,59 @@ export default class PatchLayout
                 this.#fixed.push(pos.get(o));
             }
         }
+
+        if (unconnected.length)
+        {
+            const pos = this.#layoutList(unconnected);
+            if (typeof pos == "string") return pos;
+            for (const o of pos.keys()) result.set(o, pos.get(o));
+        }
         return result;
+    }
+
+    /**
+     * @param {UiOp[]} ops
+     * @returns {Map<UiOp,LayoutRect>|string}
+     */
+    #layoutList(ops)
+    {
+        const sorted = ops.slice();
+        sorted.sort((a, b) =>
+        {
+            if (a.uiAttribs.translate.y != b.uiAttribs.translate.y) return a.uiAttribs.translate.y - b.uiAttribs.translate.y;
+            return a.uiAttribs.translate.x - b.uiAttribs.translate.x;
+        });
+
+        const listX = snapNearest(sorted[0].uiAttribs.translate.x, GRID_X);
+        let y = snapNearest(sorted[0].uiAttribs.translate.y, GRID_Y);
+        const rects = [];
+        for (const o of sorted)
+        {
+            const rect = this.#opRect(o, listX, y);
+            rects.push(rect);
+            y += snapUp(rect.h + GAP_Y, GRID_Y);
+        }
+
+        for (let step = 0; step <= MAX_SEARCH_STEPS; step++)
+            for (const dir of step ? [1, -1] : [1])
+            {
+                const offsetX = dir * step * GRID_X;
+                let free = true;
+                for (const rect of rects)
+                    if (!this.#isFree({ "x": rect.x + offsetX, "y": rect.y, "w": rect.w, "h": rect.h }, this.#fixed)) free = false;
+                if (!free) continue;
+
+                const result = new Map();
+                for (let i = 0; i < sorted.length; i++)
+                {
+                    const rect = { "x": rects[i].x + offsetX, "y": rects[i].y, "w": rects[i].w, "h": rects[i].h };
+                    result.set(sorted[i], rect);
+                    this.#fixed.push(rect);
+                }
+                return result;
+            }
+
+        return "no free place for the unconnected ops";
     }
 
     /**

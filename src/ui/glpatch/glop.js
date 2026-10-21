@@ -604,8 +604,10 @@ export default class GlOp extends Events
 
         if (newAttribs && this.#isOnlyTranslate(newAttribs))
         {
+            const from = { "x": this.x, "y": this.y };
             this.opUiAttribs.translate = { "x": attr.translate.x, "y": attr.translate.y };
             this.updatePosition();
+            if (undo.isExecuting()) this.#glPatch.animateOpFrom(this.#op, from);
             perf.finish();
             return;
         }

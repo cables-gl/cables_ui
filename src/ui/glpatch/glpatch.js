@@ -56,8 +56,12 @@ export default class GlPatch extends Events
     static EVENT_RESUMED = "resumed";
     static EVENT_RESIZE = "resize";
     static EVENT_META_SCROLL = "META_SCROLL";
+    static OP_MOVE_ANIM_DURATION = 0.3;
 
     #cgl = null;
+
+    /** @type {Map<string,{glop: GlOp, op: UiOp, fromX: number, fromY: number, toX: number, toY: number, startTime: number}>} */
+    #opMoveAnims = new Map();
 
     /** @type {Set<GlLink>} */
     #queuedLinks = new Set();
@@ -322,22 +326,10 @@ export default class GlPatch extends Events
         gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { CmdPatch.gotoParentSubpatch(); });
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (_e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
-        gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
+        gui.keys.key("a", "Auto arrange selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) =>
         {
-            for (let j = 0; j < 20; j++)
-                for (const i in this._selectedGlOps)
-                {
-                    if (this._selectedGlOps[i].op)
-                        this._selectedGlOps[i].op.setUiAttribs(
-                            {
-                                "translate":
-                                {
-                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
-                                    "y": this._selectedGlOps[i].op.uiAttribs.translate.y
-                                } });
-
-                    gui.patchView.testCollision(this._selectedGlOps[i].op);
-                }
+            const ops = gui.patchView.getSelectedOps();
+            if (ops.length) gui.patchView.tidyUpOps(ops);
         });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
@@ -1225,6 +1217,7 @@ export default class GlPatch extends Events
         this.#rectInstancer.setSecondaryColor(gui.theme.colors_patch.background);
 
         this.updateSubPatchOpAnim();
+        this.#updateOpMoveAnims();
         this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 
         if (this.#numGlOps != gui.corePatch().ops.length)
@@ -1681,6 +1674,69 @@ export default class GlPatch extends Events
 
             this._glOpz[id].selected = false;
             this.#cachedNumSelectedOps--;
+        }
+    }
+
+    /**
+     * @param {Map<UiOp,{x:number,y:number}>} fromPositions
+     */
+    animateOpsFrom(fromPositions)
+    {
+        for (const op of fromPositions.keys()) this.animateOpFrom(op, fromPositions.get(op));
+    }
+
+    /**
+     * @param {UiOp} op
+     * @param {{x:number,y:number}} from
+     */
+    animateOpFrom(op, from)
+    {
+        const glop = this._glOpz[op.id];
+        if (!glop || !op.uiAttribs.translate) return;
+        if (from.x == op.uiAttribs.translate.x && from.y == op.uiAttribs.translate.y) return;
+
+        const item = {
+            "glop": glop,
+            "op": op,
+            "fromX": from.x,
+            "fromY": from.y,
+            "toX": op.uiAttribs.translate.x,
+            "toY": op.uiAttribs.translate.y,
+            "startTime": this._time
+        };
+        this.#opMoveAnims.set(op.id, item);
+        this.#applyOpMoveAnim(item, 0);
+    }
+
+    /**
+     * @param {{glop: GlOp, fromX: number, fromY: number, toX: number, toY: number}} item
+     * @param {number} v
+     */
+    #applyOpMoveAnim(item, v)
+    {
+        item.glop.opUiAttribs.translate = {
+            "x": item.fromX + (item.toX - item.fromX) * v,
+            "y": item.fromY + (item.toY - item.fromY) * v
+        };
+        item.glop.updatePosition();
+    }
+
+    #updateOpMoveAnims()
+    {
+        if (this.#opMoveAnims.size == 0) return;
+
+        for (const item of this.#opMoveAnims.values())
+        {
+            const translate = item.op.uiAttribs.translate;
+            if (!translate || translate.x != item.toX || translate.y != item.toY)
+            {
+                this.#opMoveAnims.delete(item.op.id);
+                continue;
+            }
+
+            const t = Math.min(1, (this._time - item.startTime) / GlPatch.OP_MOVE_ANIM_DURATION);
+            this.#applyOpMoveAnim(item, 1 - Math.pow(1 - t, 3));
+            if (t == 1) this.#opMoveAnims.delete(item.op.id);
         }
     }
 

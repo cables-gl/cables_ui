@@ -222,6 +222,11 @@ const UndoManager = function ()
             paused = true;
         },
 
+        "isExecuting": function ()
+        {
+            return isExecuting;
+        },
+
         "paused": function ()
         {
             return paused;

@@ -2133,20 +2133,22 @@ export default class PatchView extends Events
         if (layoutOps.length === 0) return;
 
         const pos = this.getTidyUpPositions(layoutOps);
-        if (typeof pos == "string") return notifyWarn("Could not tidy up ops", pos);
+        if (typeof pos == "string") return notifyWarn("Could not auto arrange ops", pos);
 
-        this.patchRenderer.subPatchOpAnimStart(this.getOpBounds(layoutOps), () =>
+        const fromPositions = new Map();
+        const undoGroup = undo.startGroup();
+        for (const op of pos.keys())
         {
-            const undoGroup = undo.startGroup();
-            for (const op of pos.keys())
-            {
-                const p = pos.get(op);
-                if (op.uiAttribs.translate.x != p.x || op.uiAttribs.translate.y != p.y) this.setOpPos(op, p.x, p.y);
-            }
-            undo.endGroup(undoGroup, "Tidy up ops");
+            const p = pos.get(op);
+            if (op.uiAttribs.translate.x == p.x && op.uiAttribs.translate.y == p.y) continue;
 
-            this.patchRenderer.subPatchOpAnimEndBounds(this.getOpBounds(layoutOps));
-        });
+            const glop = this.patchRenderer.getGlOp(op);
+            if (glop) fromPositions.set(op, { "x": glop.x, "y": glop.y });
+            this.setOpPos(op, p.x, p.y);
+        }
+        undo.endGroup(undoGroup, "Auto arrange ops");
+
+        this.patchRenderer.animateOpsFrom(fromPositions);
     }
 
     /**
@@ -2167,6 +2169,7 @@ export default class PatchView extends Events
         if (!ops || ops.length === 0) return;
 
         const bounds = this.getOpBounds(ops);
+        const fromPositions = new Map();
         const undoGroup = undo.startGroup();
         for (const op of ops)
         {
@@ -2175,9 +2178,12 @@ export default class PatchView extends Events
             const h = glop ? glop.h : gluiconfig.opHeight;
             const x = bounds.minX + Math.random() * Math.max(0, bounds.maxX - bounds.minX - w);
             const y = bounds.minY + Math.random() * Math.max(0, bounds.maxY - bounds.minY - h);
+            if (glop) fromPositions.set(op, { "x": glop.x, "y": glop.y });
             this.setOpPos(op, Snap.snapOpPosX(x), Snap.snapOpPosY(y));
         }
         undo.endGroup(undoGroup, "Scramble ops");
+
+        this.patchRenderer.animateOpsFrom(fromPositions);
     }
 
     /**
