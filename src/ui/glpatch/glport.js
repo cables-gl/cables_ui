@@ -141,7 +141,7 @@ export default class GlPort
             if (!this.#longPortRect) this.#longPortRect = new GlRect(this.#rectInstancer, { "name": "longport", "parent": this.#parentRect, "interactive": false });
 
             const col = GlPort.getColor(this.#type, false, false, false);
-            this.#longPortRect.setColor(col[0], col[1], col[2], 1);
+            this.#longPortRect.setColor(col[0], col[1], col[2], 0.7);
 
             this.updateSize();
         }
@@ -268,6 +268,8 @@ export default class GlPort
         // if (this.#port.uiAttribs.addPort) this.#rect.setOpacity(0.7);
         if (this.#port.uiAttribs.greyout) this.#rect.setOpacity(0.4);
         else this.#rect.setOpacity(1);
+
+        if (this.#arrowRect) this.#arrowRect.setColorArray(this.#rect.color);
 
         // if (this.#port.uiAttribs.hasOwnProperty("opacity")) this.#rect.setOpacity(this.#port.uiAttribs.opacity);
     }
