@@ -38,12 +38,15 @@ class Commands
         Commands.commands = Commands.commands.concat(CmdOps.commands);
         Commands.commands = Commands.commands.concat(CmdFiles.commands);
 
+        const titles = {};
         for (let i = 0; i < Commands.commands.length; i++)
         {
 
             if (Commands.commands[i])
             {
                 if (!Commands.commands[i].category) console.warn("cmd has no category ", Commands.commands[i].cmd);
+                if (titles[Commands.commands[i].cmd]) console.warn("duplicate cmd title ", Commands.commands[i].cmd);
+                titles[Commands.commands[i].cmd] = true;
                 Commands.commands[i].id = uuid();
             }
         }

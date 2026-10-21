@@ -4,6 +4,7 @@ import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPatchAPI from "./patchapi.js";
 import { UiPatch } from "../core_extend_patch.js";
+import { InputBindings } from "../inputbindings.js";
 
 /** Canvas of the patchfield ({@link GlPatch}). */
 export default class GlUiCanvas extends GlCanvas
@@ -19,6 +20,7 @@ export default class GlUiCanvas extends GlCanvas
 
         if (!this.cgl || !this.cgl.gl) return;
         this.cgl.name = "ui";
+        this.canvas.dataset.keycontext = InputBindings.CONTEXT_PATCH;
         this.glPatch = new GlPatch(this.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();

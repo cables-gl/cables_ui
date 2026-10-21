@@ -2146,7 +2146,6 @@ export default class PatchView extends Events
             undo.endGroup(undoGroup, "Tidy up ops");
 
             this.patchRenderer.subPatchOpAnimEndBounds(this.getOpBounds(layoutOps));
-            this.centerView();
         });
     }
 

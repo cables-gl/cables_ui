@@ -101,7 +101,7 @@ class CmdUi
             "hotkey": "CMD + SHIFT + ENTER"
         },
         {
-            "cmd": "Patch background renderer",
+            "cmd": "Patchfield visibility",
             "category": "ui",
             "func": CmdUi.togglePatchBgPatchField,
             "icon": "canvas_op",

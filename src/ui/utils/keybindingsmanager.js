@@ -3,6 +3,7 @@ import { cloneObject } from "cables/src/core/utils.js";
 import { notifyError } from "../elements/notification.js";
 import Gui, { gui } from "../gui.js";
 import { getHandleBarHtml } from "./handlebars.js";
+import { InputBindings } from "../inputbindings.js";
 
 /**
  * @typedef KeyOptions
@@ -104,9 +105,42 @@ export default class KeyBindingsManager extends Events
         return lines;
     }
 
+    /**
+     * @param {import("../inputbindings.js").KeyCombo} combo
+     * @param {string} context
+     * @returns {string[]}
+     */
+    getBuiltinTitles(combo, context)
+    {
+        const titles = [];
+        for (let i = 0; i < this._keys.length; i++)
+        {
+            const k = this._keys[i];
+            if (k.event != "down" || k.key != combo.key) continue;
+            if (Boolean(k.options.cmdCtrl) != combo.cmdCtrl || Boolean(k.options.shiftKey) != combo.shift) continue;
+            if (k.options.altKey && !combo.alt) continue;
+
+            let keyContext = InputBindings.CONTEXT_GLOBAL;
+            if (k.target)
+            {
+                const targetEle = document.getElementById(k.target);
+                if (!targetEle) continue;
+                keyContext = targetEle.dataset.keycontext || keyContext;
+            }
+
+            if (context != InputBindings.CONTEXT_GLOBAL && keyContext != context) continue;
+
+            const title = k.title || "(unnamed)";
+            if (titles.indexOf(title) == -1) titles.push(title);
+        }
+        return titles;
+    }
+
     _onKeyUp(e)
     {
         this.shiftKey = false;
+        if (gui.inputBindings && gui.inputBindings.handleKey(e)) return;
+
         for (let i = 0; i < this._keys.length; i++)
         {
             const k = this._keys[i];
@@ -157,6 +191,7 @@ export default class KeyBindingsManager extends Events
     _onKeyDown(e)
     {
         this.shiftKey = e.shiftKey || e.keyCode == 16;
+        if (gui.inputBindings && gui.inputBindings.handleKey(e)) return;
 
         for (let i = 0; i < this._keys.length; i++)
         {

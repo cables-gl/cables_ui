@@ -4,6 +4,7 @@ import GlCanvas from "../gldraw/glcanvas.js";
 import { gui } from "../gui.js";
 import { GlTimeline } from "./gltimeline.js";
 import GlTimelineTab from "../components/tabs/tab_gltimeline.js";
+import { InputBindings } from "../inputbindings.js";
 
 /** Canvas of the timeline ({@link GlTimeline}). */
 export class glTimelineCanvas extends GlCanvas
@@ -20,6 +21,7 @@ export class glTimelineCanvas extends GlCanvas
         super(_patch, parentEle);
 
         this.tab = tab;
+        this.canvas.dataset.keycontext = InputBindings.CONTEXT_TIMELINE;
         this.setSize(100, 100);
         this.activityHigh();
         this.#renderFrameListener = _patch?.on("onRenderFrame", this.render.bind(this));
