@@ -149,7 +149,6 @@ export default class BottomTabPanel extends Events
     toggle(userInteraction = false)
     {
         if (!gui.finishedLoading()) return;
-        console.log("toggle", this._visible);
         if (this._visible)
         {
             this.hide();

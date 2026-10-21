@@ -65,7 +65,6 @@ class UiPort extends Port
             "vold": structuredClone(this.get()),
             "v": structuredClone(v)
         });
-        console.log("port set", this.op.name, this.name, v);
         this.setValue(v);
 
         // });

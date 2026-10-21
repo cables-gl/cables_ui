@@ -1509,7 +1509,6 @@ export default class GlOp extends Events
             this._resizableArea = new GlArea(this.#instancer, this);
             if (this.opUiAttribs.scopeArea)
             {
-                console.log("scope area");
                 const startScope = this.op.getPortByName("areaScopeBegin");
                 if (startScope && !startScope.isLinked())
                 {
@@ -1615,7 +1614,6 @@ export default class GlOp extends Events
                     {
                         h = w * 1 / this.opUiAttribs.forceAspect;
 
-                        console.log("aspect", this.opUiAttribs.forceAspect);
                     }
                     else
                     {

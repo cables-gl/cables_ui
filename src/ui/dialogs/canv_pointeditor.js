@@ -84,7 +84,6 @@ export default class CanvasPointEditor extends Events
         this._bg = new ModalBackground();
         this._bg.on("hide", () =>
         {
-            console.log("modal hide...");
             this.close();
         });
 
@@ -95,7 +94,6 @@ export default class CanvasPointEditor extends Events
 
     updateCanvas()
     {
-        console.log("updateCanvas: overwrite me!");
     }
 
     updateOpenerBackground()
@@ -110,7 +108,6 @@ export default class CanvasPointEditor extends Events
 
     close()
     {
-        console.log("clode" + this.#id);
         // this.#closed = true;
         if (this._elContainer)
         {
@@ -297,8 +294,6 @@ export default class CanvasPointEditor extends Events
         // if (current)current.close();
         // current = null;
         // if (this.#closed) return console.log(this.#id + "closed already...");
-        console.log("showwwwwwwww" + this.#id);
-        console.trace();
         if (cb) this.#callback = cb;
 
         if (gui.currentModal) gui.currentModal.close();

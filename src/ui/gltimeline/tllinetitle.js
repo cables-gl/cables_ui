@@ -591,7 +591,6 @@ export class TlTitle extends Events
 
     scrollIntoView()
     {
-        console.log("scrollintoview ", this.#elTitle.innerHTML);
         const elem = this.#el;
         let rectElem = elem.getBoundingClientRect();
         let rectContainer = this.#gltl.tlTimeScrollContainer.getBoundingClientRect();

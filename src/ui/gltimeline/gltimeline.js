@@ -1650,10 +1650,6 @@ export class GlTimeline extends Events
                 this.hierarchyLine(item.childs[i], level + 1, cont, a || parentLine);
             }
         }
-        else
-        {
-            console.log("waaaaaaaaaaat");
-        }
 
         // console.log("animlines", this.#tlAnims.length);
 
@@ -1719,7 +1715,6 @@ export class GlTimeline extends Events
 
         if (this.#tlAnims.length == 0)
         {
-            console.log("no anims!s");
             const elee = document.createElement("div");
             elee.style = "text-align:center;width:calc(var(--timelineSplitterLeft) - 30px);padding:10px;diplay:inline-block;";
             elee.innerHTML = marked(GuiText.noanims);
@@ -1999,17 +1994,14 @@ export class GlTimeline extends Events
         }
         else if (this.getNumSelectedKeys() > 1)
         {
-            console.log("zoomtoselection");
             this.zoomToFitSelection();
         }
         else if (this.loopAreaEnd != 0)
         {
-            console.log("zoomtoloop");
             this.zoomToFitLoop();
         }
         else
         {
-            console.log("zoomto all keys");
             this.selectAllKeys();
             if (this.getNumSelectedKeys())
             {
@@ -2818,7 +2810,6 @@ export class GlTimeline extends Events
     {
         if (!anim)
         {
-            console.log("nope");
             return;
         }
         const options = {
@@ -2842,7 +2833,6 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_debug"), (e) =>
         {
-            console.log("anim serialized", e.target);
             e.target.parentElement.innerHTML = "<pre>" + JSON.stringify(anim.getSerialized(), null, 2) + "</pre>";
         });
 
@@ -2871,7 +2861,6 @@ export class GlTimeline extends Events
 
         ele.clickable(ele.byId("ap_paste_at_time"), () =>
         {
-            console.log("keys", this.#clipboardKeys);
             if (!this.#clipboardKeys) return;
 
             const startTime = this.#clipboardKeys.keys[0].t;
