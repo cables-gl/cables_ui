@@ -503,7 +503,8 @@ export default class GlCable
                 gui.theme.colors_objtypes[this.#link.link.portOut.uiAttribs.objType]
                  || gui.theme.colors_objtypes.default;
 
-            this.#splineDrawer.setSplineColorInactive(this.#splineIdx, [col[0] * 0.8, col[1] * 0.8, col[2] * 0.8, 1]);
+            const mul = gluiconfig.objColorInactiveMul;
+            this.#splineDrawer.setSplineColorInactive(this.#splineIdx, [col[0] * mul, col[1] * mul, col[2] * mul, 1]);
 
         }
 

@@ -166,7 +166,7 @@ export default class GlPort
         if (!this.#rect) return;
 
         const isAssigned = this.#port.uiAttribs.useVariable || this.#port.uiAttribs.isAnimated;
-        const dotHeight = gluiconfig.portHeight * 0.75;
+        let dotHeight = gluiconfig.portHeight * 0.75;
         let dotWidth = dotHeight;
         let showDot = isAssigned || this.#port.uiAttribs.notWorking || this.#port.uiAttribs.addPort;
         if (this.#port.type == Port.TYPE_OBJECT)showDot = true;
@@ -192,51 +192,22 @@ export default class GlPort
                 if (this.#port.uiAttribs.notWorking) this.#dot.setColorArray(gui.theme.colors_patch.opErrorCross);
                 else this.#dot.setColor(0.24, 0.24, 0.24, 1);
 
-                let portOffsetY = this.#rect.y;
-                if (this.direction == Port.DIR_OUT) portOffsetY -= this.#glop.h;
-                let dotPosY = ((-portOffsetY / 2) - dotHeight / 2);
-
-                if (this.#port.type == Port.TYPE_OBJECT)
-                {
-                    dotPosY = 0;
-                    if (this.direction == Port.DIR_OUT)
-                        dotPosY += dotHeight / 4;// this.#rect.h / 2;
-                    else
-                        dotPosY += 0;// dotHeight / 2;
-
-                    if (this.direction == Port.DIR_IN && !this.#port.isLinked())dotPosY += this.#rect.h / 2;
-
-                    if (this.#hover)
-                    {
-                        if (this.direction == Port.DIR_OUT)
-                            dotPosY += this.#rect.h * 0.25;
-                    }
-                }
-                else
-                if (this.direction == Port.DIR_OUT)
-                {
-                    // dotPosY += this.rect.h;
-                    if (this.#port.isLinked())
-                        dotPosY += dotHeight * 1.25;
-
-                    // dotPosY += this.glOp._height;
-                }
-                else
-                {
-
-                    dotPosY += this.rect.h / 2;
-
-                }
-
                 if (this.#port.uiAttribs.addPort) this.#dot.setShape(GlRect.SHAPE_PLUS);
                 else if (this.#port.uiAttribs.notWorking) this.#dot.setShape(GlRect.SHAPE_CROSS);
                 else if (this.#port.isAnimated()) this.#dot.setShape(GlRect.SHAPE_RHOMB);
                 else if (this.#port.type == Port.TYPE_OBJECT)
                 {
-                    dotWidth = this.#rect.w - 2 * (gluiconfig.portHeight - dotHeight);
+                    dotWidth = this.#rect.w - 2 * gluiconfig.portObjectOutline;
+                    dotHeight = this.visibleHeight - gluiconfig.portObjectOutline;
                     this.#dot.setShape(GlRect.SHAPE_RECT);
                 }
                 else this.#dot.setShape(GlRect.SHAPE_FILLED_CIRCLE);
+
+                let visibleTop = 0;
+                if (this.#rect.shape == GlRect.SHAPE_HALF_BLOCK_BOTTOM) visibleTop = this.#rect.h / 2;
+
+                let dotPosY = visibleTop;
+                if (this.direction == Port.DIR_OUT) dotPosY = visibleTop + this.visibleHeight - dotHeight;
 
                 this.#dot.setSize(dotWidth, dotHeight);
                 this.#dot.setPosition(gluiconfig.portWidth / 2 - dotWidth / 2, dotPosY, gluiconfig.zPortDotOffset);
@@ -245,12 +216,6 @@ export default class GlPort
             {
                 this.#dot = this.#dot.dispose();
             }
-
-            if (this.#port.type == Port.TYPE_OBJECT)
-            {
-                this.#dot.setColorArray(gui.theme.colors_objtypes[this.#port.uiAttribs.objType] || gui.theme.colors_objtypes.default);
-            }
-
         }
 
         let hover = this.#hover;
@@ -261,6 +226,14 @@ export default class GlPort
 
         let act = this.#activity;
         if (this.#glPatch.vizFlowMode == 0)act = 10;
+
+        if (this.#dot && this.#port.type == Port.TYPE_OBJECT)
+        {
+            const objCol = gui.theme.colors_objtypes[this.#port.uiAttribs.objType] || gui.theme.colors_objtypes.default;
+            let mul = 1;
+            if (act == 0) mul = gluiconfig.objColorInactiveMul;
+            this.#dot.setColor(objCol[0] * mul, objCol[1] * mul, objCol[2] * mul, objCol[3]);
+        }
 
         const col = GlPort.getColor(this.#type, hover, false, act);
         this.#rect.setColorArray(col);
