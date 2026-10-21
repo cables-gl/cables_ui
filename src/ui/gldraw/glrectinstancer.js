@@ -106,6 +106,7 @@ export default class GlRectInstancer extends Events
         this._uniResY = new Uniform(this.#shader, "f", "resY", 0);
         this._uniscrollX = new Uniform(this.#shader, "f", "scrollX", 0);
         this._uniscrollY = new Uniform(this.#shader, "f", "scrollY", 0);
+        this._uniSecondaryColor = new Uniform(this.#shader, "4f", "secondaryColor", [0.25, 0.25, 0.25, 1]);
         this._uniTexture1 = new Uniform(this.#shader, "t", "tex0", 0);
         this._uniTexture2 = new Uniform(this.#shader, "t", "tex1", 1);
         this._uniTexture3 = new Uniform(this.#shader, "t", "tex2", 2);
@@ -248,6 +249,14 @@ export default class GlRectInstancer extends Events
         }
         this.#shader.toggleDefine("SDF_TEXTURE", sdf);
         this.#textures[slot] = tex;
+    }
+
+    /**
+     * @param {number[]} col
+     */
+    setSecondaryColor(col)
+    {
+        this._uniSecondaryColor.set(col);
     }
 
     /**

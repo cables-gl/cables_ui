@@ -1263,6 +1263,8 @@ export default class GlPatch extends Events
                 gui.theme.colors_patch.background[3]);
         }
 
+        this.#rectInstancer.setSecondaryColor(gui.theme.colors_patch.background);
+
         this.updateSubPatchOpAnim();
         this.#cgl.gl.clear(this.#cgl.gl.COLOR_BUFFER_BIT | this.#cgl.gl.DEPTH_BUFFER_BIT);
 

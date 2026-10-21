@@ -8,6 +8,7 @@ IN float useTexture;
 UNI float time;
 UNI float zoom;
 UNI float msdfUnit;
+UNI vec4 secondaryColor;
 UNI sampler2D tex0;
 UNI sampler2D tex1;
 UNI sampler2D tex2;
@@ -125,8 +126,9 @@ float samp(in vec2 uv, float w) {
     {
         float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
         float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
-        finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);
-        finalColor.rgb=mix(vec3(0.25,0.25,0.25), vec3(finalColor),1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner));
+        float ring=1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner);
+        finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer)*mix(secondaryColor.a,1.0,ring);
+        finalColor.rgb=mix(secondaryColor.rgb, vec3(finalColor),ring);
     }
     else
     if(shape==2.0) // trianglebottom
