@@ -2132,8 +2132,7 @@ export default class PatchView extends Events
             if (op.uiAttribs.translate && this.patchRenderer.getGlOp(op)) layoutOps.push(op);
         if (layoutOps.length === 0) return;
 
-        const layout = new PatchLayout(this.patchRenderer);
-        const pos = layout.layout(layoutOps, gui.corePatch().getSubPatchOps(this.getCurrentSubPatch()));
+        const pos = this.getTidyUpPositions(layoutOps);
         if (typeof pos == "string") return notifyWarn("Could not tidy up ops", pos);
 
         this.patchRenderer.subPatchOpAnimStart(this.getOpBounds(layoutOps), () =>
@@ -2149,6 +2148,16 @@ export default class PatchView extends Events
             this.patchRenderer.subPatchOpAnimEndBounds(this.getOpBounds(layoutOps));
             this.centerView();
         });
+    }
+
+    /**
+     * @param {UiOp[]} ops
+     * @returns {Map<UiOp,{x:number,y:number,w:number,h:number}>|string}
+     */
+    getTidyUpPositions(ops)
+    {
+        const layout = new PatchLayout(this.patchRenderer);
+        return layout.layout(ops, gui.corePatch().getSubPatchOps(this.getCurrentSubPatch()));
     }
 
     /**
