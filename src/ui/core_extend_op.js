@@ -486,7 +486,7 @@ class UiOp extends Op
 
             if (port.uiAttribs.display == "file")
             {
-                const uri = port.get() || "";
+                const uri = String(port.get() || "");
                 if (uri != "" &&
                     !uri.startsWith("http://") &&
                     !uri.startsWith("https://") &&
