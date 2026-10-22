@@ -79,7 +79,7 @@ export default function startUi(cfg)
 
                     gui.setFontSize(userSettings.get(UserSettings.PREF_FONT_SIZE_OFF));
 
-                    gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
+                    gui.on(Gui.EVENT_RESIZE_CANVASCONTAINER, () =>
                     {
                         if (gui.corePatch().cgl.canvas.width == 0 && gui.corePatch().cgl.canvas.height == 0)
                         {
@@ -174,6 +174,8 @@ export default function startUi(cfg)
                     });
 
                     if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
+
+                    gui.emitEvent(Gui.EVENT_RESIZE_CANVASCONTAINER);
 
                     CABLES.UI.loaded = true;
                     CABLES.UI.loadedTime = performance.now();

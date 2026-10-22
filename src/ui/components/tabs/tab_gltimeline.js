@@ -182,7 +182,7 @@ export default class GlTimelineTab
             this.updateSize();
         });
 
-        gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
+        gui.on(Gui.EVENT_RESIZE_CANVASCONTAINER, () =>
         {
             this.updateSize();
         });

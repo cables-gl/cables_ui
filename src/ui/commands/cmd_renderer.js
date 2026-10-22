@@ -109,14 +109,14 @@ class CmdRenderer
     {
         const cg = gui.canvasManager.currentContextCg();
         if (navigator.clipboard?.write)
-        cg.screenShot((blob) =>
-        {
-            if (!blob) return notifyError("screenshot to clipboard failed");
+            cg.screenShot((blob) =>
+            {
+                if (!blob) return notifyError("screenshot to clipboard failed");
 
-            navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
-                .then(() => { notify("screenshot copied to clipboard"); })
-                .catch((e) => { notifyError("screenshot to clipboard failed", e.message); });
-        });
+                navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
+                    .then(() => { notify("screenshot copied to clipboard"); })
+                    .catch((e) => { notifyError("screenshot to clipboard failed", e.message); });
+            });
         gui.corePatch().resume();
     }
 
@@ -203,7 +203,7 @@ class CmdRenderer
             gui.rendererWidth = gui.rendererHeight * a;
         }
 
-        gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
+        gui.emitEvent(Gui.EVENT_RESIZE_CANVASCONTAINER);
         gui.setLayout();
         gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
     }

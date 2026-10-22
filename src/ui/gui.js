@@ -83,7 +83,7 @@ export default class Gui extends Events
 
     static EVENT_UILOADED = "uiloaded";
     static EVENT_RESIZE = "resize";
-    static EVENT_RESIZE_CANVAS = "resizecanvas";
+    static EVENT_RESIZE_CANVASCONTAINER = "resizecanvas";
     static EVENT_MOUSEOVERPORT = "mouseOverPort";
     static EVENT_MOUSEOVERPORT_OUT = "mouseOverPortOut";
 
@@ -1690,17 +1690,6 @@ export default class Gui extends Events
         this.setLayout();
         this.setLayout(); // yes, twice....
         gui.emitEvent(Gui.EVENT_RESIZE);
-
-        if (!gui.corePatch().cgl)
-        {
-
-            console.log("jlajaja");
-            let sizeStr = "";
-            console.log("sizeeeee", sizeStr);
-            sizeStr = gui.corePatch().config.containerElement.clientWidth + " x " + gui.corePatch().config.containerElement.clientHeight;
-
-            ele.byId("canvasInfoSize").innerHTML = sizeStr;
-        }
 
     }
 

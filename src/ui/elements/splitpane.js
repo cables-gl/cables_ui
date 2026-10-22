@@ -30,7 +30,7 @@ function initSplitPanes()
             gui.rightPanelWidth = Math.ceil(pos);
 
             gui.setLayout();
-            gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
+            gui.emitEvent(Gui.EVENT_RESIZE_CANVASCONTAINER);
             gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
         }
 
@@ -141,7 +141,7 @@ function initSplitPanes()
             gui.setLayout();
             gui.canvasManager.getCanvasUiBar()?.updateCanvasIconBar();
             gui.canvasManager.focus();
-            gui.emitEvent(Gui.EVENT_RESIZE_CANVAS);
+            gui.emitEvent(Gui.EVENT_RESIZE_CANVASCONTAINER);
             e.preventDefault();
         }
 
