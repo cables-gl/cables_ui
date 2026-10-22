@@ -650,7 +650,11 @@ export default class PatchSaveServer extends Events
                             this.setServerDate(r.updated);
                         }
 
-                        if (this._savedPatchCallback) this._savedPatchCallback();
+                        let saveError = null;
+                        if (err) saveError = err;
+                        else if (!r || !r.success) saveError = (r && r.msg) || "no response";
+
+                        if (this._savedPatchCallback) this._savedPatchCallback(saveError);
                         this._savedPatchCallback = null;
 
                         gui.emitEvent("patchsaved");

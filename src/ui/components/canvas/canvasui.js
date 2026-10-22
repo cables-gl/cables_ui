@@ -1,5 +1,5 @@
 import { ele } from "cables-shared-client";
-import { gui } from "../../gui.js";
+import Gui, { gui } from "../../gui.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 
 /**
@@ -21,6 +21,10 @@ export default class CanvasUi
 
         this.isCanvasFocussed = false;
         this.minimized = false;
+
+        ele.byId("btn_canvas_screenshot").classList.remove("hidden");
+        ele.byId("btn_canvas_lens").classList.remove("hidden");
+        ele.byId("btn_canvas_overlay").classList.remove("hidden");
 
         this._elCanvasIconbarContainer = this._elCanvasIconbarContainer || ele.byId("canvasicons");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
@@ -76,8 +80,6 @@ export default class CanvasUi
                 {
                     const p = gui.uiProfiler.start("[canvasUi] on performance");
 
-                    // if (this.isCanvasFocussed)
-                    // {
                     if (this._oldFps != perf.fps) this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
                     this._oldFps = perf.fps;
 
@@ -93,7 +95,6 @@ export default class CanvasUi
                         if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms;
                         this._oldMs = ms;
                     }
-                    // }
 
                     p.finish();
                 });
@@ -105,8 +106,20 @@ export default class CanvasUi
             {
 
                 const canvas = this.#canvasEle;
-                if (canvas.dataset.perfms) this._elCanvasInfoMs.innerHTML = canvas.dataset.perfms + " ms";
-                if (canvas.dataset.perfms) this._elCanvasInfoFps.innerHTML = canvas.dataset.perffps + " fps";
+
+                if (canvas.dataset.perfms)
+                {
+                    this._elCanvasInfoMs.innerHTML = canvas.dataset.perfms + " ms";
+                    this._elCanvasInfoMs.innerHTML;
+                    this._elCanvasInfoFps.classList.remove("hidden");
+                }
+
+                if (canvas.dataset.perfms)
+                {
+                    this._elCanvasInfoFps.innerHTML = canvas.dataset.perffps + " fps";
+                    this._elCanvasInfoMs.innerHTML;
+                    this._elCanvasInfoFps.classList.remove("hidden");
+                }
             }, 1000);
         }
 
@@ -147,7 +160,6 @@ export default class CanvasUi
 
     updateSizeDisplay()
     {
-        if (!gui.corePatch().cgl) return;
 
         const canvas = this.#canvasEle;
 
@@ -159,9 +171,6 @@ export default class CanvasUi
         if (ctx && ctx.pixelDensity != 1) sizeStr += " (" + Math.round(ctx.pixelDensity * 100) / 100 + "x)";
 
         gui.canvasManager.updateCanvasUi();
-
-        if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
-        this._oldSizeStr = sizeStr;
 
         this.updateIconState();
 
@@ -175,6 +184,8 @@ export default class CanvasUi
         str += "</table>";
         this._elCanvasInfoSizeOverlay.innerHTML = str;
 
+        if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
+        this._oldSizeStr = sizeStr;
         return sizeStr;
     }
 

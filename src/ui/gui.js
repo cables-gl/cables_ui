@@ -1690,6 +1690,18 @@ export default class Gui extends Events
         this.setLayout();
         this.setLayout(); // yes, twice....
         gui.emitEvent(Gui.EVENT_RESIZE);
+
+        if (!gui.corePatch().cgl)
+        {
+
+            console.log("jlajaja");
+            let sizeStr = "";
+            console.log("sizeeeee", sizeStr);
+            sizeStr = gui.corePatch().config.containerElement.clientWidth + " x " + gui.corePatch().config.containerElement.clientHeight;
+
+            ele.byId("canvasInfoSize").innerHTML = sizeStr;
+        }
+
     }
 
     bindKeys()

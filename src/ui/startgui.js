@@ -79,6 +79,20 @@ export default function startUi(cfg)
 
                     gui.setFontSize(userSettings.get(UserSettings.PREF_FONT_SIZE_OFF));
 
+                    gui.on(Gui.EVENT_RESIZE_CANVAS, () =>
+                    {
+                        if (gui.corePatch().cgl.canvas.width == 0 && gui.corePatch().cgl.canvas.height == 0)
+                        {
+                            let sizeStr = "";
+                            sizeStr = gui.corePatch().config.containerElement.clientWidth + " x " + gui.corePatch().config.containerElement.clientHeight;
+                            ele.byId("canvasInfoSize").innerHTML = sizeStr;
+                        }
+                        else
+                        {
+                            console.log("nop", gui.corePatch().cgl.canvas);
+                        }
+                    });
+
                     userSettings.on(UserSettings.EVENT_CHANGE, function (key, v)
                     {
                         if (key == "fontSizeOff") gui.setFontSize(v);
