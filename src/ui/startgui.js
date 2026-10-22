@@ -87,10 +87,6 @@ export default function startUi(cfg)
                             sizeStr = gui.corePatch().config.containerElement.clientWidth + " x " + gui.corePatch().config.containerElement.clientHeight;
                             ele.byId("canvasInfoSize").innerHTML = sizeStr;
                         }
-                        else
-                        {
-                            console.log("nop", gui.corePatch().cgl.canvas);
-                        }
                     });
 
                     userSettings.on(UserSettings.EVENT_CHANGE, function (key, v)
