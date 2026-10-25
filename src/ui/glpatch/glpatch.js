@@ -119,6 +119,9 @@ export default class GlPatch extends Events
     _dropInCircleRect = null;
 
     #cachedNumSelectedOps = 0;
+    #lastBoundsCheck = 0;
+    #lastBoundsKey = "";
+    #showingBoundsHint = false;
     _cachedFirstSelectedOp = null;
 
     _showingOpCursor = false;
@@ -1344,6 +1347,8 @@ export default class GlPatch extends Events
 
         this.needsRedraw = false;
 
+        this.#updateOutOfBoundsHint();
+
         if (this.debugData)
         {
 
@@ -1587,6 +1592,47 @@ export default class GlPatch extends Events
 
         this.cacheOIRops = ops;
         return ops;
+    }
+
+    #updateOutOfBoundsHint()
+    {
+        if (performance.now() - this.#lastBoundsCheck < 500) return;
+        this.#lastBoundsCheck = performance.now();
+
+        const eleHint = ele.byId("patchnavhelperBounds");
+        if (!eleHint) return;
+
+        const key = [this.viewBox.scrollX, this.viewBox.scrollY, this.viewBox.zoom, this.viewBox.width, this.viewBox.height, gui.corePatch().ops.length, gui.patchView.getCurrentSubPatch()].join(",");
+        if (key == this.#lastBoundsKey) return;
+        this.#lastBoundsKey = key;
+
+        const lost = !this.isAnyOpVisible();
+        if (lost == this.#showingBoundsHint) return;
+
+        this.#showingBoundsHint = lost;
+        if (lost) ele.show(eleHint);
+        else ele.hide(eleHint);
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isAnyOpVisible()
+    {
+        const topLeft = this.viewBox.screenToPatchCoord(0, 0);
+        const bottomRight = this.viewBox.screenToPatchCoord(this.viewBox.width, this.viewBox.height);
+
+        const cops = gui.corePatch().getSubPatchOps();
+        if (cops.length == 0) return true;
+
+        for (let i = 0; i < cops.length; i++)
+        {
+            const glop = this._glOpz[cops[i].id];
+            if (!glop || !glop.visible) continue;
+
+            if (glop.x + glop.w >= topLeft[0] && glop.x <= bottomRight[0] && glop.y + glop.h >= topLeft[1] && glop.y <= bottomRight[1]) return true;
+        }
+        return false;
     }
 
     unselectAll()
