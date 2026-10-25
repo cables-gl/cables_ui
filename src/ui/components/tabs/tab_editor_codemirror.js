@@ -110,6 +110,12 @@ export default class EditorTabCodemirror extends EditorBase
         this.tab.editor = this;
         this.ele = null;
 
+        this.tab.on(Tab.EVENT_CLOSE, () =>
+        {
+            this.cmView?.destroy();
+            this.cmView = null;
+        });
+
         this.tab.on("onActivate", () =>
         {
             this.focus();
@@ -153,24 +159,14 @@ export default class EditorTabCodemirror extends EditorBase
 
         if (this.cmView)
         {
-            const cursorPos = this.cmView.state.selection.main.head;
+            const cursorPos = Math.min(this.cmView.state.selection.main.head, content.length);
             this.cmView.dispatch(
                 {
                     "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
+                    "selection": EditorSelection.cursor(cursorPos),
                     "annotations": Transaction.addToHistory.of(false)
                 });
             this.cmView.focus();
-            try
-            {
-
-                this.cmView.dispatch({
-                    "selection": EditorSelection.cursor(cursorPos)
-                });
-            }
-            catch (e)
-            {
-                console.log("cm", e);
-            }
         }
         else
         {
@@ -245,6 +241,8 @@ export default class EditorTabCodemirror extends EditorBase
      */
     #updateEditorDiags(state)
     {
+        if (!this.cmView || this.cmView.state !== state) return;
+
         const severities = { "error": 2, "warning": 1 };
         const diags = [];
         forEachDiagnostic(state, (d, from) =>
@@ -290,7 +288,7 @@ export default class EditorTabCodemirror extends EditorBase
     gotoLine(line)
     {
 
-        if (line > this.cmView.state.doc.lines) return;
+        if (!this.cmView || !Number.isInteger(line) || line < 1 || line > this.cmView.state.doc.lines) return;
 
         try
         {
