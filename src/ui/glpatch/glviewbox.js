@@ -394,6 +394,10 @@ export default class GlViewBox
 
     get height() { return this.#cgl.canvasHeight; }
 
+    get viewWidth() { return this.#viewResX; }
+
+    get viewHeight() { return this.#viewResY; }
+
     update()
     {
         const time = this.glPatch.time;

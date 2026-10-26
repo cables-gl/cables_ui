@@ -141,9 +141,6 @@ export default function startUi(cfg)
                         for (let i = 0; i < selectedOpIds.length; i++) gui.patchView.selectOpId(selectedOpIds[i]);
                     });
 
-                    ele.byId(Gui.ELEID_PATCH_HELPER_EMPTY).innerHTML = GuiText.patch_hint_overlay_empty;
-                    ele.byId("patchnavhelperBounds").innerHTML = GuiText.patch_hint_overlay_outofbounds;
-
                     document.getElementById("loadingstatusLog").style.display = "none";
 
                     let projectId = gui.patchId;

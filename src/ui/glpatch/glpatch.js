@@ -120,7 +120,6 @@ export default class GlPatch extends Events
 
     #cachedNumSelectedOps = 0;
     #lastBoundsCheck = 0;
-    #lastBoundsKey = "";
     #showingBoundsHint = false;
     _cachedFirstSelectedOp = null;
 
@@ -1599,19 +1598,14 @@ export default class GlPatch extends Events
         if (performance.now() - this.#lastBoundsCheck < 500) return;
         this.#lastBoundsCheck = performance.now();
 
-        const eleHint = ele.byId("patchnavhelperBounds");
-        if (!eleHint) return;
-
-        const key = [this.viewBox.scrollX, this.viewBox.scrollY, this.viewBox.zoom, this.viewBox.width, this.viewBox.height, gui.corePatch().ops.length, gui.patchView.getCurrentSubPatch()].join(",");
-        if (key == this.#lastBoundsKey) return;
-        this.#lastBoundsKey = key;
-
-        const lost = !this.isAnyOpVisible();
+        const lost = gui.corePatch().getSubPatchOps().length > 0 && !this.isAnyOpVisible();
         if (lost == this.#showingBoundsHint) return;
 
         this.#showingBoundsHint = lost;
-        if (lost) ele.show(eleHint);
-        else ele.hide(eleHint);
+        if (lost)gui.restriction.setMessage("outbounds", GuiText.patch_hint_overlay_outofbounds);
+        else gui.restriction.setMessage("outbounds", null);
+        // if (lost) ele.show(eleHint);
+        // else ele.hide(eleHint);
     }
 
     /**
@@ -1619,12 +1613,10 @@ export default class GlPatch extends Events
      */
     isAnyOpVisible()
     {
-        const topLeft = this.viewBox.screenToPatchCoord(0, 0);
-        const bottomRight = this.viewBox.screenToPatchCoord(this.viewBox.width, this.viewBox.height);
+        const topLeft = this.viewBox.screenToPatchCoord(gui.getLeftPanelsMaxWidth(), 0);
+        const bottomRight = this.viewBox.screenToPatchCoord(this.viewBox.viewWidth - gui.getRightPanelsMaxWidth(), this.viewBox.viewHeight - gui.getBottomPanelHeight());
 
         const cops = gui.corePatch().getSubPatchOps();
-        if (cops.length == 0) return true;
-
         for (let i = 0; i < cops.length; i++)
         {
             const glop = this._glOpz[cops[i].id];
@@ -1775,7 +1767,7 @@ export default class GlPatch extends Events
             }
 
             const t = Math.min(1, (this._time - item.startTime) / GlPatch.OP_MOVE_ANIM_DURATION);
-            this.#applyOpMoveAnim(item, 1 - Math.pow(1 - t, 3));
+            this.#applyOpMoveAnim(item, 1 - (1 - t) ** 3);
             if (t == 1) this.#opMoveAnims.delete(item.op.id);
         }
     }

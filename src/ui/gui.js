@@ -104,8 +104,6 @@ export default class Gui extends Events
     static PREF_AUDIO_MUTE = "editorAudioMute";
     static TABSESSION_NAME_PATCHSETTINGS = "patchsettings";
 
-    static ELEID_PATCH_HELPER_EMPTY = "patchnavhelperEmpty";
-
     hasAnims = false;
     unload = false;
     defaultOps = defaultOps;
@@ -1002,6 +1000,12 @@ export default class Gui extends Events
     getLeftPanelsMaxWidth()
     {
         if (this.maintabPanel.isVisible()) return this.editorWidth;
+        else return 0;
+    }
+
+    getBottomPanelHeight()
+    {
+        if (this.bottomTabPanel.isVisible()) return this.bottomTabPanel.getHeight();
         else return 0;
     }
 

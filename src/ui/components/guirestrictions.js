@@ -35,6 +35,7 @@ export default class GuiRestrictions
      */
     setMessage(id, msg = null)
     {
+        console.log("setmessage", id, msg);
         if (!msg)
         {
             delete this._messages[id];
