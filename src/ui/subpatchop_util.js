@@ -765,7 +765,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
         });
 };
 
-subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
+subPatchOpUtil.createSubpatchOp = (newOp, oldSubpatchOp, next, options = {}) =>
 {
     // const loadingModal = gui.startModalLoading("save op code");
 

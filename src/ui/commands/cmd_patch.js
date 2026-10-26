@@ -766,20 +766,7 @@ class CmdPatch
                                                     gui.patchView.testCollision(newOp);
                                                     gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
 
-                                                    if (!gui.savedState.getStateBlueprint(subPatchId))
-                                                    {
-                                                        subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId,
-                                                            "next": () =>
-                                                            {
-
-                                                                console.log("ja done...");
-
-                                                            /*
-                                                             * log.log("bp", bp);
-                                                             * CABLES.CMD.PATCH.save();
-                                                             */
-                                                            } });
-                                                    }
+                                                    subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId });
                                                     gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                                     gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
                                                     gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
