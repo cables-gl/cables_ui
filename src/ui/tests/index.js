@@ -6,6 +6,7 @@ import talkerApiPatchTests from "./talkerapi/patch.test.js";
 import talkerApiOpsTests from "./talkerapi/ops.test.js";
 import electronTests from "./electron/electron.test.js";
 import guiTests from "./ui/gui.test.js";
+import subPatchOpTests from "./ui/subpatchop.test.js";
 import { Platform } from "../platform.js";
 
 /**
@@ -20,7 +21,8 @@ const testFiles = [
     talkerApiPatchTests,
     talkerApiOpsTests,
     electronTests,
-    guiTests
+    guiTests,
+    subPatchOpTests
 ];
 
 let isSetup = false;
