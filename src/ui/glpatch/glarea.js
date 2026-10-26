@@ -121,6 +121,18 @@ export default class GlArea
 
     minsize = 20;
 
+    get width()
+    {
+        if (this.#animating) return this.#animW.getValue(this.#glop.glPatch.time);
+        return this._w;
+    }
+
+    get height()
+    {
+        if (this.#animating) return this.#animH.getValue(this.#glop.glPatch.time);
+        return this._h;
+    }
+
     update()
     {
 
@@ -185,6 +197,7 @@ export default class GlArea
             this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
             this.updateChildOps();
         }
+        this.#glop.updateSelectedBorder();
 
     }
 
@@ -221,6 +234,7 @@ export default class GlArea
         const h = this.#animH.getValue(t);
         this.#rectBg.setSize(w, h);
         this.#setRectResizePosition(w, h);
+        this.#glop.updateSelectedBorder();
 
         if (this.#animW.isFinished(t))
         {
@@ -234,6 +248,7 @@ export default class GlArea
             {
                 this.#rectBg.setSize(this._w, this._h);
                 this.#setRectResizePosition(this._w, this._h);
+                this.#glop.updateSelectedBorder();
             }
         }
     }

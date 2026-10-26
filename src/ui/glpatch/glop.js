@@ -824,8 +824,18 @@ export default class GlOp extends Events
     #updateSelectedBorderSize()
     {
         if (!this.#glRectSelectedBorder) return;
-        if (this.#glPatch.getNumSelectedOps() > 1) this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+        if (this._resizableArea)
+        {
+            // this.#glRectSelectedBorder.setBorder(gluiconfig.subPatchOpBorder);
+            this.#glRectSelectedBorder.setSize(0, 0);
+        }
+        else if (this.#glPatch.getNumSelectedOps() > 1) this.#glRectSelectedBorder.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
         else this.#glRectSelectedBorder.setSize(0, 0);
+    }
+
+    updateSelectedBorder()
+    {
+        this.#updateSelectedBorderSize();
     }
 
     updateSize()
@@ -1196,7 +1206,7 @@ export default class GlOp extends Events
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosSelectedOpsBorder - this.getPosZ());
+        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, this._resizableArea ? gluiconfig.zOpSlot * 2 : gluiconfig.zPosSelectedOpsBorder - this.getPosZ());
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zOpLayerTitle);
         if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zOpLayerTitle);
