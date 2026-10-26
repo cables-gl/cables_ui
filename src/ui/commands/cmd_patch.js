@@ -691,7 +691,7 @@ class CmdPatch
                                 },
                                 "onOpAdd": (newOp) =>
                                 {
-                                    subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                                    subPatchOpUtil.createSubpatchOp(newOp, OpTempSubpatch, () =>
                                     {
                                         const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
@@ -719,6 +719,9 @@ class CmdPatch
 
                                                 gui.serverOps.execute(newOpname, (newOps) =>
                                                 {
+                                                    const loadedSubPatchId = newOps[0].patchId.get();
+                                                    const onSubPatchLoaded = () =>
+                                                    {
                                                     newOp = newOps[0];
 
                                                     const subPatchId = newOp.patchId.get();
@@ -769,6 +772,8 @@ class CmdPatch
                                                             "next": () =>
                                                             {
 
+                                                                console.log("ja done...");
+
                                                             /*
                                                              * log.log("bp", bp);
                                                              * CABLES.CMD.PATCH.save();
@@ -778,7 +783,18 @@ class CmdPatch
                                                     gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                                     gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
                                                     gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
+                                                    };
 
+                                                    if (gui.corePatch().getSubPatchOps(loadedSubPatchId, false).length > 0) onSubPatchLoaded();
+                                                    else
+                                                    {
+                                                        const listenerId = gui.corePatch().on("subpatchExpose", (exposedId) =>
+                                                        {
+                                                            if (exposedId != loadedSubPatchId) return;
+                                                            gui.corePatch().off(listenerId);
+                                                            onSubPatchLoaded();
+                                                        });
+                                                    }
                                                 });
                                             });
                                     }, { "doNotExecute": true });

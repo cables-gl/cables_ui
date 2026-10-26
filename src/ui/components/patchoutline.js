@@ -263,7 +263,7 @@ export default class PatchOutline extends Events
                 "title": "Create op from subpatch",
                 "func": function ()
                 {
-                    subPatchOpUtil.createBlueprint2Op(item.subPatchId);
+                    subPatchOpUtil.createSubpatchOp(item.subPatchId);
                 }
             });
 
