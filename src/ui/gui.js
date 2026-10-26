@@ -770,6 +770,16 @@ export default class Gui extends Events
         this._elPatch.style.top = 0 + "px";
         this._elPatch.style.left = patchLeft + "px";
 
+        const elRestriction = ele.byId("restriction_container");
+        if (elRestriction)
+        {
+            const fieldLeft = this.getLeftPanelsMaxWidth();
+            const fieldWidth = patchWidth - fieldLeft - this.rightPanelWidth;
+            elRestriction.style.left = fieldLeft + fieldWidth / 2 + "px";
+            elRestriction.style.top = "auto";
+            elRestriction.style.bottom = infoAreaHeight + this.getBottomPanelHeight() + 40 + "px";
+        }
+
         this._elLibrary.style.left = 0 + "px";
         this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled + "px";
         this._elLibrary.style.bottom = 0;
