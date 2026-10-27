@@ -62,12 +62,15 @@ export default class CanvasUi
             {
                 this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
                 this._elCanvasInfoVer.innerHTML = "WebGL 1";
+                this._elCanvasInfoVer.classList.remove("hidden");
             }
             else this._elInfoVersion.remove();
         }
 
         if (this.#cg)
         {
+            this._elCanvasInfoFps.classList.remove("hidden");
+            this._elCanvasInfoMs.classList.remove("hidden");
 
             if (this.#cg && this.#cg.on)
                 this.#cg.on("resize", () =>
@@ -110,14 +113,12 @@ export default class CanvasUi
                 if (canvas.dataset.perfms)
                 {
                     this._elCanvasInfoMs.innerHTML = canvas.dataset.perfms + " ms";
-                    this._elCanvasInfoMs.innerHTML;
-                    this._elCanvasInfoFps.classList.remove("hidden");
+                    this._elCanvasInfoMs.classList.remove("hidden");
                 }
 
-                if (canvas.dataset.perfms)
+                if (canvas.dataset.perffps)
                 {
                     this._elCanvasInfoFps.innerHTML = canvas.dataset.perffps + " fps";
-                    this._elCanvasInfoMs.innerHTML;
                     this._elCanvasInfoFps.classList.remove("hidden");
                 }
             }, 1000);
