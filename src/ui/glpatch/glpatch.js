@@ -86,10 +86,10 @@ export default class GlPatch extends Events
     _glOpz = {};
     #numGlOps = 0;
 
-    #opStackOrder = 0;
+    #opDrawOrder = 0;
 
     /** @type {Object<string,number>} */
-    #opStackTops = {};
+    #opDrawTops = {};
 
     /** @type {string | any[]} */
     _hoverOps = [];
@@ -610,6 +610,17 @@ export default class GlPatch extends Events
             for (let j = 0; j < areas.length; j++)
                 if (areas[j].id == oldId) areas[j].flash();
         }
+
+        this.updateStackingAreas();
+    }
+
+    updateStackingAreas()
+    {
+        for (const i in this._glOpz)
+        {
+            const glop = this._glOpz[i];
+            if (glop._resizableArea && glop.opUiAttribs.allowStacking && glop.isInCurrentSubPatch()) glop._resizableArea.updateChildOps();
+        }
     }
 
     bringAreaChildsToFront()
@@ -626,46 +637,46 @@ export default class GlPatch extends Events
 
     get cgl() { return this.#cgl; }
 
-    nextOpStackOrder()
+    nextOpDrawOrder()
     {
-        this.#opStackOrder++;
-        return this.#opStackOrder;
+        this.#opDrawOrder++;
+        return this.#opDrawOrder;
     }
 
     /**
      * @param {string} subPatch
      */
-    getOpStackTop(subPatch)
+    getOpDrawTop(subPatch)
     {
-        return this.#opStackTops[subPatch] || 0;
+        return this.#opDrawTops[subPatch] || 0;
     }
 
     /**
      * @param {string} subPatch
      */
-    nextOpStackRank(subPatch)
+    nextOpDrawRank(subPatch)
     {
-        if (this.getOpStackTop(subPatch) >= gluiconfig.zOpsMaxStackRank) this.#compactOpStack(subPatch);
-        this.#opStackTops[subPatch] = this.getOpStackTop(subPatch) + 1;
-        return this.#opStackTops[subPatch];
+        if (this.getOpDrawTop(subPatch) >= gluiconfig.zOpsMaxDrawRank) this.#compactOpDrawOrder(subPatch);
+        this.#opDrawTops[subPatch] = this.getOpDrawTop(subPatch) + 1;
+        return this.#opDrawTops[subPatch];
     }
 
     /**
      * @param {string} subPatch
      */
-    #compactOpStack(subPatch)
+    #compactOpDrawOrder(subPatch)
     {
         const glOps = [];
         for (const i in this._glOpz)
             if (this._glOpz[i].getSubPatch() == subPatch) glOps.push(this._glOpz[i]);
 
-        glOps.sort((a, b) => { return a.stackOrder - b.stackOrder; });
+        glOps.sort((a, b) => { return a.drawOrder - b.drawOrder; });
 
-        const maxRank = gluiconfig.zOpsMaxStackRank - gluiconfig.zOpsStackHeadroom;
+        const maxRank = gluiconfig.zOpsMaxDrawRank - gluiconfig.zOpsDrawHeadroom;
         const sharedBackRanks = Math.max(0, glOps.length - maxRank);
 
-        for (let i = 0; i < glOps.length; i++) glOps[i].stackRank = Math.max(1, i + 1 - sharedBackRanks);
-        this.#opStackTops[subPatch] = Math.min(glOps.length, maxRank);
+        for (let i = 0; i < glOps.length; i++) glOps[i].drawRank = Math.max(1, i + 1 - sharedBackRanks);
+        this.#opDrawTops[subPatch] = Math.min(glOps.length, maxRank);
     }
 
     updateVizFlowMode()

@@ -2233,6 +2233,49 @@ export default class PatchView extends Events
     /**
      * @param {UiOp} op
      */
+    canStackOp(op)
+    {
+        if (op.uiAttribs.allowStacking || op.uiAttribs.scopeArea || op.hasAnimatedPorts()) return false;
+
+        const glop = this.patchRenderer.getGlOp(op);
+        if (!glop) return false;
+
+        const ops = this._p.ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (!ops[i].uiAttribs.allowStacking || ops[i].getSubPatch() != op.getSubPatch()) continue;
+            const areaGlop = this.patchRenderer.getGlOp(ops[i]);
+            if (areaGlop && areaGlop._resizableArea && areaGlop._resizableArea.overlapsGlOp(glop)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param {UiOp} op
+     * @param {boolean} stacked
+     */
+    setOpStacked(op, stacked)
+    {
+        if (op.isStacked == stacked) return;
+
+        this.patchRenderer.updateStackingAreas();
+        if (!op.setStacked(stacked))
+        {
+            notifyWarn("Op can not be stacked", "only inside of loop areas and without animated ports");
+            return;
+        }
+
+        undo.add({
+            "title": stacked ? "Stack op" : "Unstack op",
+            "undo": () => { this.setOpStacked(op, !stacked); },
+            "redo": () => { this.setOpStacked(op, stacked); }
+        });
+        gui.savedState.setUnSaved("stackOp", op.getSubPatch());
+    }
+
+    /**
+     * @param {UiOp} op
+     */
     selectAreaChilds(op)
     {
         if (!op.uiAttribs.collapsable || !op.uiAttribs.area || !op.uiAttribs.area.id) return;

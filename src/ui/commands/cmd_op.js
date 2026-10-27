@@ -22,6 +22,12 @@ class CmdOps
             "func": CmdOps.codeNewOp
         },
         {
+            "cmd": "Toggle stacked selected ops",
+            "func": CmdOps.toggleStackedSelectedOps,
+            "category": "op",
+            "icon": "op"
+        },
+        {
             "cmd": "Downgrade selected op",
             "func": CmdOps.downGradeOp,
             "category": "op",
@@ -99,6 +105,13 @@ class CmdOps
     static codeNewOp()
     {
         gui.serverOps.createDialog();
+    }
+
+    static toggleStackedSelectedOps()
+    {
+        const selops = gui.patchView.getSelectedOps();
+        for (let i = 0; i < selops.length; i++)
+            if (gui.patchView.canStackOp(selops[i])) gui.patchView.setOpStacked(selops[i], !selops[i].isStacked);
     }
 
     static downGradeOp()

@@ -281,6 +281,7 @@ export default class GlArea
 
     #getZ()
     {
+        if (!this.#glop.op.uiAttribs.collapsable) return gluiconfig.zPosAreas + gluiconfig.zOpSlot / 2;
         return this.#glop.getPosZ() + gluiconfig.zOpSlot / 2;
     }
 
@@ -297,7 +298,7 @@ export default class GlArea
             if (glop && glop != this.#glop) glOps.push(glop);
         }
 
-        glOps.sort((a, b) => { return a.stackOrder - b.stackOrder; });
+        glOps.sort((a, b) => { return a.drawOrder - b.drawOrder; });
         for (let i = 0; i < glOps.length; i++) glOps[i].bringToFront();
         this.#bringingToFront = false;
     }
@@ -311,7 +312,7 @@ export default class GlArea
         let changed = false;
         for (let i = 0; i < childs.length; i++)
         {
-            if (childs[i].op)
+            if (childs[i].op && childs[i] != this.#glop)
             {
                 opChilds.push(childs[i].op);
                 if (childs[i].op.attribs.area != this.#id)
@@ -328,6 +329,7 @@ export default class GlArea
             if (opChilds.indexOf(currentChilds[i]) == -1)
             {
                 delete currentChilds[i].attribs.area;
+                if (currentChilds[i].isStacked) currentChilds[i].updateStackCopies();
                 changed = true;
             }
 

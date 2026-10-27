@@ -74,6 +74,9 @@ class PortHtmlGenerator
             "newestVersion": newestVersion,
             "cablesUrl": platform.getCablesUrl(),
             "hasExample": hasExample,
+            "canStack": gui.patchView.canStackOp(op),
+            "isStacked": op.isStacked,
+            "numStackCopies": op.getNumStacks()
         };
 
         o.cablesDocsUrl = platform.getCablesDocsUrl();

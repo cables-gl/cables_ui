@@ -579,6 +579,18 @@ export default class GlRectInstancer extends Events
     }
 
     /**
+     * extra value for the shader of a shape, e.g. the stack shape edge color offset
+     * @param {number} idx
+     * @param {number} o
+     */
+    setShapeParam(idx, o)
+    {
+        this._attrBuffDeco[idx * 4 + 3] = o;
+        if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
+        else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+    }
+
+    /**
      * @param {number} idx
      * @param {number} o
      */

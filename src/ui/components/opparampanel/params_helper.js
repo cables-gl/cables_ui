@@ -5,6 +5,7 @@ import { gui } from "../../gui.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { createEditor } from "../editor.js";
 import { UiOp } from "../../core_extend_op.js";
+import { notifyWarn } from "../../elements/notification.js";
 
 const log = new Logger("parmashelper");
 
@@ -347,6 +348,12 @@ function setPortAnimated(op, index, targetState, defaultValue)
         }
 
         op.portsIn[index].op.refreshParams();
+        return;
+    }
+
+    if (op.isStacked)
+    {
+        notifyWarn("Stacked ops can not be animated");
         return;
     }
 

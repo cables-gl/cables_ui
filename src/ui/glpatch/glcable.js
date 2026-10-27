@@ -309,6 +309,31 @@ export default class GlCable
         return arr;
     }
 
+    /**
+     * @param {import("./glop.js").default} glop
+     * @returns {number} z just behind the op
+     */
+    #getOpZ(glop)
+    {
+        if (!glop) return gluiconfig.zPosCables;
+        return glop.getPosZ() + gluiconfig.zOpLayerCable;
+    }
+
+    /**
+     * cables are drawn behind both of their ops
+     */
+    #getZ()
+    {
+        return Math.max(this.#getOpZ(this.#link.opIn), this.#getOpZ(this.#link.opOut));
+    }
+
+    #setSplinePoints()
+    {
+        const z = this.#getZ();
+        for (let i = 2; i < this.#points.length; i += 3) this.#points[i] = z;
+        this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
+    }
+
     #updateLinePos()
     {
         if (this.#disposed) return;
@@ -326,8 +351,10 @@ export default class GlCable
         //             this._x2, this._y2, 0,
         //         ]));
 
-        if (this._oldx != this.#x || this._oldy != this.#y || this._oldx2 != this.#x2 || this._oldy2 != this.#y2)
+        const z = this.#getZ();
+        if (this._oldx != this.#x || this._oldy != this.#y || this._oldx2 != this.#x2 || this._oldy2 != this.#y2 || this._oldz != z)
         {
+            this._oldz = z;
             let posX = this._oldx = this.#x;
             let posX2 = this._oldy = this.#y;
             this._oldx2 = this.#x2;
@@ -349,23 +376,23 @@ export default class GlCable
                     if (this.#y < this.#y2)
                         this.#points =
                         [
-                            posX, this.#y - 10, gluiconfig.zPosCables,
-                            posX, this.#y, gluiconfig.zPosCables,
-                            posX2, this.#y2 + 10, gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables
+                            posX, this.#y - 10, z,
+                            posX, this.#y, z,
+                            posX2, this.#y2 + 10, z,
+                            posX2, this.#y2, z
                         ];
                     else
                         this.#points =
                         [
-                            posX, this.#y, gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables
+                            posX, this.#y, z,
+                            posX2, this.#y2, z,
+                            posX2, this.#y2, z
                         ];
 
                     // make sure all curved cables are the same length
-                    while (this.#points.length < 66) this.#points.push(posX2, this.#y2, gluiconfig.zPosCables);
+                    while (this.#points.length < 66) this.#points.push(posX2, this.#y2, z);
 
-                    this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
+                    this.#setSplinePoints();
                 }
                 else
                 {
@@ -379,14 +406,14 @@ export default class GlCable
 
                     this.#points =
                         [
-                            posX, this.#y, gluiconfig.zPosCables,
-                            posX, this.#y - (distY * 0.002) - this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), gluiconfig.zPosCables,
+                            posX, this.#y, z,
+                            posX, this.#y - (distY * 0.002) - this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), z,
 
-                            (posX + posX2) * 0.5, (this.#y + this.#y2) * 0.5, gluiconfig.zPosCables, // center point
+                            (posX + posX2) * 0.5, (this.#y + this.#y2) * 0.5, z, // center point
 
-                            posX2, this.#y2 + (distY * 0.002) + this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables,
-                            posX2, this.#y2, gluiconfig.zPosCables
+                            posX2, this.#y2 + (distY * 0.002) + this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), z,
+                            posX2, this.#y2, z,
+                            posX2, this.#y2, z
 
                         ];
 
@@ -401,7 +428,7 @@ export default class GlCable
                     // this._points.push(posX2, this._y2, 0);
                     // this._points.push(posX2, this._y2, 0);
 
-                    this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
+                    this.#setSplinePoints();
                 }
             }
             else if (this.#linetype == this.LINETYPE_STRAIGHT)
@@ -409,24 +436,24 @@ export default class GlCable
                 // straight lines...
 
                 this.#points = [
-                    posX, this.#y, gluiconfig.zPosCables,
-                    posX, this.#y - this.#distFromPort, gluiconfig.zPosCables,
-                    posX2, this.#y2 + this.#distFromPort, gluiconfig.zPosCables,
-                    posX2, this.#y2, gluiconfig.zPosCables
+                    posX, this.#y, z,
+                    posX, this.#y - this.#distFromPort, z,
+                    posX2, this.#y2 + this.#distFromPort, z,
+                    posX2, this.#y2, z
                 ];
 
-                this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
+                this.#setSplinePoints();
             }
             if (this.#linetype == this.LINETYPE_SIMPLE)
             {
                 this.#points = [
-                    posX, this.#y, gluiconfig.zPosCables,
-                    posX, this.#y, gluiconfig.zPosCables,
-                    posX2, this.#y2, gluiconfig.zPosCables,
-                    posX2, this.#y2, gluiconfig.zPosCables
+                    posX, this.#y, z,
+                    posX, this.#y, z,
+                    posX2, this.#y2, z,
+                    posX2, this.#y2, z
                 ];
 
-                this.#splineDrawer.setSpline(this.#splineIdx, this.#points);
+                this.#setSplinePoints();
             }
         }
         if (this.#visible)

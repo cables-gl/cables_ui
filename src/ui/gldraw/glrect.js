@@ -47,6 +47,7 @@ export default class GlRect extends Events
     static SHAPE_RHOMB = 13;
     static SHAPE_TRIANGLE_DOWN = 14;
     static SHAPE_TRIANGLE_UP = 15;
+    static SHAPE_STACK = 16;
 
     /** @type {array} */
     color = vec4.create();
@@ -65,6 +66,7 @@ export default class GlRect extends Events
     #attrIndex = null;
     #texture = -1;
     #shape = 0;
+    #shapeParam = 0;
     #data = {};
 
     /** @type {GlRect} */
@@ -203,6 +205,16 @@ export default class GlRect extends Events
             this._border = c;
             this.#rectInstancer.setBorder(this.#attrIndex, c);
         }
+    }
+
+    /**
+     * @param {number} v
+     */
+    setShapeParam(v)
+    {
+        if (this.#shapeParam == v) return;
+        this.#shapeParam = v;
+        this.#rectInstancer.setShapeParam(this.#attrIndex, v);
     }
 
     /**

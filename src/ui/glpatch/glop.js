@@ -58,6 +58,9 @@ export default class GlOp extends Events
     /** @type {GlText} */
     #titleExt = null;
 
+    /** @type {GlText} number of stacks in front of the title */
+    #titleStacks = null;
+
     /** @type {Boolean} */
     _needsUpdate = true;
 
@@ -69,6 +72,10 @@ export default class GlOp extends Events
 
     /** @type {GlRect} */
     #glRectSelectedBorder = null;
+
+    /** @type {GlRect[]} */
+    #glRectsStack = [];
+    #oldPosZ = 0;
 
     /** @type {GlRect} */
     #glRectHighlighted = null;
@@ -91,9 +98,9 @@ export default class GlOp extends Events
     /** @type {GlRect} */
     #glRerouteDot = null;
 
-    #stackOrder = 0;
-    #stackRank = 0;
-    #stackSubPatch = null;
+    #drawOrder = 0;
+    #drawRank = 0;
+    #drawSubPatch = null;
 
     minWidth = 10;
 
@@ -198,6 +205,9 @@ export default class GlOp extends Events
             {
                 this._storageChanged();
             });
+
+            this.#op.on(Op.EVENT_STACKED_CHANGED, () => { this.#updateStackTitle(); });
+            this.#op.on(Op.EVENT_STACK_COPIES_CHANGED, () => { this.#updateStackTitle(); });
 
             this.#op.on(Op.EVENT_PORT_ORDER_CHANGE, () =>
             {
@@ -357,26 +367,26 @@ export default class GlOp extends Events
         if (gui.patchView.getSelectedOps().length == 1) this.#glRectBg.setOpacity(0.8, false);
     }
 
-    get stackOrder() { return this.#stackOrder; }
+    get drawOrder() { return this.#drawOrder; }
 
     /**
      * @param {number} rank
      */
-    set stackRank(rank)
+    set drawRank(rank)
     {
-        if (this.#stackRank == rank) return;
-        this.#stackRank = rank;
+        if (this.#drawRank == rank) return;
+        this.#drawRank = rank;
         this.updatePosition();
     }
 
     bringToFront()
     {
         const subPatch = this.getSubPatch();
-        if (this.#stackSubPatch != subPatch || this.#stackRank != this.#glPatch.getOpStackTop(subPatch))
+        if (this.#drawSubPatch != subPatch || this.#drawRank != this.#glPatch.getOpDrawTop(subPatch))
         {
-            this.#stackSubPatch = subPatch;
-            this.#stackOrder = this.#glPatch.nextOpStackOrder();
-            this.#stackRank = this.#glPatch.nextOpStackRank(subPatch);
+            this.#drawSubPatch = subPatch;
+            this.#drawOrder = this.#glPatch.nextOpDrawOrder();
+            this.#drawRank = this.#glPatch.nextOpDrawRank(subPatch);
             this.updatePosition();
         }
         if (this._resizableArea) this._resizableArea.bringChildrenToFront();
@@ -388,7 +398,7 @@ export default class GlOp extends Events
         let z = gluiconfig.zPosOps;
         if ((this._resizableArea && this.opUiAttribs.collapsable) || this.#glPatch.isCollapsableAreaId(this.op.attribs.area)) z = gluiconfig.zPosOpsInAreas;
         else if (!this.op.isLinked()) z = gluiconfig.zPosOpsUnlinked;
-        return z - Math.min(this.#stackRank, gluiconfig.zOpsMaxStackRank) * gluiconfig.zOpSlot;
+        return z - Math.min(this.#drawRank, gluiconfig.zOpsMaxDrawRank) * gluiconfig.zOpSlot;
     }
 
     #getDragGlOps()
@@ -483,7 +493,7 @@ export default class GlOp extends Events
 
         const perf = gui.uiProfiler.start("[glop] mouseDown");
 
-        if ((this.#op.uiAttribs.hasArea && !this.#op.uiAttribs.collapsable) || this.#op.uiAttribs.scopeArea)
+        if (this.#op.uiAttribs.selectChildsOnClick && this.#op.uiAttribs.area)
         {
             const padding = 0;
             if (this.opUiAttribs.translate)
@@ -677,7 +687,7 @@ export default class GlOp extends Events
         if (newAttribs.color) this._updateColors();
 
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
-        if (newAttribs.hasOwnProperty("subPatch") && newAttribs.subPatch != this.#stackSubPatch) this.bringToFront();
+        if (newAttribs.hasOwnProperty("subPatch") && newAttribs.subPatch != this.#drawSubPatch) this.bringToFront();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
         if (newAttribs.hasOwnProperty("resizable"))
@@ -806,7 +816,7 @@ export default class GlOp extends Events
         }
 
         perf.finish();
-        this.updateSize();
+        this.#updateStackTitle();
     }
 
     _updateCommentPosition()
@@ -951,11 +961,61 @@ export default class GlOp extends Events
         }
 
         this.#updateSelectedBorderSize();
+        this.#updateStackRects();
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this.#glRectBg.w);
 
         perf.finish();
         this._updateHighlighted();
         this._updateCommentPosition();
+    }
+
+    #updateStackTitle()
+    {
+        if (!this.#glRectBg || !this.#textWriter) return;
+        if (this.#op.isStacked && !this.#titleStacks)
+        {
+            this.#titleStacks = new GlText(this.#textWriter, " ");
+            this.#titleStacks.setParentRect(this.#glRectBg);
+            this.#titleStacks.setColor(1, 1, 1, 1);
+            this.#titleStacks.visible = this.visible;
+        }
+        if (!this.#op.isStacked && this.#titleStacks) this.#titleStacks = this.#titleStacks.dispose();
+        if (this.#titleStacks) this.#titleStacks.text = this.#op.getNumStacks() + "x ";
+
+        this.updateSize();
+        this.updatePosition();
+    }
+
+    #updateStackRects()
+    {
+        const numRects = this.#op.isStacked ? gluiconfig.opStackNumRects : 0;
+
+        while (this.#glRectsStack.length > numRects) this.#glRectsStack.pop().dispose();
+        while (this.#glRectsStack.length < numRects)
+        {
+            const r = this.#instancer.createRect({ "name": "opStack", "parent": this.#glRectBg, "interactive": false });
+            r.setShape(GlRect.SHAPE_STACK);
+            const col = gui.theme.colors_patch.opBgRect;
+            const b = gluiconfig.opStackBrighten + this.#glRectsStack.length * gluiconfig.opStackShadeStep;
+            r.setColor(Math.min(1, col[0] + b), Math.min(1, col[1] + b), Math.min(1, col[2] + b), 1);
+            r.setShapeParam(b);
+            this.#glRectsStack.push(r);
+        }
+
+        for (let i = 0; i < this.#glRectsStack.length; i++) this.#glRectsStack[i].setSize(this.#glRectBg.w, this.#glRectBg.h);
+        this.#updateStackRectsPosition();
+    }
+
+    /**
+     * stack indicators are drawn behind all ops and cables
+     */
+    #updateStackRectsPosition()
+    {
+        for (let i = 0; i < this.#glRectsStack.length; i++)
+        {
+            const offset = (i + 1) * gluiconfig.opStackGap;
+            this.#glRectsStack[i].setPosition(offset, offset, gluiconfig.zPosStackRects + i * gluiconfig.zOpLayerStep - this.getPosZ());
+        }
     }
 
     /**
@@ -1006,10 +1066,13 @@ export default class GlOp extends Events
         if (this.#glRectArea) this.#glRectArea = this.#glRectArea.dispose();
         if (this.#glRectBg) this.#glRectBg = this.#glRectBg.dispose();
         if (this.#glRectSelectedBorder) this.#glRectSelectedBorder = this.#glRectSelectedBorder.dispose();
+        for (let i = 0; i < this.#glRectsStack.length; i++) this.#glRectsStack[i].dispose();
+        this.#glRectsStack = [];
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
         if (this.#titleExt) this.#titleExt = this.#titleExt.dispose();
+        if (this.#titleStacks) this.#titleStacks = this.#titleStacks.dispose();
         // if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea = this._resizableArea.dispose();
         if (this.#rectResize) this.#rectResize = this.#rectResize.dispose();
@@ -1229,10 +1292,18 @@ export default class GlOp extends Events
 
         this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
-        this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
+        const z = this.getPosZ();
+        this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, z);
+        if (this.#oldPosZ != z)
+        {
+            this.#oldPosZ = z;
+            this.#updateStackRectsPosition();
+            for (const i in this._links) if (this._links[i]) this._links[i].update();
+        }
 
         if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, this._resizableArea ? gluiconfig.zOpSlot * 0.75 : gluiconfig.zPosSelectedOpsBorder - this.getPosZ());
 
+        if (this.#titleStacks) this.#titleStacks.setPosition(gluiconfig.OpTitlePaddingLeftRight, 0, gluiconfig.zOpLayerTitle);
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zOpLayerTitle);
         if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zOpLayerTitle);
         this._updateCommentPosition();
@@ -1256,6 +1327,7 @@ export default class GlOp extends Events
     _getTitleWidth()
     {
         let w = 0;
+        if (this.#titleStacks) w += this.#titleStacks.width;
         if (this.#titleExt) w += this.#titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
         if (this._glTitle) w += this._glTitle.width;
 
@@ -1266,12 +1338,13 @@ export default class GlOp extends Events
 
     _getTitlePosition()
     {
+        if (this.#titleStacks) return gluiconfig.OpTitlePaddingLeftRight + this.#titleStacks.width;
         return gluiconfig.OpTitlePaddingLeftRight;
     }
 
     _getTitleExtPosition()
     {
-        return gluiconfig.OpTitlePaddingLeftRight + this._glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
+        return this._getTitlePosition() + this._glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
     }
 
     updateVisible()
@@ -1328,6 +1401,7 @@ export default class GlOp extends Events
         if (this._resizableArea) this._resizableArea.visible = visi;
         if (this.#rectResize) this.#rectResize.visible = visi;
         if (this.#titleExt) this.#titleExt.visible = visi;
+        if (this.#titleStacks) this.#titleStacks.visible = visi;
         if (this._glTitle) this._glTitle.visible = visi;
         if (this._glComment) this._glComment.visible = visi;
 
@@ -1535,6 +1609,8 @@ export default class GlOp extends Events
         if (this._disposed) return;
         if (!this.#wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
+
+        if (!this.opUiAttribs) return;
 
         if (
             (

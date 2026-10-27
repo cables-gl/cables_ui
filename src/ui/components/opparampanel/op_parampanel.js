@@ -153,6 +153,8 @@ class OpParampanel extends Events
         }
         this._portUiAttrListeners.length = 0;
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
+        if (this.onOpStackCopiesChange) this.onOpStackCopiesChange = op.off(this.onOpStackCopiesChange);
+        if (this.onOpStackedChange) this.onOpStackedChange = op.off(this.onOpStackedChange);
     }
 
     /**
@@ -183,6 +185,15 @@ class OpParampanel extends Events
         }
 
         this.onOpUiAttrChange = op.on(Op.EVENT_UIATTR_CHANGE, this._onUiAttrChangeOp.bind(this));
+        this.onOpStackedChange = op.on(Op.EVENT_STACKED_CHANGED, () =>
+        {
+            queueMicrotask(() => { if (this._currentOp == op) this.show(op); });
+        });
+        this.onOpStackCopiesChange = op.on(Op.EVENT_STACK_COPIES_CHANGED, (num) =>
+        {
+            const el = ele.byId("parampanel_stack_count");
+            if (el) el.innerHTML = op.isStacked ? String(num) : "";
+        });
 
         for (let i = 0; i < this._portsIn.length; i++)
         {
@@ -325,7 +336,17 @@ class OpParampanel extends Events
             perfLoopOut.finish();
         }
 
-        html += getHandleBarHtml("params_op_foot", { "commentColors": uiconfig.commentColors, "op": op, "showDevInfos": userSettings.get(UserSettings.PREF_DEVINFOS) });
+        const footData = { "commentColors": uiconfig.commentColors, "op": op, "showDevInfos": userSettings.get(UserSettings.PREF_DEVINFOS) };
+        if (footData.showDevInfos)
+        {
+            const glop = gui.patchView.patchRenderer.getGlOp(op);
+            if (glop)
+            {
+                footData.posZ = glop.getPosZ().toFixed(6);
+                footData.drawOrder = glop.drawOrder;
+            }
+        }
+        html += getHandleBarHtml("params_op_foot", footData);
 
         const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 
@@ -485,6 +506,7 @@ class OpParampanel extends Events
         this._startPortLineDragListeners();
 
         ele.clickable(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
+        ele.clickable(ele.byId("parampanel_stack_op"), () => { gui.patchView.setOpStacked(op, !op.isStacked); });
         ele.clickable(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);
         ele.clickable(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);
         ele.clickable(ele.byId("watchOpUiAttribs"), CABLES.CMD.DEBUG.watchOpUiAttribs);

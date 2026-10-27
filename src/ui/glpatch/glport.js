@@ -299,7 +299,9 @@ export default class GlPort
 
         this.#posX = this.#glop.getPortPos(this.#name, false);
 
-        this.#rect.setPosition(this.#posX, y, gluiconfig.zOpLayerPort);
+        let z = gluiconfig.zOpLayerPort;
+        if (this.#port.uiAttribs.hover) z = gluiconfig.zPosHoverPort - this.#glop.getPosZ();
+        this.#rect.setPosition(this.#posX, y, z);
         this.#rect.setSize(gluiconfig.portWidth, h);
         if (oldh != h) this._updateColor();
 

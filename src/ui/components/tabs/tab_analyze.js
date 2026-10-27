@@ -104,6 +104,16 @@ export default class AnalyzePatchTab extends Events
         report += patch.ops.length + " Ops total<br/>";
         report += Object.keys(opsCount).length + " unique ops<br/>";
 
+        let numStacked = 0;
+        let numStackCopies = 0;
+        for (let i = 0; i < patch.ops.length; i++)
+        {
+            if (!patch.ops[i].isStacked) continue;
+            numStacked++;
+            numStackCopies += patch.ops[i].getNumStacks() - 1;
+        }
+        if (numStacked > 0) report += numStacked + " stacked ops with " + numStackCopies + " hidden stack copies (" + (patch.ops.length + numStackCopies) + " op instances running)<br/>";
+
         const ops = patch.ops;
         const assets = {};
         let assetCount = 0;

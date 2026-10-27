@@ -33,19 +33,22 @@ class GlUiConfig
         this.zDepthBufferResolution = 2 / 65536;
         this.zOpLayerStep = this.zDepthBufferResolution * 1.5;
         this.zOpSlot = this.zOpLayerStep * 8;
-        this.zOpsMaxStackRank = Math.floor(this.zOpsBandDepth / this.zOpSlot);
-        this.zOpsStackHeadroom = Math.floor(this.zOpsMaxStackRank / 4);
+        this.zOpsMaxDrawRank = Math.floor(this.zOpsBandDepth / this.zOpSlot);
+        this.zOpsDrawHeadroom = Math.floor(this.zOpsMaxDrawRank / 4);
         this.zOpLayerHighlight = this.zOpLayerStep * 2;
         this.zOpLayerDecoration = -this.zOpLayerStep;
         this.zOpLayerPort = -this.zOpLayerStep * 2;
         this.zOpLayerTitle = -this.zOpLayerStep * 3;
         this.zOpLayerIndicator = -this.zOpLayerStep * 4;
         this.zPortDotOffset = -this.zOpLayerStep;
+        this.zOpLayerCable = this.zOpLayerStep;
 
         this.zPosCableButtonRect = -0.4;
         this.zPosCables = -0.4;
         this.zPosSelectedOpsBorder = 0.3;
+        this.zPosHoverPort = -0.995;
         this.zPosAreas = 0.35;
+        this.zPosStackRects = 0.32;
         this.zPosGreyOutRect = -0.1;
 
         this.zPosSubPatchAnimRect = 0.25;
@@ -53,6 +56,10 @@ class GlUiConfig
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;
         this.areaFlashDuration = 0.3;
+        this.opStackGap = 2;
+        this.opStackNumRects = 2;
+        this.opStackBrighten = 0.08;
+        this.opStackShadeStep = 0.03;
     }
 }
 
