@@ -70,6 +70,9 @@ export default class GlRectInstancer extends Events
     mouseDownCount = 0;
     hoverWhenButton = false;
 
+    /** @type {(...args: any[]) => any} */
+    isRectOccluded = null;
+
     /**
      * Description
      * @param {CglContext} cgl

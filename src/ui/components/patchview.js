@@ -1773,6 +1773,8 @@ export default class PatchView extends Events
 
         const ops = [];
         const opIds = [];
+        let subPatch = null;
+        for (const i in selectedOps) subPatch = selectedOps[i].getSubPatch();
 
         for (const i in selectedOps)
         {
@@ -1786,6 +1788,12 @@ export default class PatchView extends Events
             if (ops[i].storage && ops[i].storage.ref) delete ops[i].storage.ref;
             if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch2) delete ops[i].uiAttribs.blueprintSubpatch2;
             if (ops[i].uiAttribs && ops[i].uiAttribs.selected) delete ops[i].uiAttribs.selected;
+
+            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == subPatch)
+            {
+                if (ops[i].attribs) delete ops[i].attribs.area;
+                if (ops[i].uiAttribs.area) delete ops[i].uiAttribs.area.id;
+            }
 
             // remove links that are not fully copied...
 
@@ -1990,6 +1998,7 @@ export default class PatchView extends Events
 
             gui.corePatch().deSerialize(project);
             this.isPasting = false;
+            this.#updateAreaMembership(pastedIds);
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             this.currentOpPaste = null;
@@ -1999,6 +2008,22 @@ export default class PatchView extends Events
 
         this.setCurrentSubPatch(currentSubPatch);
         this.unselectOpsFromOtherSubpatches();
+    }
+
+    /**
+     * @param {string[]} opIds
+     */
+    #updateAreaMembership(opIds)
+    {
+        const glOps = [];
+        for (let i = 0; i < opIds.length; i++)
+        {
+            const op = this._p.getOpById(opIds[i]);
+            if (!op || op.getSubPatch() != this.getCurrentSubPatch()) continue;
+            const glop = this.patchRenderer.getGlOp(op);
+            if (glop) glOps.push(glop);
+        }
+        this.patchRenderer.updateOpsAreaMembership(glOps);
     }
 
     duplicateSelectedOps()
@@ -2063,6 +2088,7 @@ export default class PatchView extends Events
         this.addUndoCreatedOps("Duplicate ops", duplicatedIds);
 
         this._p.deSerialize(ser);
+        this.#updateAreaMembership(duplicatedIds);
 
         for (let i = 0; i < externalLinks.length; i++)
         {
@@ -2195,7 +2221,6 @@ export default class PatchView extends Events
     {
         const glop = this.patchRenderer.getGlOp(op);
         if (!glop || !op.uiAttribs.area) return;
-        if (collapsed && glop._resizableArea) glop._resizableArea.updateChildOps();
         if (!op.attribs.area) return;
 
         const ops = gui.corePatch().getOpsByArea(op.attribs.area);
@@ -2203,6 +2228,18 @@ export default class PatchView extends Events
             if (ops[i] != op) ops[i].setUiAttribs({ "hidden": collapsed });
 
         op.setUiAttribs({ "areaCollapsed": collapsed });
+    }
+
+    /**
+     * @param {UiOp} op
+     */
+    selectAreaChilds(op)
+    {
+        if (!op.uiAttribs.collapsable || !op.uiAttribs.area || !op.uiAttribs.area.id) return;
+
+        const ops = gui.corePatch().getOpsByArea(op.uiAttribs.area.id);
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i] != op) this.patchRenderer.selectOpId(ops[i].id);
     }
 
     /**

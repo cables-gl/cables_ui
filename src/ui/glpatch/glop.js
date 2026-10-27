@@ -332,10 +332,10 @@ export default class GlOp extends Events
         if (!this.#glRectBg) return;
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
-        const glOps = this.#glPatch.selectedGlOps;
+        const glOps = this.#getDragGlOps();
         const ids = Object.keys(glOps);
 
-        if (!glOps || ids.length == 0) return;
+        if (ids.length == 0) return;
         if (this.#glPatch.isDraggingPort()) return;
 
         if (!glOps[ids[0]].isPassiveDrag())
@@ -372,24 +372,49 @@ export default class GlOp extends Events
     bringToFront()
     {
         const subPatch = this.getSubPatch();
-        if (this.#stackSubPatch == subPatch && this.#stackRank == this.#glPatch.getOpStackTop(subPatch)) return;
-        this.#stackSubPatch = subPatch;
-        this.#stackOrder = this.#glPatch.nextOpStackOrder();
-        this.#stackRank = this.#glPatch.nextOpStackRank(subPatch);
-        this.updatePosition();
+        if (this.#stackSubPatch != subPatch || this.#stackRank != this.#glPatch.getOpStackTop(subPatch))
+        {
+            this.#stackSubPatch = subPatch;
+            this.#stackOrder = this.#glPatch.nextOpStackOrder();
+            this.#stackRank = this.#glPatch.nextOpStackRank(subPatch);
+            this.updatePosition();
+        }
+        if (this._resizableArea) this._resizableArea.bringChildrenToFront();
     }
 
     getPosZ()
     {
-        if (this.displayType == this.DISPLAY_UI_AREA) return gluiconfig.zPosAreas;
+        if (this.opUiAttribs.hasArea && !this.opUiAttribs.collapsable) return gluiconfig.zPosAreas;
         let z = gluiconfig.zPosOps;
-        if (!this.op.isLinked()) z = gluiconfig.zPosOpsUnlinked;
+        if ((this._resizableArea && this.opUiAttribs.collapsable) || this.#glPatch.isCollapsableAreaId(this.op.attribs.area)) z = gluiconfig.zPosOpsInAreas;
+        else if (!this.op.isLinked()) z = gluiconfig.zPosOpsUnlinked;
         return z - Math.min(this.#stackRank, gluiconfig.zOpsMaxStackRank) * gluiconfig.zOpSlot;
+    }
+
+    #getDragGlOps()
+    {
+        const glOps = {};
+        const selected = this.#glPatch.selectedGlOps;
+        for (const i in selected)
+        {
+            const area = selected[i].opUiAttribs.area;
+            if (selected[i]._resizableArea && selected[i].opUiAttribs.collapsable && area && area.id)
+            {
+                const childs = gui.corePatch().getOpsByArea(area.id);
+                for (let c = 0; c < childs.length; c++)
+                {
+                    const child = this.#glPatch.getGlOp(childs[c]);
+                    if (child && child != selected[i]) glOps[child.id] = child;
+                }
+            }
+            glOps[i] = selected[i];
+        }
+        return glOps;
     }
 
     _onBgRectDragEnd()
     {
-        const glOps = this.#glPatch.selectedGlOps;
+        const glOps = this.#getDragGlOps();
 
         const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
 
@@ -404,6 +429,7 @@ export default class GlOp extends Events
             const undoGroup = undo.startGroup();
 
             for (const i in glOps) glOps[i].endPassiveDrag();
+            this.#glPatch.updateOpsAreaMembership(this.#glPatch.selectedGlOps);
 
             const undof = (scope, _oldUiAttribs) =>
             {
@@ -457,8 +483,7 @@ export default class GlOp extends Events
 
         const perf = gui.uiProfiler.start("[glop] mouseDown");
 
-        // if (this.#op.objName == defaultOps.defaultOpNames.uiArea)
-        if (this.#op.uiAttribs.hasArea || this.#op.uiAttribs.scopeArea)
+        if ((this.#op.uiAttribs.hasArea && !this.#op.uiAttribs.collapsable) || this.#op.uiAttribs.scopeArea)
         {
             const padding = 0;
             if (this.opUiAttribs.translate)
@@ -1206,7 +1231,7 @@ export default class GlOp extends Events
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this.#glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, this._resizableArea ? gluiconfig.zOpSlot * 2 : gluiconfig.zPosSelectedOpsBorder - this.getPosZ());
+        if (this.#glRectSelectedBorder) this.#glRectSelectedBorder.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, this._resizableArea ? gluiconfig.zOpSlot * 0.75 : gluiconfig.zPosSelectedOpsBorder - this.getPosZ());
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zOpLayerTitle);
         if (this.#titleExt) this.#titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zOpLayerTitle);
@@ -1519,6 +1544,8 @@ export default class GlOp extends Events
         {
 
             this._resizableArea = new GlArea(this.#instancer, this);
+            this.updatePosition();
+            this._resizableArea.bringChildrenToFront();
             if (this.opUiAttribs.scopeArea)
             {
                 const startScope = this.op.getPortByName("areaScopeBegin");

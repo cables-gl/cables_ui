@@ -33,6 +33,7 @@ export default class GlPatchAPI
 
         this._patch.on(Patch.EVENT_OP_ADDED, this._onAddOp.bind(this));
         this._patch.on(Patch.EVENT_OP_DELETED, this._onDeleteOp.bind(this));
+        this._patch.on(Patch.EVENT_PATCHLOADEND, () => { this._glPatch.bringAreaChildsToFront(); });
 
         this._patch.on("onLink", this._onLink.bind(this));
         this._patch.on(Link.EVENT_UNLINK, this._onUnLink.bind(this));

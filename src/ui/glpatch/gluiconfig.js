@@ -27,7 +27,8 @@ class GlUiConfig
 
         this.zPosOps = -0.45;
         this.zPosOpsUnlinked = 0.24;
-        this.zOpsBandDepth = 0.54;
+        this.zOpsBandDepth = 0.27;
+        this.zPosOpsInAreas = this.zPosOps - this.zOpsBandDepth;
 
         this.zDepthBufferResolution = 2 / 65536;
         this.zOpLayerStep = this.zDepthBufferResolution * 1.5;
@@ -51,6 +52,7 @@ class GlUiConfig
 
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;
+        this.areaFlashDuration = 0.3;
     }
 }
 

@@ -10,6 +10,7 @@ import GlDragLine from "./gldragline.js";
 import GlSelectionArea from "./glselectionarea.js";
 import GlViewBox from "./glviewbox.js";
 import GlOp from "./glop.js";
+import GlArea from "./glarea.js";
 import MouseState from "./mousestate.js";
 import GlCursor from "./glcursor.js";
 import ShakeDetector from "./shakedetect.js";
@@ -142,6 +143,15 @@ export default class GlPatch extends Events
 
     /** @type {GlRectInstancer} */
     #rectInstancer = null;
+
+    /** @type {GlRectInstancer} */
+    #areaRectInstancer = null;
+
+    /** @type {GlArea[]} */
+    #hoverAreas = [];
+
+    /** @type {Object<string, GlArea>} */
+    collapsableAreas = {};
     #overlaySplines = null;
     #numSelOpsTimeout = null;
     #textWriter = null;
@@ -178,6 +188,8 @@ export default class GlPatch extends Events
         this.viewBox = new GlViewBox(cgl, this);
 
         this.#rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000, "hoverWhenButton": true });
+        this.#rectInstancer.isRectOccluded = (rect) => { return this.#isZBehindArea(rect.absZ); };
+        this.#areaRectInstancer = new GlRectInstancer(cgl, { "name": "arearects" });
         this.#lines = new GlSplineDrawer(cgl, "links");
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
         this.#rectInstancer.hoverWhenButton;
@@ -513,6 +525,99 @@ export default class GlPatch extends Events
 
     get rectDrawer() { return this.#rectInstancer; }
 
+    get areaRectDrawer() { return this.#areaRectInstancer; }
+
+    #getCollapsableAreas()
+    {
+        const areas = [];
+        for (const i in this._glOpz)
+        {
+            const glop = this._glOpz[i];
+            if (glop._resizableArea && glop.opUiAttribs.collapsable && glop.visible && glop.isInCurrentSubPatch()) areas.push(glop._resizableArea);
+        }
+        return areas;
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
+    #updateHoverAreas(x, y)
+    {
+        this.#hoverAreas = [];
+        const areas = this.#getCollapsableAreas();
+        for (let i = 0; i < areas.length; i++)
+            if (areas[i].isPointInside(x, y)) this.#hoverAreas.push(areas[i]);
+    }
+
+    /**
+     * @param {number} z
+     */
+    #isZBehindArea(z)
+    {
+        for (let i = 0; i < this.#hoverAreas.length; i++)
+            if (z > this.#hoverAreas[i].z) return true;
+        return false;
+    }
+
+    /**
+     * @param {GlOp[]} glOps
+     */
+    #getUnoccludedGlOps(glOps)
+    {
+        const result = [];
+        for (let i = 0; i < glOps.length; i++)
+            if (!this.#isZBehindArea(glOps[i].getPosZ())) result.push(glOps[i]);
+        return result;
+    }
+
+    /**
+     * @param {string} id
+     */
+    isCollapsableAreaId(id)
+    {
+        if (!id) return false;
+        return this.collapsableAreas.hasOwnProperty(id);
+    }
+
+    /**
+     * @param {Object<string, GlOp>} glOps
+     */
+    updateOpsAreaMembership(glOps)
+    {
+        const areas = this.#getCollapsableAreas();
+
+        for (const i in glOps)
+        {
+            const glop = glOps[i];
+            if (glop._resizableArea) continue;
+
+            let target = null;
+            for (let j = 0; j < areas.length; j++)
+                if (areas[j].overlapsGlOp(glop) && (!target || areas[j].glop.getPosZ() < target.glop.getPosZ())) target = areas[j];
+
+            const oldId = glop.op.attribs.area;
+            if (!target && oldId && !this.isCollapsableAreaId(oldId)) continue;
+            const newId = target ? target.id : undefined;
+            if (oldId == newId) continue;
+
+            if (newId) glop.op.attribs.area = newId;
+            else delete glop.op.attribs.area;
+            glop.updatePosition();
+            gui.savedState.setUnSaved("areaMembership", glop.op.getSubPatch());
+
+            if (target) target.flash();
+            for (let j = 0; j < areas.length; j++)
+                if (areas[j].id == oldId) areas[j].flash();
+        }
+    }
+
+    bringAreaChildsToFront()
+    {
+        for (const i in this._glOpz)
+            if (this._glOpz[i]._resizableArea) this._glOpz[i]._resizableArea.bringChildrenToFront();
+    }
+
     get selectedGlOps() { return this._selectedGlOps; }
 
     get subPatch() { return this._currentSubpatch; }
@@ -680,6 +785,7 @@ export default class GlPatch extends Events
         for (let i in this.#splineDrawers) this.#splineDrawers[i].setDebugRenderer(this._debugRenderStyle);
 
         this.#rectInstancer.setDebugRenderer(this._debugRenderStyle);
+        this.#areaRectInstancer.setDebugRenderer(this._debugRenderStyle);
         this._overLayRects.setDebugRenderer(this._debugRenderStyle);
 
         this.#textWriter.setDebugRenderer(this._debugRenderStyle);
@@ -816,6 +922,7 @@ export default class GlPatch extends Events
 
         this.emitEvent(GlPatch.EVENT_MOUSE_DOWN, e);
         this.#rectInstancer.interactive = true; // mouseup after a selection drag can return early and leave ops non-interactive, then op drags start a selection instead
+        this.#updateHoverAreas(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
         this.#rectInstancer.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY, 0, e); // refresh hover, it is stale while non-interactive and mouseDown only hits hovered rects
         this.#rectInstancer.mouseDown(e);
         this._canvasMouseDown = true;
@@ -1218,6 +1325,7 @@ export default class GlPatch extends Events
         }
 
         this.#rectInstancer.setSecondaryColor(gui.theme.colors_patch.background);
+        this.#areaRectInstancer.setSecondaryColor(gui.theme.colors_patch.background);
 
         this.updateSubPatchOpAnim();
         this.#updateOpMoveAnims();
@@ -1320,6 +1428,7 @@ export default class GlPatch extends Events
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
         this.#rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this.#cgl.pushDepthWrite(false);
+        this.#areaRectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this.#textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this.#cgl.popDepthWrite();
         this.#overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
@@ -1437,6 +1546,7 @@ export default class GlPatch extends Events
         let allowSelectionArea = !this.portDragLine.isActive;
         if (this.#selectionArea.active)allowSelectionArea = true;
 
+        this.#updateHoverAreas(x, y);
         this.#rectInstancer.mouseMove(x, y, this.mouseState.getButton(), e);
 
         if (this.#rectInstancer.isDragging()) return;
@@ -1449,7 +1559,7 @@ export default class GlPatch extends Events
         let preId = -1;
         if (this._hoverOps.length) preId = this._hoverOps[0].id;
 
-        this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
+        this._hoverOps = this.#getUnoccludedGlOps(this._getGlOpsInRect(x, y, x + 1, y + 1));
 
         if (this._hoverOps.length && this._hoverOps[0].id != preId) this._hoverOpLongStartTime = performance.now();
         if (!this._hoverOps.length) this._hoverOpLongStartTime = 0;
@@ -1468,7 +1578,7 @@ export default class GlPatch extends Events
 
         if (gui.longPressConnector.isActive())
         {
-            const ops = this._getGlOpsInRect(x, y, x + 1, y + 1);
+            const ops = this.#getUnoccludedGlOps(this._getGlOpsInRect(x, y, x + 1, y + 1));
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
 
@@ -1959,6 +2069,7 @@ export default class GlPatch extends Events
         this.#numGlOps = 0;
 
         if (this.#rectInstancer) this.#rectInstancer.dispose();
+        if (this.#areaRectInstancer) this.#areaRectInstancer.dispose();
         if (this.#lines) this.#lines.dispose();
     }
 

@@ -555,7 +555,7 @@ export default class GlRect extends Events
 
         if (this.#rectInstancer.hoverWhenButton || button == 0)
         {
-            const hovering = this.isPointInside(x, y);
+            const hovering = this.isPointInside(x, y) && !this.#rectInstancer.isRectOccluded?.(this);
 
             hoverChanged = this.#hovering != hovering;
             this.#hovering = hovering;
