@@ -1041,6 +1041,9 @@ export default class PatchView extends Events
                 const glop = this.patchRenderer.getGlOp(ops[j]);
                 if (glop) bb.applyPos(ops[j].uiAttribs.translate.x + glop.w, ops[j].uiAttribs.translate.y + glop.h, 0);
                 else bb.applyPos(ops[j].uiAttribs.translate.x + gluiconfig.opWidth, ops[j].uiAttribs.translate.y + gluiconfig.opHeight, 0);
+
+                const area = ops[j].uiAttribs.area;
+                if (area && !ops[j].uiAttribs.areaCollapsed) bb.applyPos(ops[j].uiAttribs.translate.x + area.w, ops[j].uiAttribs.translate.y + area.h, 0);
             }
         }
 

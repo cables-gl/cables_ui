@@ -101,7 +101,7 @@ void main()
     finalPosition.xy*=zoom;
     finalPosition.x+=scrollX;
     finalPosition.y+=scrollY;
-    finalPosition.z=spline.z/ZPOSDIV;
+    finalPosition.z=clamp(spline.z,-1.0,1.0);
     zz=spline.z;
 
     gl_PointSize=4.0;

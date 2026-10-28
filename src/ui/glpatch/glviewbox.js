@@ -534,6 +534,9 @@ export default class GlViewBox
                         ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
                         ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
                         0);
+
+                const area = ops[i].uiAttribs.area;
+                if (area && !ops[i].uiAttribs.areaCollapsed) bb.applyPos(ops[i].uiAttribs.translate.x + area.w, ops[i].uiAttribs.translate.y + area.h, 0);
             }
         }
 

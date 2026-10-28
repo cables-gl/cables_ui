@@ -6,7 +6,6 @@ import { UserSettings, userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlLineDrawerFrag from "./gllinedrawer_glsl.frag";
 import srcShaderGlLineDrawerVert from "./gllinedrawer_glsl.vert";
-import GlUiCanvas from "../glpatch/gluicanvas.js";
 
 /**
  * @typedef GlSplineObject
@@ -97,7 +96,6 @@ export class GlLineDrawer extends Events
         this.#shader = new Shader(cgl, "glLineDrawer " + name);
         this.#shader.setSource(srcShaderGlLineDrawerVert, srcShaderGlLineDrawerFrag);
         // this.#shader.setSource(Shader.getDefaultVertexShader(), Shader.getDefaultFragmentShader(1, 0, 0));
-        this.#shader.define("ZPOSDIV", GlUiCanvas.ZPOSDIV + ".0");
 
         this.#uniTime = new Uniform(this.#shader, "f", "time", 0);
         this.#uniZoom = new Uniform(this.#shader, "f", "zoom", 0);

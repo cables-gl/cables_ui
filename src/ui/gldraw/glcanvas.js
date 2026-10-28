@@ -5,8 +5,6 @@ import { gui } from "../gui.js";
 export default class GlCanvas
 {
 
-    static ZPOSDIV = 10000;
-
     _firstTime = true;
     _inited = false;
     _lastTime = 0;

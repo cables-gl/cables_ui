@@ -6,7 +6,6 @@ import { UserSettings, userSettings } from "../components/usersettings.js";
 import Gui, { gui } from "../gui.js";
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
-import GlUiCanvas from "../glpatch/gluicanvas.js";
 import GlPatch from "../glpatch/glpatch.js";
 
 /**
@@ -98,7 +97,6 @@ export class GlSplineDrawer extends Events
 
         this.#shader = new Shader(cgl, "glSplineDrawer " + name);
         this.#shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
-        this.#shader.define("ZPOSDIV", GlUiCanvas.ZPOSDIV + ".0");
 
         this.#uniTime = new Uniform(this.#shader, "f", "time", 0);
         this.#uniZoom = new Uniform(this.#shader, "f", "zoom", 0);

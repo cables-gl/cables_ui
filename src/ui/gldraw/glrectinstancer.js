@@ -6,7 +6,6 @@ import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 import { gui } from "../gui.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
-import GlUiCanvas from "../glpatch/gluicanvas.js";
 
 /**
  * @typedef {Object} GlRectInstancerOptions
@@ -35,7 +34,11 @@ export default class GlRectInstancer extends Events
     #bounds = null;
 
     /** @type {Array<GlRect>} */
-    #rects = [];
+    /** @type {Set<GlRect>} */
+    #rects = new Set();
+
+    /** @type {number[]} indices of disposed rects, reused by getIndex */
+    #freeIndices = [];
 
     /** @type {Array<Texture>} */
     #textures = [];
@@ -151,17 +154,16 @@ export default class GlRectInstancer extends Events
             const defaultMin = GlRectInstancer.DEFAULT_BIGNUM;
             const defaultMax = -GlRectInstancer.DEFAULT_BIGNUM;
             this._newBounds = { "minX": defaultMin, "maxX": defaultMax, "minY": defaultMin, "maxY": defaultMax, "minZ": defaultMin, "maxZ": defaultMax };
-            for (let i = 0; i < this.#rects.length; i++)
+            for (const rect of this.#rects)
             {
-                if (!this.#rects[i]) return;
-                if (!this.#rects[i].visible) continue;
-                if (this.#rects[i].x == this.#bounds.minX && this.#rects[i].y == this.#bounds.minY && this.#rects[i].w == this.#bounds.maxX - this.#bounds.minX && this.#rects[i].h == this.#bounds.maxY - this.#bounds.minY) continue;
+                if (!rect.visible) continue;
+                if (rect.x == this.#bounds.minX && rect.y == this.#bounds.minY && rect.w == this.#bounds.maxX - this.#bounds.minX && rect.h == this.#bounds.maxY - this.#bounds.minY) continue;
 
-                const x = this.#rects[i].x || 0;
-                const y = this.#rects[i].y || 0;
-                const z = this.#rects[i].z || 0;
-                const x2 = x + this.#rects[i].w;
-                const y2 = y + this.#rects[i].h;
+                const x = rect.x || 0;
+                const y = rect.y || 0;
+                const z = rect.z || 0;
+                const x2 = x + rect.w;
+                const y2 = y + rect.h;
 
                 this._newBounds.minX = Math.min(x, this._newBounds.minX);
                 this._newBounds.maxX = Math.max(x2, this._newBounds.maxX);
@@ -374,6 +376,13 @@ export default class GlRectInstancer extends Events
 
     getIndex()
     {
+        if (this.#freeIndices.length > 0)
+        {
+            const idx = this.#freeIndices.pop();
+            this.#resetIndex(idx);
+            return idx;
+        }
+
         this.#counter++;
         if (this.#counter > this.#num - 100)
         {
@@ -385,6 +394,35 @@ export default class GlRectInstancer extends Events
             this.#reUploadAttribs = true;
         }
         return this.#counter;
+    }
+
+    /**
+     * default values for a reused index, like clear()
+     * @param {number} idx
+     */
+    #resetIndex(idx)
+    {
+        this.setSize(idx, 0, 0);
+        this.setPosition(idx, 0, 0, 0);
+        this.setColor(idx, 1, 1, 1, 1);
+        this.setShape(idx, 0);
+        this.setBorder(idx, 0);
+        this.setSelected(idx, 0);
+        this.setShapeParam(idx, 0);
+        this.setTextureIdx(idx, -1);
+        this.setTexRect(idx, 0, 0, 1, 1);
+    }
+
+    /**
+     * called by GlRect.dispose, its index can be reused afterwards
+     * @param {GlRect} rect
+     */
+    releaseRect(rect)
+    {
+        this.#rects.delete(rect);
+        const i = this.#draggingRects.indexOf(rect);
+        if (i > -1) this.#draggingRects.splice(i, 1);
+        if (rect.idx > 0) this.#freeIndices.push(rect.idx);
     }
 
     /**
@@ -404,8 +442,9 @@ export default class GlRectInstancer extends Events
      */
     setPosition(idx, x, y, z)
     {
+        if (!idx) return;
         const buffIdx = idx * 3;
-        if (this._float32Diff(this._attrBuffPos[buffIdx + 0], x) || this._float32Diff(this._attrBuffPos[buffIdx + 1], y) || this._attrBuffPos[buffIdx + 2] != Math.fround(z / GlUiCanvas.ZPOSDIV))
+        if (this._float32Diff(this._attrBuffPos[buffIdx + 0], x) || this._float32Diff(this._attrBuffPos[buffIdx + 1], y) || this._attrBuffPos[buffIdx + 2] != Math.fround(z))
         {
             // this._needsRebuild = true;
             // this._needsRebuildReason = "pos change";
@@ -421,7 +460,7 @@ export default class GlRectInstancer extends Events
 
         this._attrBuffPos[buffIdx + 0] = x;
         this._attrBuffPos[buffIdx + 1] = y;
-        this._attrBuffPos[buffIdx + 2] = z / GlUiCanvas.ZPOSDIV;
+        this._attrBuffPos[buffIdx + 2] = z;
 
         if (
             this._attrBuffPos[buffIdx + 0] >= this.#bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this.#bounds.minX ||
@@ -455,6 +494,7 @@ export default class GlRectInstancer extends Events
      */
     setSize(idx, x, y)
     {
+        if (!idx) return;
         if (this._float32Diff(this._attrBuffSizes[idx * 2 + 0], x) || this._float32Diff(this._attrBuffSizes[idx * 2 + 1], y))
         {
             // this._needsRebuild = true;
@@ -475,6 +515,7 @@ export default class GlRectInstancer extends Events
      */
     setTextureIdx(idx, x)
     {
+        if (!idx) return;
         if (this._float32Diff(this._attrBuffTextures[idx], x))
         {
             // this._needsRebuild = true;
@@ -497,6 +538,7 @@ export default class GlRectInstancer extends Events
      */
     setTexRect(idx, x, y, w, h)
     {
+        if (!idx) return;
         if (
             this._float32Diff(this._attrBuffTexRect[idx * 4 + 0], x) ||
             this._float32Diff(this._attrBuffTexRect[idx * 4 + 1], y) ||
@@ -535,6 +577,7 @@ export default class GlRectInstancer extends Events
      */
     setColor(idx, r, g, b, a)
     {
+        if (!idx) return;
         if (
             this._float32Diff(this._attrBuffCol[idx * 4 + 0], r) ||
             this._float32Diff(this._attrBuffCol[idx * 4 + 1], g) ||
@@ -562,6 +605,7 @@ export default class GlRectInstancer extends Events
      */
     setShape(idx, o)
     {
+        if (!idx) return;
         this._attrBuffDeco[idx * 4 + 0] = o;
         if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
         else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
@@ -573,6 +617,7 @@ export default class GlRectInstancer extends Events
      */
     setBorder(idx, o)
     {
+        if (!idx) return;
         this._attrBuffDeco[idx * 4 + 1] = o;
         if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
         else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
@@ -585,6 +630,7 @@ export default class GlRectInstancer extends Events
      */
     setShapeParam(idx, o)
     {
+        if (!idx) return;
         this._attrBuffDeco[idx * 4 + 3] = o;
         if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
         else this.#mesh.setAttributeRange(this.#meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
@@ -596,6 +642,7 @@ export default class GlRectInstancer extends Events
      */
     setSelected(idx, o)
     {
+        if (!idx) return;
         this._attrBuffDeco[idx * 4 + 2] = o;
 
         if (this.doBulkUploads) this._setAttrRange(GlRectInstancer.ATTR_DECO, idx * 4, idx * 4 + 4);
@@ -650,7 +697,7 @@ export default class GlRectInstancer extends Events
         // console.log("new rect", this.#name, options?.name);
         options = options || { "name": "no name", "interactive": false };
         const r = new GlRect(this, options);
-        this.#rects.push(r);
+        this.#rects.add(r);
 
         if (options[GlRect.OPTION_DRAGGABLE])
         {
@@ -685,9 +732,8 @@ export default class GlRectInstancer extends Events
             return;
         }
 
-        for (let i = 0; i < this.#rects.length; i++)
-            if (!this.#rects[i].parent)
-                this.#rects[i].mouseMove(x, y, button, event);
+        for (const rect of this.#rects)
+            if (!rect.parent) rect.mouseMove(x, y, button, event);
 
         perf.finish();
     }
@@ -703,9 +749,8 @@ export default class GlRectInstancer extends Events
         this.mouseDownCount++;
 
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseDown");
-        for (let i = 0; i < this.#rects.length; i++)
-            if (!this.#rects[i].parent)
-                this.#rects[i].mouseDown(e, x, y);
+        for (const rect of this.#rects)
+            if (!rect.parent) rect.mouseDown(e, x, y);
 
         perf.finish();
     }
@@ -720,7 +765,7 @@ export default class GlRectInstancer extends Events
         const perf = gui.uiProfiler.start("[glrectinstancer] mouseup");
 
         for (let i = 0; i < this.#draggingRects.length; i++) this.#draggingRects[i].mouseDragEnd(e);
-        for (let i = 0; i < this.#rects.length; i++) this.#rects[i].mouseUp(e);
+        for (const rect of this.#rects) rect.mouseUp(e);
         perf.finish();
 
         this.#draggingRects = [];
@@ -731,17 +776,6 @@ export default class GlRectInstancer extends Events
      */
     pointerLeave(e)
     {
-        for (let i = 0; i < this.#rects.length; i++)
-            this.#rects[i].mouseMove(-99999, -99999, 0, e);
-    }
-
-    /**
-     * @param {string} idx
-     */
-    removeRect(idx)
-    {
-        for (let i = 0; i < this.#rects.length; i++)
-            if (this.#rects[i] && this.#rects[i].idx == idx)
-                this.#rects.splice(i, 1);
+        for (const rect of this.#rects) rect.mouseMove(-99999, -99999, 0, e);
     }
 }

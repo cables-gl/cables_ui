@@ -642,10 +642,11 @@ export default class GlRect extends Events
         this.visible = false;
         if (this.#parent) this.#parent.removeChild(this);
         this.disposed = true;
-        // this.#rectInstancer.removeRect(this.idx);
         this.setShape(0);
         this.setSize(0, 0);
         this.removeAllEventListeners();
+        this.#rectInstancer.releaseRect(this);
+        this.#attrIndex = 0;
         return null;
     }
 }
