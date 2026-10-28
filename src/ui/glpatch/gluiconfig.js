@@ -55,10 +55,6 @@ class GlUiConfig
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;
         this.areaFlashDuration = 0.3;
-        this.opStackGap = 2;
-        this.opStackNumRects = 2;
-        this.opStackBrighten = 0.08;
-        this.opStackShadeStep = 0.03;
     }
 }
 

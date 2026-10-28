@@ -997,16 +997,20 @@ export default class GlOp extends Events
 
     #updateStackRects()
     {
-        const numRects = this.#op.isStacked ? gluiconfig.opStackNumRects : 0;
+        const numRects = this.#op.isStacked ? 2 : 0;
 
         while (this.#glRectsStack.length > numRects) this.#glRectsStack.pop().dispose();
         while (this.#glRectsStack.length < numRects)
         {
+            const opStackGap = 2;
+            const opStackBrighten = 0.2;
+            const opStackShadeStep = 0.03;
+
             const r = this.#instancer.createRect({ "name": "opStack", "parent": this.#glRectBg, "interactive": false });
             r.setShape(GlRect.SHAPE_STACK);
             const col = gui.theme.colors_patch.opBgRect;
-            const b = gluiconfig.opStackBrighten + this.#glRectsStack.length * gluiconfig.opStackShadeStep;
-            r.setColor(Math.min(1, col[0] + b), Math.min(1, col[1] + b), Math.min(1, col[2] + b), 1);
+            const b = opStackBrighten + this.#glRectsStack.length * opStackShadeStep;
+            r.setColor(0.5, 0.5, 0.5, 1);
             r.setShapeParam(b);
             this.#glRectsStack.push(r);
         }
@@ -1022,7 +1026,7 @@ export default class GlOp extends Events
     {
         for (let i = 0; i < this.#glRectsStack.length; i++)
         {
-            const offset = (i + 1) * gluiconfig.opStackGap;
+            const offset = (i + 1) * 2;
             this.#glRectsStack[i].setPosition(offset, offset, gluiconfig.zPosStackRects + i * gluiconfig.zOpLayerStep - this.getPosZ());
         }
     }

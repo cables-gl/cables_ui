@@ -233,10 +233,10 @@ float samp(in vec2 uv, float w) {
     {
         if(abs(uv.x-0.5)*2.0>1.0-uv.y)discard;
     }
-    else if (shape==16.0) // stack lines bottom and right, edge on the outside and at the left/top ends in the color minus decoration.a
+    else if (shape==16.0) // stack lines
     {
         float outlinefrag=zoom*2.0;
-        float edgefrag=zoom*0.5;
+        float edgefrag=zoom*0.9;
         float dist=min(posSize.z,posSize.w);
         if(dist>=outlinefrag)discard;
 
