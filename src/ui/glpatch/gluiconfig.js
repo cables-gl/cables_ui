@@ -43,7 +43,6 @@ class GlUiConfig
         this.zPortDotOffset = -this.zOpLayerStep;
         this.zOpLayerCable = this.zOpLayerStep;
 
-        this.zPosCableButtonRect = -0.4;
         this.zPosCables = -0.4;
         this.zPosSelectedOpsBorder = 0.3;
         this.zPosHoverPort = -0.995;

@@ -354,6 +354,7 @@ export default class GlCable
         const z = this.#getZ();
         if (this._oldx != this.#x || this._oldy != this.#y || this._oldx2 != this.#x2 || this._oldy2 != this.#y2 || this._oldz != z)
         {
+            if (this._oldz != z) this.#setPositionButton();
             this._oldz = z;
             let posX = this._oldx = this.#x;
             let posX2 = this._oldy = this.#y;
@@ -475,7 +476,7 @@ export default class GlCable
         this.#buttonRect.setPosition(
             this.#x + ((this.#x2 - this.#x) / 2) - this.#buttonSize / 2,
             (this.#y + this.#buttonSize) + (((this.#y2 - this.#buttonSize) - (this.#y + this.#buttonSize)) / 2) - this.#buttonSize / 2,
-            gluiconfig.zPosCableButtonRect);
+            this.#getZ() - gluiconfig.zOpLayerStep);
     }
 
     /**
@@ -666,7 +667,7 @@ export default class GlCable
             }
 
             this.updateColor();
-            this.#buttonRect.setPosition(closestX - this.#buttonSize / 2, closestY - this.#buttonSize / 2, gluiconfig.zPosCableButtonRect);
+            this.#buttonRect.setPosition(closestX - this.#buttonSize / 2, closestY - this.#buttonSize / 2, this.#getZ() - gluiconfig.zOpLayerStep);
 
             this.#glPatch._cablesHoverButtonRect = this.#buttonRect;
 

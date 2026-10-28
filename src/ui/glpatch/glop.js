@@ -816,7 +816,8 @@ export default class GlOp extends Events
         }
 
         perf.finish();
-        this.#updateStackTitle();
+        if (this.#op.isStacked) this.#updateStackTitle(false);
+        this.updateSize();
     }
 
     _updateCommentPosition()
@@ -969,9 +970,14 @@ export default class GlOp extends Events
         this._updateCommentPosition();
     }
 
-    #updateStackTitle()
+    /**
+     * @param {boolean} [reposition] false while setting the title, the op is positioned later
+     */
+    #updateStackTitle(reposition = true)
     {
         if (!this.#glRectBg || !this.#textWriter) return;
+        const oldText = this.#titleStacks ? this.#titleStacks.text : null;
+
         if (this.#op.isStacked && !this.#titleStacks)
         {
             this.#titleStacks = new GlText(this.#textWriter, " ");
@@ -981,6 +987,9 @@ export default class GlOp extends Events
         }
         if (!this.#op.isStacked && this.#titleStacks) this.#titleStacks = this.#titleStacks.dispose();
         if (this.#titleStacks) this.#titleStacks.text = this.#op.getNumStacks() + "x ";
+
+        const newText = this.#titleStacks ? this.#titleStacks.text : null;
+        if (oldText === newText || !reposition) return;
 
         this.updateSize();
         this.updatePosition();

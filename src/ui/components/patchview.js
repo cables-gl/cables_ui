@@ -2024,6 +2024,9 @@ export default class PatchView extends Events
             if (glop) glOps.push(glop);
         }
         this.patchRenderer.updateOpsAreaMembership(glOps);
+
+        for (let i = 0; i < glOps.length; i++)
+            if (glOps[i].op.isStacked) glOps[i].op.updateStackCopies();
     }
 
     duplicateSelectedOps()
