@@ -2238,7 +2238,7 @@ export default class PatchView extends Events
      */
     canStackOp(op)
     {
-        if (op.uiAttribs.allowStacking || op.uiAttribs.scopeArea || op.hasAnimatedPorts()) return false;
+        if (op.uiAttribs.allowStacking || op.uiAttribs.scopeArea || op.hasAnimatedPorts() || !op.canHaveStackCopies()) return false;
 
         const glop = this.patchRenderer.getGlOp(op);
         if (!glop) return false;
