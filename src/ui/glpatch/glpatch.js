@@ -101,6 +101,7 @@ export default class GlPatch extends Events
     /** @type {GlPatchAPI} */
     _patchAPI = null;
     debugData = null;
+    targetFps = 0;
 
     greyOut = false;
     _greyOutRect = null;

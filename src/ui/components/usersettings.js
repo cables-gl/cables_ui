@@ -68,6 +68,7 @@ export class UserSettings extends Events
     static PREF_WRAPMODE_ACE = "wrapmode_ace";
     static PREF_NO_FADEOUT_CABLES = "noFadeOutCables";
     static PREF_REDUCE_MOTION = "reduceMotion";
+    static PREF_NO_REDUCE_FPS = "noReduceFps";
     static PREF_FORMATCODE = "formatcode";
     static PREF_NOTLOCALIZE_NUMBERFORMAT = "notlocalizeNumberformat";
     static PREF_OPENLASTPROJECT = "openlastproject";

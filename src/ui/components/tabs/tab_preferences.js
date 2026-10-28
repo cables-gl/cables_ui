@@ -108,6 +108,7 @@ export default class Preferences
         this.setSwitchValue("glpatch_cursor", userSettings.get(UserSettings.PREF_GLPATCH_CURSOR));
         this.setSwitchValue("noFadeOutCables", userSettings.get(UserSettings.PREF_NO_FADEOUT_CABLES));
         this.setSwitchValue("reduceMotion", userSettings.get(UserSettings.PREF_REDUCE_MOTION));
+        this.setSwitchValue("noReduceFps", userSettings.get(UserSettings.PREF_NO_REDUCE_FPS));
 
         this.setSwitchValue("texteditor", userSettings.get(UserSettings.PREF_TEXTEDITOR) || "");
 

@@ -265,6 +265,8 @@ export const GuiText =
         "subtitle_fadeOutCables": "Fade out long cables",
         "title_reduceMotion": "UI Animations",
         "subtitle_reduceMotion": "Animate moving ops, scrolling and zooming in the patch field",
+        "title_reduceFps": "UI Eco Mode",
+        "subtitle_reduceFps": "Lower the frame rate of patch field, vizlayer and timeline when inactive: saves energy, less fan activity and leaves more performance for the canvas/renderer",
 
         "title_patchLineWidth": "Cable Width",
         "title_fontsize": "Text Size",

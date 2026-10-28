@@ -1,6 +1,7 @@
 import { Patch, utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { gui } from "../gui.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
 
 export default class GlCanvas
 {
@@ -58,6 +59,11 @@ export default class GlCanvas
 
         this.cgl.pixelDensity = window.devicePixelRatio || 1;
         this.cgl.updateSize();
+
+        userSettings.on(UserSettings.EVENT_CHANGE, (which) =>
+        {
+            if (which == UserSettings.PREF_NO_REDUCE_FPS) this.activityHigh();
+        });
 
         gui.on("uiIdleStart", () =>
         {
@@ -156,7 +162,7 @@ export default class GlCanvas
 
     activityIdle()
     {
-        this.targetFps = 25;
+        this.targetFps = userSettings.get(UserSettings.PREF_NO_REDUCE_FPS) ? 0 : 25;
     }
 
     activityHigh()
@@ -168,7 +174,7 @@ export default class GlCanvas
 
     activityMedium()
     {
-        this.targetFps = 50;
+        this.targetFps = userSettings.get(UserSettings.PREF_NO_REDUCE_FPS) ? 0 : 50;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }
