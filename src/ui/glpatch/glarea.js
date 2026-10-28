@@ -33,6 +33,7 @@ export default class GlArea
     #animH = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
     #animating = false;
     #bringingToFront = false;
+    #updatingChilds = false;
     #animFlash = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
     #flashing = false;
     #brightness = 0.35;
@@ -305,6 +306,8 @@ export default class GlArea
 
     updateChildOps()
     {
+        if (this.#updatingChilds) return;
+        this.#updatingChilds = true;
 
         const childs = this.#glop.glPatch._getGlOpsInRect(this.#glop.x, this.#glop.y, this.#glop.x + this._w, this.#glop.y + this._h);
         const opChilds = [];
@@ -336,18 +339,21 @@ export default class GlArea
         }
         if (changed)
         {
-            for (let i = 0; i < childs.length; i++) childs[i].updatePosition();
-            for (let i = 0; i < currentChilds.length; i++)
+            if (this.#glop.op.uiAttribs.collapsable)
             {
-                const glop = this.#glop.glPatch.getGlOp(currentChilds[i]);
-                if (glop) glop.updatePosition();
+                for (let i = 0; i < childs.length; i++) childs[i].updatePosition();
+                for (let i = 0; i < currentChilds.length; i++)
+                {
+                    const glop = this.#glop.glPatch.getGlOp(currentChilds[i]);
+                    if (glop) glop.updatePosition();
+                }
+                this.bringChildrenToFront();
             }
-            this.bringChildrenToFront();
             this.#glop?.op.emitEvent("areaChildrenChange", childs);
             this.#glOpScopeEnd?.op.emitEvent("areaChildrenChange", childs);
             this.flash();
         }
-
+        this.#updatingChilds = false;
     }
 
     /**
