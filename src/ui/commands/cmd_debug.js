@@ -19,6 +19,7 @@ import Gui, { gui } from "../gui.js";
 import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";
 import TabThreeDebug from "../components/tabs/tab_threedebug.js";
 import TestsTab from "../components/tabs/tab_tests.js";
+import OpExampleTestsTab from "../components/tabs/tab_opexampletests.js";
 
 const log = new Logger("CMD DEBUG");
 export { CmdDebug };
@@ -54,6 +55,12 @@ class CmdDebug
                 "cmd": "Run tests",
                 "category": "debug",
                 "func": CmdDebug.runTests,
+                "icon": "check"
+            },
+            {
+                "cmd": "Run op example tests",
+                "category": "debug",
+                "func": CmdDebug.runOpExampleTests,
                 "icon": "check"
             },
             {
@@ -290,6 +297,12 @@ class CmdDebug
     static runTests()
     {
         new TestsTab(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
+    static runOpExampleTests()
+    {
+        new OpExampleTestsTab(gui.mainTabs);
         gui.maintabPanel.show(true);
     }
 

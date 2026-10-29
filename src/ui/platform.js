@@ -28,6 +28,7 @@ import { GuiText } from "./text.js";
  * @property {Boolean} [isDevEnv]
  * @property {Object} [user]
  * @property {String} [communityUrl] used in electron, url to community cables.gl instance
+ * @property {String} [communitySandboxUrl] used in electron, sandbox url of the community instance, serves its assets
  * @property {Object} [paths] used in electron, local filesystem paths
  * @property {String} [currentPatchDir] used in electron, directory of currently opened patch
  * @property {String} [description]
@@ -261,6 +262,11 @@ export class Platform extends Events
     getSandboxUrl()
     {
         return this._cfg.urlSandbox || "";
+    }
+
+    getCommunitySandboxUrl()
+    {
+        return this.getSandboxUrl();
     }
 
     getUrlOpsCode()

@@ -72,6 +72,11 @@ export default class PlatformElectron extends Platform
         return this._cfg.communityUrl || "https://cables.gl";
     }
 
+    getCommunitySandboxUrl()
+    {
+        return this._cfg.communitySandboxUrl || "https://sandbox.cables.gl";
+    }
+
     getCablesStaticUrl()
     {
         return "";
