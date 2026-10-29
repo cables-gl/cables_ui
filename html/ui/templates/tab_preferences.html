@@ -230,6 +230,7 @@
 
     </div>
 
+    {{#unless frontendOptions.isElectron}}
     <div class="row">
         <div class="cute-5-phone prefLeft">
             <span class="prefswitch switch switch-text switch-left" data-setting="noReduceFps" data-value="false">On</span>
@@ -240,6 +241,7 @@
             {{texts.subtitle_reduceFps}}
         </div>
     </div>
+    {{/unless}}
 
 
     <br/><hr/><br/>

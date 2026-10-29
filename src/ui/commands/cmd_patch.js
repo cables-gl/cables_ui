@@ -174,6 +174,20 @@ class CmdPatch
                 "frontendOption": "hasCommunity"
             },
             {
+                "cmd": "Edit patch on cables.gl",
+                "category": "patch",
+                "func": CmdPatch.patchEditLive,
+                "icon": "link",
+                "frontendOption": "hasCommunity"
+            },
+            {
+                "cmd": "Edit patch on dev.cables.gl",
+                "category": "patch",
+                "func": CmdPatch.patchEditDev,
+                "icon": "link",
+                "frontendOption": "hasCommunity"
+            },
+            {
                 "cmd": "Pause patch execution",
                 "keybindable": true,
                 "category": "patch",
@@ -722,54 +736,54 @@ class CmdPatch
                                                     const loadedSubPatchId = newOps[0].patchId.get();
                                                     const onSubPatchLoaded = () =>
                                                     {
-                                                    newOp = newOps[0];
+                                                        newOp = newOps[0];
 
-                                                    const subPatchId = newOp.patchId.get();
+                                                        const subPatchId = newOp.patchId.get();
 
-                                                    // relink inside ports....
-                                                    const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
-                                                    for (let j = 0; j < oldLinks.length; j++)
-                                                    {
-                                                    // outer linking
-                                                        const oldLink = oldLinks[j];
-
-                                                        if (oldLink.pJson)
+                                                        // relink inside ports....
+                                                        const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
+                                                        for (let j = 0; j < oldLinks.length; j++)
                                                         {
-                                                            newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+                                                            // outer linking
+                                                            const oldLink = oldLinks[j];
 
-                                                            for (let i = 0; i < subOps.length; i++)
+                                                            if (oldLink.pJson)
                                                             {
-                                                                const op = subOps[i];
-                                                                if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
+                                                                newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+
+                                                                for (let i = 0; i < subOps.length; i++)
                                                                 {
-                                                                    let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                                    let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
-
-                                                                    if (!l)
+                                                                    const op = subOps[i];
+                                                                    if (op.uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
                                                                     {
-                                                                        let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                                        l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
-                                                                    }
+                                                                        let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
+                                                                        let l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, op, oldLink.origPortName);
 
-                                                                    if (!l)log.log("could not recreate oldlink", oldLink);
+                                                                        if (!l)
+                                                                        {
+                                                                            let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
+                                                                            l = newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, op, oldLink.origPortName);
+                                                                        }
+
+                                                                        if (!l)log.log("could not recreate oldlink", oldLink);
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
 
-                                                    for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
+                                                        for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
 
-                                                    if (selectedOpIds.length == 0) newOp.setPos(0, 0);
-                                                    else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
+                                                        if (selectedOpIds.length == 0) newOp.setPos(0, 0);
+                                                        else newOp.setPos(origOpsBounds.minX, origOpsBounds.minY);
 
-                                                    gui.patchView.avoidSamePosition(newOp);
-                                                    gui.patchView.testCollision(newOp);
-                                                    gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
+                                                        gui.patchView.avoidSamePosition(newOp);
+                                                        gui.patchView.testCollision(newOp);
+                                                        gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
 
-                                                    subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId });
-                                                    gui.patchView.patchRenderer.focusOpAnim(newOp.id);
-                                                    gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
-                                                    gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
+                                                        subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId });
+                                                        gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+                                                        gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                                        gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
                                                     };
 
                                                     if (gui.corePatch().getSubPatchOps(loadedSubPatchId, false).length > 0) onSubPatchLoaded();
@@ -951,6 +965,16 @@ class CmdPatch
     static patchWebsite()
     {
         window.open(platform.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
+    }
+
+    static patchEditLive()
+    {
+        window.open("https://cables.gl/edit/" + gui.project().shortId || gui.project()._id);
+    }
+
+    static patchEditDev()
+    {
+        window.open("https://dev.cables.gl/edit/" + gui.project().shortId || gui.project()._id);
     }
 
     static renameVariable(oldname)

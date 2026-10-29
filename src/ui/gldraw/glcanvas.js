@@ -2,6 +2,7 @@ import { Patch, utils } from "cables";
 import { CglContext } from "cables-corelibs/cgl/cgl_state.js";
 import { gui } from "../gui.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
+import { platform } from "../platform.js";
 
 export default class GlCanvas
 {
@@ -160,9 +161,15 @@ export default class GlCanvas
         // this.patch.resume();
     }
 
+    #ecoMode()
+    {
+        if (platform.isElectron()) return false;
+        return !userSettings.get(UserSettings.PREF_NO_REDUCE_FPS);
+    }
+
     activityIdle()
     {
-        this.targetFps = userSettings.get(UserSettings.PREF_NO_REDUCE_FPS) ? 0 : 25;
+        this.targetFps = this.#ecoMode() ? 25 : 0;
     }
 
     activityHigh()
@@ -174,7 +181,7 @@ export default class GlCanvas
 
     activityMedium()
     {
-        this.targetFps = userSettings.get(UserSettings.PREF_NO_REDUCE_FPS) ? 0 : 50;
+        this.targetFps = this.#ecoMode() ? 50 : 0;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }

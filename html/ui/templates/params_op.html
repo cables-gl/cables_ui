@@ -123,18 +123,18 @@
     {{#if canStack}}
         <tr>
             <td class="disp_bool"></td>
-            <td class="port"><span class="tt" data-tt="run a separate copy of this op for every loop iteration">
-                Stacked:
-                <span id="parampanel_stack_count">{{#if isStacked}}{{numStackCopies}}x{{/if}}</span>
-            </span>
-
+            <td class="port">
+                <span style="vertical-align:top" class="icon icon-layers"></span>
+                <span class="tt" data-tt="run a separate copy of this op for every loop iteration">
+                    Loop stack op:
+                </span>
             </td>
             <td></td>
             <td>
                 <span id="parampanel_stack_op" class="checkbox-container {{#if isStacked}}checkbox-active{{else}}checkbox-inactive{{/if}}">
                     <span style="height:20px;width:20px;" class="ccheckbox icon icon-check"></span>
-
                 </span>
+                <span id="parampanel_stack_count">&nbsp;{{#if isStacked}}{{numStackCopies}}x{{/if}}</span>
             </td>
         </tr>
     {{/if}}

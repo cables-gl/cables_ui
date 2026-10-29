@@ -1776,9 +1776,6 @@ export default class PatchView extends Events
 
         const ops = [];
         const opIds = [];
-        let subPatch = null;
-        for (const i in selectedOps) subPatch = selectedOps[i].getSubPatch();
-
         for (const i in selectedOps)
         {
             if (selectedOps[i].storage && selectedOps[i].storage.blueprint) delete selectedOps[i].storage.blueprint;
@@ -1791,12 +1788,6 @@ export default class PatchView extends Events
             if (ops[i].storage && ops[i].storage.ref) delete ops[i].storage.ref;
             if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch2) delete ops[i].uiAttribs.blueprintSubpatch2;
             if (ops[i].uiAttribs && ops[i].uiAttribs.selected) delete ops[i].uiAttribs.selected;
-
-            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == subPatch)
-            {
-                if (ops[i].attribs) delete ops[i].attribs.area;
-                if (ops[i].uiAttribs.area) delete ops[i].uiAttribs.area.id;
-            }
 
             // remove links that are not fully copied...
 
@@ -1952,6 +1943,7 @@ export default class PatchView extends Events
         {
             // change ids
             project = Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
+            this.#replaceAreaIds(project.ops);
             for (const i in project.ops)
             {
                 project.ops[i].uiAttribs.pasted = true;
@@ -2014,6 +2006,27 @@ export default class PatchView extends Events
     }
 
     /**
+     * new area ids for pasted area ops, pasted ops keep their membership if their area op was pasted too
+     * @param {Object[]} ops serialized ops
+     */
+    #replaceAreaIds(ops)
+    {
+        const newIds = {};
+        for (let i = 0; i < ops.length; i++)
+        {
+            const area = ops[i].uiAttribs && ops[i].uiAttribs.area;
+            if (area && area.id) area.id = newIds[area.id] = utils.shortId();
+        }
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (!ops[i].attribs || !ops[i].attribs.area) continue;
+            if (newIds[ops[i].attribs.area]) ops[i].attribs.area = newIds[ops[i].attribs.area];
+            else delete ops[i].attribs.area;
+        }
+    }
+
+    /**
      * @param {string[]} opIds
      */
     #updateAreaMembership(opIds)
@@ -2067,6 +2080,7 @@ export default class PatchView extends Events
         }
 
         Patch.replaceOpIds(ser, { "parentSubPatchId": this.getCurrentSubPatch() });
+        this.#replaceAreaIds(ser.ops);
 
         const newIds = {};
         for (let i = 0; i < ser.ops.length; i++)

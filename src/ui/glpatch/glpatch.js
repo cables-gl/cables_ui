@@ -128,11 +128,11 @@ export default class GlPatch extends Events
     _showingOpCursor = false;
     _fpsStartTime = 0;
 
-    cacheOIRxa = 0;
-    cacheOIRya = 0;
-    cacheOIRxb = 0;
-    cacheOIRyb = 0;
-    cacheOIRops = null;
+    cacheOpsInRectX1 = 0;
+    cacheOpsInRectY1 = 0;
+    cacheOpsInRectX2 = 0;
+    cacheOpsInRectY2 = 0;
+    cacheOpsInRectOps = null;
 
     _subpatchoprect = null;
     suggestionTeaser = null;
@@ -1571,7 +1571,7 @@ export default class GlPatch extends Events
         let preId = -1;
         if (this._hoverOps.length) preId = this._hoverOps[0].id;
 
-        this._hoverOps = this.#getUnoccludedGlOps(this._getGlOpsInRect(x, y, x + 1, y + 1));
+        this._hoverOps = this.#getUnoccludedGlOps(this._getGlOpsInRect(x, y, x + 1, y + 1, true));
 
         if (this._hoverOps.length && this._hoverOps[0].id != preId) this._hoverOpLongStartTime = performance.now();
         if (!this._hoverOps.length) this._hoverOpLongStartTime = 0;
@@ -1590,7 +1590,7 @@ export default class GlPatch extends Events
 
         if (gui.longPressConnector.isActive())
         {
-            const ops = this.#getUnoccludedGlOps(this._getGlOpsInRect(x, y, x + 1, y + 1));
+            const ops = this.#getUnoccludedGlOps(this._getGlOpsInRect(x, y, x + 1, y + 1, true));
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
 
@@ -1670,11 +1670,12 @@ export default class GlPatch extends Events
      * @param {number} ya
      * @param {number} xb
      * @param {number} yb
+     * @param {boolean} [useCache]
      */
-    _getGlOpsInRect(xa, ya, xb, yb)
+    _getGlOpsInRect(xa, ya, xb, yb, useCache = false)
     {
-        if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
-            return this.cacheOIRops;
+        if (useCache && this.cacheOpsInRectX1 == xa && this.cacheOpsInRectY1 == ya && this.cacheOpsInRectX2 == xb && this.cacheOpsInRectY2 == yb)
+            return this.cacheOpsInRectOps;
 
         const perf = gui.uiProfiler.start("[glpatch] ops in rect");
         const x = Math.min(xa, xb);
@@ -1706,12 +1707,12 @@ export default class GlPatch extends Events
 
         perf.finish();
 
-        this.cacheOIRxa = xa;
-        this.cacheOIRya = ya;
-        this.cacheOIRxb = xb;
-        this.cacheOIRyb = yb;
+        this.cacheOpsInRectX1 = xa;
+        this.cacheOpsInRectY1 = ya;
+        this.cacheOpsInRectX2 = xb;
+        this.cacheOpsInRectY2 = yb;
 
-        this.cacheOIRops = ops;
+        this.cacheOpsInRectOps = ops;
         return ops;
     }
 
