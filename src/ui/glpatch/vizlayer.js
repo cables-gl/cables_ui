@@ -41,6 +41,8 @@ import { UiOp } from "../core_extend_op.js";
  * @property {Object} highlightLines
  */
 
+const MAX_VIZ_NODES = 20;
+
 /** Draws data visualizations on the patchfield (e.g. VizTexture, VizGraph, VizString ops). */
 export default class VizLayer extends Events
 {
@@ -271,7 +273,7 @@ export default class VizLayer extends Events
 
             const scale = 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5;
 
-            if (count > 10 || this.paused || Math.max(sizeOp[1], sizeOp[0]) < 20)
+            if (count > MAX_VIZ_NODES || this.paused || Math.max(sizeOp[1], sizeOp[0]) < 20)
             {
                 this._canvasCtx.save();
                 this._canvasCtx.scale(scale, scale);
@@ -280,7 +282,9 @@ export default class VizLayer extends Events
                 this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
                 this._canvasCtx.textAlign = "center";
-                this._canvasCtx.fillText("paused", (pos[0] + size[0] / 2) / scale, (pos[1] + (size[1] / 2)) / scale);
+                let text = "paused";
+                if (count > MAX_VIZ_NODES)text = "limited";
+                this._canvasCtx.fillText(text, (pos[0] + size[0] / 2) / scale, (pos[1] + (size[1] / 2)) / scale);
                 this._canvasCtx.restore();
             }
             else

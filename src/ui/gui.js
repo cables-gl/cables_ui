@@ -155,6 +155,7 @@ export default class Gui extends Events
         editorSession.addListener(CmdUi.TABSESSION_NAME_BUILDINFO, () => { CmdUi.showBuildInfo(); });
         editorSession.addListener(TestsTab.TABSESSION_NAME, () => { new TestsTab(this.mainTabs); });
         editorSession.addListener(OpExampleTestsTab.TABSESSION_NAME, (name, data) => { new OpExampleTestsTab(this.mainTabs, data); });
+        editorSession.addListener(OpExampleTestsTab.TABSESSION_NAME_OPTESTS, (name, data) => { new OpExampleTestsTab(this.mainTabs, data); });
 
         this._log = new Logger("gui");
 

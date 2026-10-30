@@ -43,11 +43,19 @@ export function getOpExamples()
  */
 export async function runOpExample(projectId)
 {
+    await runPatch(await loadProject(projectId));
+}
+
+/**
+ * @param {string} projectId
+ * @returns {Promise<any>}
+ */
+export async function loadProject(projectId)
+{
     const project = await loadPatch(projectId);
     if (!project || !project.ops) throw new Error("could not load patch " + projectId);
 
-    const proj = await new Promise((resolve) => { gui.serverOps.loadProjectDependencies(project, resolve); });
-    await runPatch(proj);
+    return new Promise((resolve) => { gui.serverOps.loadProjectDependencies(project, resolve); });
 }
 
 /**
@@ -85,9 +93,19 @@ async function loadPatch(projectId)
 }
 
 /**
- * @param {any} project
+ * @typedef PatchTest
+ * @property {string[]} ignoreErrors
+ * @property {(patch: Patch) => void} start
+ * @property {(patch: Patch) => Promise<void>} wait
+ * @property {() => string[]} getErrors
+ * @property {() => void} stop
  */
-async function runPatch(project)
+
+/**
+ * @param {any} project
+ * @param {PatchTest} [test]
+ */
+export async function runPatch(project, test = null)
 {
     const patch = gui.corePatch();
     const addedIds = [];
@@ -105,6 +123,7 @@ async function runPatch(project)
 
     const listenAdd = patch.on(Patch.EVENT_OP_ADDED, (op) => { addedIds.push(op.id); });
     const listenException = patch.on(Port.EVENT_EXCEPTION, (ex, op) => { errors.push("exception in " + op.objName + ": " + ex.message); });
+    if (test) test.start(patch);
 
     undo.pause();
     try
@@ -113,7 +132,8 @@ async function runPatch(project)
         patch.deSerialize(project);
 
         await waitLoaded(patch, oldJobIds);
-        await waitFrames(patch, NUM_FRAMES);
+        if (test) await test.wait(patch);
+        else await waitFrames(patch, NUM_FRAMES);
 
         for (let i = 0; i < addedIds.length; i++)
         {
@@ -122,9 +142,13 @@ async function runPatch(project)
             for (const id in op.uiErrors)
             {
                 const err = op.uiErrors[id];
-                if (err.level >= 2 && !IGNORE_ERRORS.includes(id)) errors.push(op.objName + ": " + err.txt);
+                if (err.level < 2 || IGNORE_ERRORS.includes(id)) continue;
+                if (test && test.ignoreErrors.includes(id)) continue;
+                errors.push(op.objName + ": " + err.txt);
             }
         }
+
+        if (test) errors.push(...test.getErrors());
     }
     finally
     {
@@ -137,6 +161,7 @@ async function runPatch(project)
 
         patch.off(listenAdd);
         patch.off(listenException);
+        if (test) test.stop();
         undo.resume();
     }
 

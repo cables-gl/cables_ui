@@ -20,6 +20,7 @@ import GlTimelineDebugTab from "../components/tabs/tab_debugtimeline.js";
 import TabThreeDebug from "../components/tabs/tab_threedebug.js";
 import TestsTab from "../components/tabs/tab_tests.js";
 import OpExampleTestsTab from "../components/tabs/tab_opexampletests.js";
+import { OP_TESTS_PATCHLIST_ID } from "../tests/optests.js";
 
 const log = new Logger("CMD DEBUG");
 export { CmdDebug };
@@ -61,6 +62,12 @@ class CmdDebug
                 "cmd": "Run op example tests",
                 "category": "debug",
                 "func": CmdDebug.runOpExampleTests,
+                "icon": "check"
+            },
+            {
+                "cmd": "Run op tests",
+                "category": "debug",
+                "func": CmdDebug.runOpTests,
                 "icon": "check"
             },
             {
@@ -303,6 +310,12 @@ class CmdDebug
     static runOpExampleTests()
     {
         new OpExampleTestsTab(gui.mainTabs);
+        gui.maintabPanel.show(true);
+    }
+
+    static runOpTests()
+    {
+        new OpExampleTestsTab(gui.mainTabs, { "listId": OP_TESTS_PATCHLIST_ID });
         gui.maintabPanel.show(true);
     }
 

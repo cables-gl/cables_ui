@@ -21,17 +21,72 @@
             text-transform: uppercase;
         }
 
+        .knownbug { color: var(--color-blueprint); }
+
+        .testsTable
+        {
+            width: 100%;
+            border-collapse: collapse;
+
+            th
+            {
+                text-align: left;
+                opacity: 0.6;
+                font-weight: normal;
+                padding: 2px 6px;
+            }
+
+            td
+            {
+                padding: 2px 6px;
+                vertical-align: top;
+            }
+
+            a { cursor: pointer; }
+        }
+
         .testsTest
         {
-            padding: 2px 0 2px 10px;
-            border-left: 3px solid var(--color-hint);
-            margin-bottom: 2px;
-            a { cursor: pointer; }
+            border-top: 1px solid var(--color-button-bg);
 
-            &.pass { border-left-color: var(--color-special); }
-            &.fail { border-left-color: var(--color-error); }
-            &.pending { opacity: 0.5; }
-            &.running { border-left-color: var(--color-special); opacity: 0.5; }
+            &.hidden { display: none; }
+
+            .testsStatus
+            {
+                width: 70px;
+                white-space: nowrap;
+                &.pass { background-color: var(--color-special); color: #000; }
+                &.fail { background-color: var(--color-error); color: #fff; font-weight: bold; }
+                &.knownbug { background-color: var(--color-blueprint); color: #000; }
+                &.pending { opacity: 0.5; }
+                &.running { background-color: var(--color-button-bg-active); }
+            }
+
+            .testsCaseRow
+            {
+                td:nth-child(2) { padding-left: 20px; }
+                .testsStatus { opacity: 0.7; }
+            }
+
+            .testsCount
+            {
+                width: 70px;
+                text-align: right;
+                &.fail { background-color: var(--color-error); color: #fff; font-weight: bold; }
+                &.knownbug { background-color: var(--color-blueprint); color: #000; }
+            }
+
+            .testsAssertFail td:nth-child(2)
+            {
+                padding-left: 30px;
+                color: var(--color-error);
+            }
+
+            .testsAssertKnownBug td:nth-child(2)
+            {
+                padding-left: 30px;
+                color: var(--color-blueprint);
+            }
 
             pre
             {
