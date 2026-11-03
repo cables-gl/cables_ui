@@ -528,6 +528,17 @@ export default class GlPatch extends Events
 
     get areaRectDrawer() { return this.#areaRectInstancer; }
 
+    getStackingAreas()
+    {
+        const areas = [];
+        for (const i in this._glOpz)
+        {
+            const glop = this._glOpz[i];
+            if (glop._resizableArea && glop.opUiAttribs.allowStacking && glop.isInCurrentSubPatch()) areas.push(glop._resizableArea);
+        }
+        return areas;
+    }
+
     #getCollapsableAreas()
     {
         const areas = [];

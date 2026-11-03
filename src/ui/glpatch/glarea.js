@@ -205,7 +205,8 @@ export default class GlArea
 
         if (!this.#glop.op.uiAttribs.areaCollapsed)
         {
-            this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+            const oldArea = this.#glop.op.uiAttribs.area;
+            if (!oldArea || oldArea.w != this._w || oldArea.h != this._h || oldArea.id != this.#id) this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
             if (updateChilds || !this.#glop.op.uiAttribs.collapsable) this.updateChildOps();
         }
         this.#glop.updateSelectedBorder();
@@ -304,6 +305,18 @@ export default class GlArea
         this.#bringingToFront = false;
     }
 
+    #isInNestedArea(glop)
+    {
+        const areas = this.#glop.glPatch.getStackingAreas();
+        for (let i = 0; i < areas.length; i++)
+        {
+            const area = areas[i];
+            if (area == this || area.glop == glop) continue;
+            if (area.overlapsGlOp(glop) && this.overlapsGlOp(area.glop)) return true;
+        }
+        return false;
+    }
+
     updateChildOps()
     {
         if (this.#updatingChilds) return;
@@ -315,7 +328,7 @@ export default class GlArea
         let changed = false;
         for (let i = 0; i < childs.length; i++)
         {
-            if (childs[i].op && childs[i] != this.#glop)
+            if (childs[i].op && childs[i] != this.#glop && !this.#isInNestedArea(childs[i]))
             {
                 opChilds.push(childs[i].op);
                 if (childs[i].op.attribs.area != this.#id)
