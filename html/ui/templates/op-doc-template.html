@@ -24,6 +24,14 @@
             {{#if opDoc.content}}
                 <div class="op-doc__description">
                     {{md opDoc.content true "_blank"}}
+                    <br/>
+                </div>
+            {{/if}}
+
+            {{#if opDoc.tags}}
+                <div class="op-doc__description">
+                    Tags:
+                {{#each opDoc.tags}}<span class="tag"> {{.}}</span> {{/each}}
                 </div>
             {{/if}}
         {{/if}}
@@ -39,6 +47,7 @@
                 {{/each}}
             {{/if}}
         {{/if}}
+
         <br/><br/>
     </div>
 </script>

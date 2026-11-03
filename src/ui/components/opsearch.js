@@ -12,6 +12,7 @@ import { platform } from "../platform.js";
  * @property {string|number} opId simpleId if op has no doc
  * @property {string} name full op name, e.g. Ops.Math.Sum
  * @property {string} summary
+ * @property {string} tags
  * @property {string} [description] collections only
  * @property {string} [collectionOpNames] lowercase, space separated op names of a collection
  * @property {string} nscolor namespace css class name
@@ -214,6 +215,13 @@ export default class OpSearch extends Events
 
             if (list[i].userOp && this.hideUserOps) continue;
 
+            if (list[i].tags.indexOf(query) > -1)
+            {
+                found = true;
+                points += 0.5;
+                scoreDebug += "+0.5 found in tags (" + query + ")<br/>";
+            }
+
             if (list[i]._summary.indexOf(query) > -1)
             {
                 found = true;
@@ -271,6 +279,10 @@ export default class OpSearch extends Events
                 found = true;
                 points += 1;
                 scoreDebug += "+1 is op in collection (" + query + ")<br/>";
+            }
+            if (list[i].tags)
+            {
+
             }
 
             if (found)
@@ -678,6 +690,7 @@ export default class OpSearch extends Events
                     "isExtension": namespace.isExtension(opName),
                     "isTeamNamespace": isTeamOp,
                     "shortName": shortName,
+                    "tags": (opDoc.tags || []).join(","),
                     "nameSpace": nameSpace,
                     "oldState": oldState,
                     "lowercasename": lowerCaseName,
