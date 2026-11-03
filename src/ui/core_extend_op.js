@@ -56,7 +56,6 @@ class UiOp extends Op
 
     #onportsChangeSoon()
     {
-        // clearTimeout(this.portChangeTo);
         if (!this.portChangeTo)
         {
 
@@ -64,9 +63,13 @@ class UiOp extends Op
             {
                 this.portChangeTo = null;
                 this.setUiError("dupeport", null);
+                this.setUiError("dupeport", null);
 
                 for (let i = 0; i < this.portsIn.length; i++)
                 {
+                    if (this.portsIn[i].name.indexOf("\'") > -1 || this.portsIn[i].name.indexOf("\"") > -1)
+                        this.setUiError("dupeport", "Invalid portname");
+
                     for (let j = 0; j < this.portsOut.length; j++)
                         if (this.portsIn[i] != this.portsOut[j] && this.portsIn[i].name == this.portsOut[j].name)
                             this.setUiError("dupeport", "Duplicate Port name: " + this.portsOut[j].name + ". Must be unique!", 2);
