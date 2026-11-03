@@ -5,7 +5,7 @@
     "main": "gulpfile.js",
     "type": "module",
     "engines": {
-        "node": "24.22.1"
+        "node": "24.18.4"
     },
     "dependencies": {
         "@codemirror/autocomplete": "^6.20.1",
