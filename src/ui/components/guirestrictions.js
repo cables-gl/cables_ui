@@ -35,16 +35,13 @@ export default class GuiRestrictions
      */
     setMessage(id, msg = null)
     {
-        console.log("setmessage", id, msg);
         if (!msg)
         {
             delete this._messages[id];
             const hasKeys = Object.keys(this._messages);
 
             if (hasKeys.length > 0)
-            {
                 msg = this._messages[Object.keys(this._messages)];
-            }
         }
         else this._messages[id] = msg;
 
