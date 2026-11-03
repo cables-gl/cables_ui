@@ -36,7 +36,7 @@ export default class GlArea
     #updatingChilds = false;
     #animFlash = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
     #flashing = false;
-    #brightness = 0.35;
+    #brightness = 0.7;
     animDuration = 0.25;
 
     /**
@@ -381,7 +381,7 @@ export default class GlArea
         //     this._rectBg.setColorArray(cols);
         // }
         // else
-        this.#rectBg.setColor(this.#brightness, this.#brightness, this.#brightness, 0.7);
+        this.#rectBg.setColor(this.#brightness, this.#brightness, this.#brightness, 0.1);
     }
 
     get id() { return this.#id; }

@@ -112,10 +112,8 @@ export default class GlUiCanvas extends GlCanvas
 
         cgl.name = "ui ";
         cgl.doGlQueryTiming = true;
-        let perf = gui.uiProfiler.start("[uicanvas] renderStart");
         cgl.renderStart(cgl);
         if (cgl.lastMesh)cgl.lastMesh.unBind();
-        perf.finish();
 
         if (this._oldTargetFps != this.targetFps) this._oldTargetFps = this.targetFps;
 
@@ -131,15 +129,11 @@ export default class GlUiCanvas extends GlCanvas
         if (this.glPatch.debugData)
             this.glPatch.debugData.targetFps = this.targetFps;
 
-        perf = gui.uiProfiler.start("[uicanvas] glPatch.render");
         this.glPatch.render(this.width, this.height);
-        perf.finish();
 
         if (this.glPatch.isAnimated) this.activityHigh();
 
-        perf = gui.uiProfiler.start("[uicanvas] renderEnd");
         cgl.renderEnd(cgl);
-        perf.finish();
         this._lastTime = performance.now();
 
         gui.corePatch().perfProfiler.setDuration("ui cpu", performance.now() - startTime);

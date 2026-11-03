@@ -2298,9 +2298,9 @@ export default class PatchView extends Events
      */
     selectAreaChilds(op)
     {
-        if (!op.uiAttribs.collapsable || !op.uiAttribs.area || !op.uiAttribs.area.id) return;
+        if (!(op.uiAttribs.collapsable || op.uiAttribs.moveChilds) || !op.uiAttribs.area || !op.uiAttribs.area.id) return;
 
-        const ops = gui.corePatch().getOpsByArea(op.uiAttribs.area.id);
+        const ops = gui.corePatch().getAreaChildOpsDeep(op.uiAttribs.area.id);
         for (let i = 0; i < ops.length; i++)
             if (ops[i] != op) this.patchRenderer.selectOpId(ops[i].id);
     }

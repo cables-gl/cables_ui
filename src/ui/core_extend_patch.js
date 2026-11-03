@@ -50,6 +50,25 @@ class UiPatch extends Patch
         return false;
     }
 
+    /**
+     * @param {string} areaId
+     * @returns {Op[]} ops of the area and of all areas nested in it
+     */
+    getAreaChildOpsDeep(areaId, depth = 0)
+    {
+        const result = [];
+        if (depth > 16) return result;
+
+        const childs = this.getOpsByArea(areaId);
+        for (let i = 0; i < childs.length; i++)
+        {
+            result.push(childs[i]);
+            const area = childs[i].uiAttribs.area;
+            if (childs[i].uiAttribs.moveChilds && area && area.id && area.id != areaId) result.push(...this.getAreaChildOpsDeep(area.id, depth + 1));
+        }
+        return result;
+    }
+
     getOpByRefId(refId, subPatchId)
     {
         const ops = this.getSubPatchOps(subPatchId);
