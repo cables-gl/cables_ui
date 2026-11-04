@@ -164,6 +164,13 @@ export default class OpSearch extends Events
             let found = false;
             let points = 0;
 
+            if (query.length == 36 && list[i].opId == query)
+            {
+                found = true;
+                scoreDebug += "+2 op id<br/>";
+                points += 2;
+            }
+
             if (list[i].lowercasename.indexOf(query) > -1)
             {
                 if (list[i].name === defaultOps.glMainloop)
