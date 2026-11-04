@@ -211,7 +211,7 @@ class OpParampanel extends Events
         this.refreshTimeout = setTimeout(() =>
         {
             this.show(this._currentOp);
-        }, 50);
+        }, 30);
     }
 
     /**

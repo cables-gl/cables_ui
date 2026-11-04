@@ -41,6 +41,7 @@ export default class OpSelect
 
     #minimal = false;
     #bg = new ModalBackground();
+    #bgHideListener = false;
     displayBoxIndex = 0;
     itemHeight = 0;
     firstTime = true;
@@ -67,6 +68,7 @@ export default class OpSelect
     {
         this.#bg.hide();
         this._eleOpsearchmodal.style.zIndex = -9999;
+        ele.hide(this._eleOpsearchmodal); // keep ~9000 list nodes out of style/paint while closed
 
         gui.currentModal = null;
         gui.patchView.focus();
@@ -642,7 +644,11 @@ export default class OpSelect
         ele.hide(ele.byId("search_noresults"));
 
         this.#bg.show();
-        this.#bg.on("hide", () => { this.close(); });
+        if (!this.#bgHideListener)
+        {
+            this.#bgHideListener = true;
+            this.#bg.on("hide", () => { this.close(); });
+        }
 
         ele.show(this._eleOpsearchmodal);
         this._eleOpsearchmodal.style.zIndex = 9999999;
@@ -676,10 +682,12 @@ export default class OpSelect
     {
         this._typedSinceOpening = true;
 
-        ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
+        // only the selected rows: touching every result (thousands of nodes) costs ~150-300ms
+        const selected = Array.from(document.getElementsByClassName("selected"));
+        for (let i = 0; i < selected.length; i++) if (selected[i].classList.contains("searchresult")) selected[i].classList.remove("selected");
 
         const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
-        el.classList.add("selected");
+        if (el) el.classList.add("selected");
 
         this.updateInfo();
     }

@@ -2897,7 +2897,7 @@ export default class PatchView extends Events
      */
     refreshCurrentOpParamsByPort(p1, p2)
     {
-        if (this.isCurrentOp(p2.op) || this.isCurrentOp(p1.op)) gui.opParams.refresh();
+        if (this.isCurrentOp(p2.op) || this.isCurrentOp(p1.op)) gui.opParams.refreshDelayed();
     }
 
     /**
