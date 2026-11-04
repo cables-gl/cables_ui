@@ -15,7 +15,7 @@ export default class HtmlElementOverlay
             const ports = op.portsOut;
 
             for (let i = 0; i < ports.length; i++)
-                if (ports[i].get() && ports[i].uiAttribs.objType == "element")
+                if (ports[i].get() && ports[i].uiAttribs.objType == "element" && typeof ports[i].get().getBoundingClientRect == "function")
                 {
                     if (this._eleOver && this._trackEle != ports[i].get())
                     {
@@ -34,7 +34,7 @@ export default class HtmlElementOverlay
 
     _update()
     {
-        if (!gui.shouldDrawOverlay || !this._trackEle)
+        if (!gui.shouldDrawOverlay || !this._trackEle || typeof this._trackEle.getBoundingClientRect != "function")
         {
             if (this._eleOver)
             {
