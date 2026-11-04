@@ -63,8 +63,8 @@ class UiPatch extends Patch
         for (let i = 0; i < childs.length; i++)
         {
             result.push(childs[i]);
-            const area = childs[i].uiAttribs.area;
-            if (childs[i].uiAttribs.moveChilds && area && area.id && area.id != areaId) result.push(...this.getAreaChildOpsDeep(area.id, depth + 1));
+            const childAreaId = childs[i].attribs.areaId;
+            if (childs[i].uiAttribs.moveChilds && childAreaId && childAreaId != areaId) result.push(...this.getAreaChildOpsDeep(childAreaId, depth + 1));
         }
         return result;
     }

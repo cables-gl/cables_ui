@@ -407,10 +407,10 @@ export default class GlOp extends Events
         const selected = this.#glPatch.selectedGlOps;
         for (const i in selected)
         {
-            const area = selected[i].opUiAttribs.area;
-            if (selected[i]._resizableArea && (selected[i].opUiAttribs.collapsable || selected[i].opUiAttribs.moveChilds) && area && area.id)
+            const areaId = selected[i].op.attribs.areaId;
+            if (selected[i]._resizableArea && (selected[i].opUiAttribs.collapsable || selected[i].opUiAttribs.moveChilds) && areaId)
             {
-                const childs = gui.corePatch().getAreaChildOpsDeep(area.id);
+                const childs = gui.corePatch().getAreaChildOpsDeep(areaId);
                 for (let c = 0; c < childs.length; c++)
                 {
                     const child = this.#glPatch.getGlOp(childs[c]);

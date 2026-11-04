@@ -105,9 +105,9 @@ export default class GlArea
             this.update(true);
         });
 
+        if (this.#glop.op.attribs.areaId) this.#id = this.#glop.op.attribs.areaId;
         if (this.#glop.op.uiAttribs.area)
         {
-            if (this.#glop.op.uiAttribs.area.id) this.#id = this.#glop.op.uiAttribs.area.id;
             this._w = this.#glop.op.uiAttribs.area.w;
             this._h = this.#glop.op.uiAttribs.area.h;
         }
@@ -206,7 +206,8 @@ export default class GlArea
         if (!this.#glop.op.uiAttribs.areaCollapsed)
         {
             const oldArea = this.#glop.op.uiAttribs.area;
-            if (!oldArea || oldArea.w != this._w || oldArea.h != this._h || oldArea.id != this.#id) this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this.#id } });
+            if (!oldArea || oldArea.w != this._w || oldArea.h != this._h) this.#glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h } });
+            this.#glop.op.attribs.areaId = this.#id;
             if (updateChilds || !this.#glop.op.uiAttribs.collapsable) this.updateChildOps();
         }
         this.#glop.updateSelectedBorder();

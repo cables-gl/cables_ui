@@ -2014,8 +2014,9 @@ export default class PatchView extends Events
         const newIds = {};
         for (let i = 0; i < ops.length; i++)
         {
-            const area = ops[i].uiAttribs && ops[i].uiAttribs.area;
-            if (area && area.id) area.id = newIds[area.id] = utils.shortId();
+            const oldId = ops[i].attribs && ops[i].attribs.areaId;
+            if (!oldId) continue;
+            newIds[oldId] = ops[i].attribs.areaId = utils.shortId();
         }
 
         for (let i = 0; i < ops.length; i++)
@@ -2298,9 +2299,9 @@ export default class PatchView extends Events
      */
     selectAreaChilds(op)
     {
-        if (!(op.uiAttribs.collapsable || op.uiAttribs.moveChilds) || !op.uiAttribs.area || !op.uiAttribs.area.id) return;
+        if (!(op.uiAttribs.collapsable || op.uiAttribs.moveChilds) || !op.attribs.areaId) return;
 
-        const ops = gui.corePatch().getAreaChildOpsDeep(op.uiAttribs.area.id);
+        const ops = gui.corePatch().getAreaChildOpsDeep(op.attribs.areaId);
         for (let i = 0; i < ops.length; i++)
             if (ops[i] != op) this.patchRenderer.selectOpId(ops[i].id);
     }
