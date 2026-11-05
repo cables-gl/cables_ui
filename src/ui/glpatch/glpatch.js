@@ -1747,16 +1747,35 @@ export default class GlPatch extends Events
      */
     isAnyOpVisible()
     {
-        const topLeft = this.viewBox.screenToPatchCoord(gui.getLeftPanelsMaxWidth(), 0);
-        const bottomRight = this.viewBox.screenToPatchCoord(this.viewBox.viewWidth - gui.getRightPanelsMaxWidth(), this.viewBox.viewHeight - gui.getBottomPanelHeight());
+        const vb = this.viewBox;
+        const bottom = vb.viewHeight - gui.getBottomPanelHeight();
+        const floating = gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FLOAT;
+
+        // area right of the patch is covered by the right panel (full height),
+        // the renderer only covers the top part - below it the patch is still visible
+        const rightPanel = floating ? gui.rightPanelWidth + gui.rendererWidth : gui.rightPanelWidth;
+        const rendererH = floating ? 0 : (gui.rendererHeightScaled || 0);
+        const rendererW = floating ? 0 : (gui.rendererWidthScaled || gui.rendererWidth || 0);
+
+        const rects = [];
+        const left = gui.getLeftPanelsMaxWidth();
+        // full height: left of renderer / right panel
+        rects.push([left, 0, vb.viewWidth - Math.max(rightPanel, rendererW), bottom]);
+        // below the renderer: only the right panel is in the way
+        if (rendererW > rightPanel) rects.push([left, rendererH, vb.viewWidth - rightPanel, bottom]);
 
         const cops = gui.corePatch().getSubPatchOps();
-        for (let i = 0; i < cops.length; i++)
+        for (let r = 0; r < rects.length; r++)
         {
-            const glop = this._glOpz[cops[i].id];
-            if (!glop || !glop.visible) continue;
+            const topLeft = vb.screenToPatchCoord(rects[r][0], rects[r][1]);
+            const bottomRight = vb.screenToPatchCoord(rects[r][2], rects[r][3]);
+            for (let i = 0; i < cops.length; i++)
+            {
+                const glop = this._glOpz[cops[i].id];
+                if (!glop || !glop.visible) continue;
 
-            if (glop.x + glop.w >= topLeft[0] && glop.x <= bottomRight[0] && glop.y + glop.h >= topLeft[1] && glop.y <= bottomRight[1]) return true;
+                if (glop.x + glop.w >= topLeft[0] && glop.x <= bottomRight[0] && glop.y + glop.h >= topLeft[1] && glop.y <= bottomRight[1]) return true;
+            }
         }
         return false;
     }
