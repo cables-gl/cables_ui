@@ -112,7 +112,8 @@ function isFailure(result)
 
 class TestRun
 {
-    ignoreErrors = [ASSERT_ERROR_ID];
+    // errors ops show on purpose, i.e. ParseObject with the malformed json tests
+    ignoreErrors = [ASSERT_ERROR_ID, "invalidjson"];
 
     /** @type {Object<string, {name: string, done: boolean}>} */
     #cases = {};
