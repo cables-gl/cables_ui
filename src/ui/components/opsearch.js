@@ -697,7 +697,7 @@ export default class OpSearch extends Events
                     "isExtension": namespace.isExtension(opName),
                     "isTeamNamespace": isTeamOp,
                     "shortName": shortName,
-                    "tags": (opDoc.tags || []).join(","),
+                    "tags": Array.isArray(opDoc?.tags) ? opDoc.tags.join(",") : (typeof opDoc?.tags === "string" ? opDoc.tags : ""),
                     "nameSpace": nameSpace,
                     "oldState": oldState,
                     "lowercasename": lowerCaseName,
