@@ -5,6 +5,7 @@ import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { getOpExamples, runOpExample } from "../../tests/opexamples.js";
 import { getTestPatches, runTestPatch } from "../../tests/optests.js";
 import { platform } from "../../platform.js";
+import { gui } from "../../gui.js";
 
 const STATE_LABELS = { "pass": "pass", "fail": "fail", "knownbug": "known bug", "pending": "pending", "running": "running" };
 
@@ -28,6 +29,7 @@ export default class OpExampleTestsTab
     #current = 0;
     #total = 0;
     #startTime = 0;
+    #commandIds = [];
 
     /**
      * @param {TabPanel} tabs
@@ -46,13 +48,24 @@ export default class OpExampleTestsTab
         this.#tab.on(Tab.EVENT_CLOSE, () =>
         {
             this.#stop = true;
+            this.#removeCommands();
             editorSession.remove(this.#sessionName, this.#sessionName);
         });
 
-        this.#tab.addButton("Run all", () => { this.run(this.#getFiltered()); });
-        this.#tab.addButton("Run failed", () => { this.runFailed(); });
-        this.#tab.addButton("Stop", () => { this.#stop = true; });
-        this.#tab.addButton("Randomize", () => { this.randomize(); });
+        // buttons and commands (command palette, mcp) do the same, the commands exist as long as the tab is open
+        const title = this.#tab.title;
+        const actions = [
+            { "label": "Run all", "cmd": title + ": run all", "func": async () => { await this.run(this.#getFiltered()); return this.getReport(); } },
+            { "label": "Run failed", "cmd": title + ": run failed", "func": async () => { await this.runFailed(); return this.getReport(); } },
+            { "label": "Stop", "cmd": title + ": stop", "func": () => { this.#stop = true; return "stopping"; } },
+            { "label": "Randomize", "cmd": title + ": randomize", "func": () => { this.randomize(); return "randomized"; } },
+            { "cmd": title + ": report", "func": () => { return this.getReport(); } }
+        ];
+        for (let i = 0; i < actions.length; i++)
+        {
+            if (actions[i].label) this.#tab.addButton(actions[i].label, actions[i].func);
+            this.#commandIds.push(gui.cmdPalette.addDynamic("debug", actions[i].cmd, actions[i].func, "check"));
+        }
 
         this.#tab.html("<div class=\"tabContentScrollContainer testsTab\"><input class=\"medium info testsFilter\" type=\"search\" placeholder=\"filter op name\"/><div class=\"testsSummary\"></div><table class=\"testsTable\"><thead><tr><th>Status</th><th>Test</th><th>Passed</th><th>Failed</th><th>Known Bugs</th><th>Asserts</th></tr></thead></table></div>");
         this.#summaryEle = this.#tab.contentEle.querySelector(".testsSummary");
@@ -65,28 +78,88 @@ export default class OpExampleTestsTab
         this.#loadEntries();
     }
 
-    async #loadEntries()
+    #loadEntries()
     {
         if (!this.#listId)
         {
             const examples = getOpExamples();
             for (let i = 0; i < examples.length; i++) this.#examples.push({ "projectId": examples[i].projectId, "title": examples[i].opNames.join(", ") });
+            this.#showEntries();
         }
         else
         {
-            try
+            getTestPatches(this.#listId, (err, tests) =>
             {
-                this.#examples = await getTestPatches(this.#listId);
+                if (err)
+                {
+                    this.#summaryEle.innerText = err.message;
+                    return;
+                }
+                this.#examples = tests;
+                this.#showEntries();
+            });
+        }
+    }
+
+    #showEntries()
+    {
+        for (let i = 0; i < this.#examples.length; i++) this.#addRow(this.#examples[i]);
+        this.#applyFilter();
+    }
+
+    #removeCommands()
+    {
+        for (let i = 0; i < this.#commandIds.length; i++) gui.cmdPalette.removeDynamic(this.#commandIds[i]);
+        this.#commandIds = [];
+    }
+
+    /**
+     * text report of the current results, failing patches with their TestCases and failing asserts
+     * @returns {string}
+     */
+    getReport()
+    {
+        const examples = this.#getFiltered();
+        const lines = [];
+        let numPatches = 0;
+        let numFailedPatches = 0;
+        let numPassed = 0;
+        let numFailed = 0;
+        let numKnownBugs = 0;
+        let numPending = 0;
+
+        for (let i = 0; i < examples.length; i++)
+        {
+            const result = this.#results[examples[i].projectId];
+            if (!result || result.state == "pending" || result.state == "running")
+            {
+                numPending++;
+                continue;
             }
-            catch (e)
+            numPatches++;
+            const failed = result.state == "fail";
+            if (failed) numFailedPatches++;
+            lines.push((failed ? "FAILED " : "ok     ") + examples[i].title + " (" + examples[i].projectId + ")");
+            if (result.error) lines.push("  ERROR " + result.error.split("\n").join("\n  "));
+
+            const cases = result.testCases || [];
+            for (let j = 0; j < cases.length; j++)
             {
-                this.#summaryEle.innerText = e.message;
-                return;
+                const c = cases[j];
+                numPassed += c.numPassed;
+                numFailed += c.numFailed;
+                numKnownBugs += c.numKnownBugs || 0;
+                if (!failed) continue;
+                lines.push("  " + c.name + (c.done ? "" : " (NOT DONE)") + ": " + c.numPassed + " passed, " + c.numFailed + " failed, " + (c.numKnownBugs || 0) + " known bugs");
+                for (let k = 0; k < c.failed.length; k++) lines.push("    FAIL " + c.failed[k]);
             }
         }
 
-        for (let i = 0; i < this.#examples.length; i++) this.#addRow(this.#examples[i]);
-        this.#applyFilter();
+        let head = numPatches + " patches, " + numFailedPatches + " failed. asserts: " + numPassed + " passed, " + numFailed + " failed, " + numKnownBugs + " known bugs";
+        if (numPending) head += ", " + numPending + " not run";
+        if (this.#running) head += ", still running " + this.#current + "/" + this.#total;
+        lines.unshift(head);
+        return lines.join("\n");
     }
 
     #rememberSession()
@@ -146,13 +219,13 @@ export default class OpExampleTestsTab
         for (let i = 0; i < this.#examples.length; i++) this.#listEle.appendChild(this.#rowEles[this.#examples[i].projectId]);
     }
 
-    runFailed()
+    async runFailed()
     {
         const failed = [];
         const examples = this.#getFiltered();
         for (let i = 0; i < examples.length; i++)
             if (this.#results[examples[i].projectId] && this.#results[examples[i].projectId].state == "fail") failed.push(examples[i]);
-        this.run(failed);
+        return this.run(failed);
     }
 
     /**
@@ -223,7 +296,7 @@ export default class OpExampleTestsTab
      */
     #setResult(projectId, state, errorText, testCases)
     {
-        this.#results[projectId] = { "state": state, "error": errorText, "numKnownBugs": countKnownBugs(testCases) };
+        this.#results[projectId] = { "state": state, "error": errorText, "numKnownBugs": countKnownBugs(testCases), "testCases": testCases || [] };
         this.#renderRows(this.#getExample(projectId), state, errorText, testCases);
 
         if (state == "running") this.#rowEles[projectId].scrollIntoView({ "block": "nearest" });

@@ -7,6 +7,9 @@ const DONE_TIMEOUT = 20000;
 
 export const OP_TESTS_PATCHLIST_ID = "jRV_GF";
 
+// op test patches are always loaded from the dev server
+const TEST_SERVER = { "serverUrl": "https://dev.cables.gl", "assetUrl": "https://devsandbox.cables.gl" };
+
 export const EVENT_TESTCASE_START = "opTestCaseStart";
 export const EVENT_TESTCASE_DONE = "opTestCaseDone";
 export const EVENT_TESTCASE_CHECK = "opTestCaseCheck";
@@ -44,33 +47,21 @@ export const ASSERT_ERROR_ID = "testAssert";
 
 /**
  * @param {string} listId
- * @returns {Promise<TestPatch[]>}
+ * @param {(err: Error|null, tests?: TestPatch[]) => void} cb
  */
-export async function getTestPatches(listId)
+export function getTestPatches(listId, cb)
 {
-    let projects = null;
-    if (platform.isElectron())
+    platform.talkerAPI.send(TalkerAPI.CMD_GET_PATCHLIST_PATCHES, { "listId": listId }, (err, r) =>
     {
-        const response = await fetch(platform.getCablesDocsUrl() + "/api/patchlists/patches/" + encodeURIComponent(listId));
-        if (!response.ok) throw new Error("could not load patchlist " + listId + ": " + response.status);
-        projects = (await response.json()).data;
-    }
-    else
-    {
-        projects = await new Promise((resolve, reject) =>
-        {
-            platform.talkerAPI.send(TalkerAPI.CMD_GET_PATCHLIST_PATCHES, { "listId": listId }, (err, r) =>
-            {
-                if (err) reject(new Error("could not load patchlist " + listId + ": " + (err.msg || err)));
-                else resolve(r.data);
-            });
-        });
-    }
+        if (err) return cb(new Error("could not load patchlist " + listId + ": " + (err.msg || err)));
+        if (!r) return cb(new Error("could not load patchlist " + listId + ": no answer from the platform"));
 
-    const tests = [];
-    for (let i = 0; i < (projects || []).length; i++)
-        tests.push({ "projectId": projects[i].shortId || projects[i]._id, "title": projects[i].name });
-    return tests;
+        const tests = [];
+        const projects = r.data || [];
+        for (let i = 0; i < projects.length; i++)
+            tests.push({ "projectId": projects[i].shortId || projects[i]._id, "title": projects[i].name });
+        cb(null, tests);
+    });
 }
 
 /**
@@ -82,7 +73,7 @@ export async function runTestPatch(projectId)
     const run = new TestRun();
     try
     {
-        await runPatch(await loadProject(projectId), run);
+        await runPatch(await loadProject(projectId, TEST_SERVER), run);
     }
     catch (e)
     {

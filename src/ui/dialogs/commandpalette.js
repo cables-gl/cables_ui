@@ -418,7 +418,7 @@ export class CommandPalette
      */
     removeDynamic(id)
     {
-        for (let i = this.dynamicCmds.length - 1; i > 0; i--)
+        for (let i = this.dynamicCmds.length - 1; i >= 0; i--)
             if (this.dynamicCmds[i].id == id)
                 this.dynamicCmds.splice(i, 1);
     }

@@ -48,11 +48,12 @@ export async function runOpExample(projectId)
 
 /**
  * @param {string} projectId
+ * @param {{serverUrl: string, assetUrl: string}} [server] load the patch from this server instead of the platform default
  * @returns {Promise<any>}
  */
-export async function loadProject(projectId)
+export async function loadProject(projectId, server = null)
 {
-    const project = await loadPatch(projectId);
+    const project = await loadPatch(projectId, server);
     if (!project || !project.ops) throw new Error("could not load patch " + projectId);
 
     return new Promise((resolve) => { gui.serverOps.loadProjectDependencies(project, resolve); });
@@ -60,11 +61,12 @@ export async function loadProject(projectId)
 
 /**
  * @param {string} projectId
+ * @param {{serverUrl: string, assetUrl: string}} [server]
  * @returns {Promise<any>}
  */
-async function loadPatch(projectId)
+async function loadPatch(projectId, server = null)
 {
-    if (!platform.isElectron())
+    if (!server && !platform.isElectron())
     {
         return new Promise((resolve) =>
         {
@@ -72,11 +74,11 @@ async function loadPatch(projectId)
         });
     }
 
-    const serverUrl = platform.getCablesDocsUrl();
+    const serverUrl = server ? server.serverUrl : platform.getCablesDocsUrl();
     const response = await fetch(serverUrl + "/api/project/" + encodeURIComponent(projectId) + "/patch.json");
     if (!response.ok) return null;
     const project = await response.json();
-    const assetUrl = platform.getCommunitySandboxUrl();
+    const assetUrl = server ? server.assetUrl : platform.getCommunitySandboxUrl();
 
     for (let i = 0; i < project.ops.length; i++)
     {
