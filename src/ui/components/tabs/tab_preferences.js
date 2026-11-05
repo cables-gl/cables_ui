@@ -70,7 +70,6 @@ export default class Preferences
         this.setSwitchValue(UserSettings.PREF_OPSELECT_AUTOLINKOPS, userSettings.get(UserSettings.PREF_OPSELECT_AUTOLINKOPS));
         this.setSwitchValue("checkOpCollisions", userSettings.get(UserSettings.PREF_CHECK_OP_COLLISIONS));
 
-        this.setSwitchValue("hideCanvasUi", userSettings.get(UserSettings.PREF_HIDE_CANVAS_UI));
         this.setSwitchValue("bgpreview", userSettings.get(UserSettings.PREF_BGPREVIEW));
 
         this.setSwitchValue("texpreviewTransparent", userSettings.get(UserSettings.PREF_TEXPREVIEW_TRANSPARENT) || false);
@@ -92,6 +91,7 @@ export default class Preferences
         this.setInputValue("wheelmultiplier", userSettings.get(UserSettings.PREF_WHEELMULTIPLIER) || 1);
         this.setInputValue("fontsize_ace", userSettings.get(UserSettings.PREF_FONTSIZE_ACE) || 12);
         this.setSwitchValue("wrapmode_ace", userSettings.get(UserSettings.PREF_WRAPMODE_ACE) || false);
+        this.setInputValue("tabwidth", userSettings.get(UserSettings.PREF_TABWIDTH) || 4);
 
         this.setSwitchValue("quickLinkLongPress", userSettings.get(UserSettings.PREF_QUICKLINK_LONGPRESS));
         this.setSwitchValue("quickLinkMiddleMouse", userSettings.get(UserSettings.PREF_QUICKLINK_MIDDLEMOUSE));

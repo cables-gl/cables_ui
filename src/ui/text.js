@@ -233,8 +233,6 @@ export const GuiText =
         "title_theme": "Theme",
         "subtitle_theme": "Bright theme is better when you work outside.",
 
-        "title_hideCanvasUi": "Show Canvas Info Bar Ui",
-
         "title_hideSizeBar": "Icon Side Bar",
         "subtitle_hideSizeBar": "Shows a sidebar with icons of commands from command palette",
 
@@ -273,6 +271,7 @@ export const GuiText =
         "subtitle_fontsize": "Size Of Text and Icons in cables",
         "subtitle_fontsize_ace": "Font size in Text editor",
         "subtitle_wrapmode_ace": "Wrap Mode in Text editor",
+        "subtitle_tabwidth": "Tab width (spaces) in Text editor",
 
         "subtitle_formatcode": "Format code after saving",
 

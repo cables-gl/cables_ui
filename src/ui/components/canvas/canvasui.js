@@ -204,8 +204,6 @@ export default class CanvasUi
      */
     showCanvasModal(show)
     {
-        if (userSettings.get(UserSettings.PREF_HIDE_CANVAS_UI)) return;
-
         const perf = gui.uiProfiler.start("[canvasUi] showCanvasModal");
 
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");

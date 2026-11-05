@@ -3,8 +3,8 @@ import { linter, lintGutter, forEachDiagnostic, setDiagnosticsEffect } from "@co
 import { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration } from "@codemirror/view";
 import { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
 import { helix } from "codemirror-helix";
-import { syntaxTree } from "@codemirror/language";
-import { autocompletion } from "@codemirror/autocomplete";
+import { syntaxTree, bracketMatching, indentOnInput, indentUnit } from "@codemirror/language";
+import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { markdown } from "@codemirror/lang-markdown";
 
 import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
@@ -20,12 +20,13 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
 // import { basicDark } from 'cm6-theme-basic-dark'
 // import { tokyoNightStorm } from "@fsegurai/codemirror-theme-tokyo-night-storm"
-import { indentWithTab, toggleComment, history } from "@codemirror/commands";
+import { indentWithTab, toggleComment, history, historyKeymap, defaultKeymap, insertNewlineAndIndent } from "@codemirror/commands";
 import { snippetCompletion } from "@codemirror/autocomplete"; // Built-in function
 
 import { createOpDocButton } from "../editor.js";
 import { platform } from "../../platform.js";
 import { gui } from "../../gui.js";
+import { UserSettings, userSettings } from "../usersettings.js";
 import { notify, notifyError } from "../../elements/notification.js";
 import { GuiText } from "../../text.js";
 import Tab from "../../elements/tabpanel/tab.js";
@@ -75,6 +76,8 @@ export default class EditorTabCodemirror extends EditorBase
     helix = false;
     #highlightCompartment = new Compartment();
     #languageCompartment = new Compartment();
+    #prefsCompartment = new Compartment();
+    #prefsListener = null;
 
     /** @type {import("../../api/opsserver.js").LinterDiag[]} */
     #externalDiags = [];
@@ -112,6 +115,8 @@ export default class EditorTabCodemirror extends EditorBase
 
         this.tab.on(Tab.EVENT_CLOSE, () =>
         {
+            if (this.#prefsListener) userSettings.off(this.#prefsListener);
+            this.#prefsListener = null;
             this.cmView?.destroy();
             this.cmView = null;
         });
@@ -378,8 +383,12 @@ export default class EditorTabCodemirror extends EditorBase
         extensions.push(highlightActiveLineGutter());
         extensions.push(oneDark);
         extensions.push(lineNumbers());
+        extensions.push(bracketMatching());
+        extensions.push(closeBrackets());
+        extensions.push(keymap.of(closeBracketsKeymap));
+        extensions.push(indentOnInput());
         extensions.push(autocompletion());
-        extensions.push(keymap.of([indentWithTab]));
+        extensions.push(keymap.of([indentWithTab, { "key": "Enter", "run": insertNewlineAndIndent }]));
 
         extensions.push(lintGutter());
         extensions.push(keymap.of([...searchKeymap]));
@@ -393,6 +402,8 @@ export default class EditorTabCodemirror extends EditorBase
                 history(),
                 drawSelection(),
                 EditorState.allowMultipleSelections.of(true));
+            // undo/redo, move/copy/delete line, select all, smart home/end, ...
+            extensions.push(keymap.of([...defaultKeymap, ...historyKeymap]));
             extensions.push(keymap.of([
                 {
                     "key": "Mod-/",
@@ -404,6 +415,7 @@ export default class EditorTabCodemirror extends EditorBase
                 }]));
         }
 
+        extensions.push(this.#prefsCompartment.of(this.#getPrefsExtensions()));
         extensions.push(this.#languageCompartment.of(this.#getLanguageExtensions(this._options.syntax)));
 
         if (!this._options.allowEdit)
@@ -431,6 +443,12 @@ export default class EditorTabCodemirror extends EditorBase
                 "doc": options.content || ""
             });
 
+        this.#prefsListener = userSettings.on(UserSettings.EVENT_CHANGE, (key) =>
+        {
+            if (key != UserSettings.PREF_FONTSIZE_ACE && key != UserSettings.PREF_WRAPMODE_ACE && key != UserSettings.PREF_TABWIDTH) return;
+            this.cmView?.dispatch({ "effects": this.#prefsCompartment.reconfigure(this.#getPrefsExtensions()) });
+        });
+
         // this.cmView.state.readOnly.of(true);
 
         createOpDocButton(this.tab, this);
@@ -441,6 +459,28 @@ export default class EditorTabCodemirror extends EditorBase
     /**
      * @param {string} syntax
      */
+    /**
+     * font size, wrap mode and tab width from the user preferences
+     */
+    #getPrefsExtensions()
+    {
+        const fontSize = parseFloat(userSettings.get(UserSettings.PREF_FONTSIZE_ACE)) || 12;
+        const tabWidth = Math.max(1, Math.min(16, parseInt(userSettings.get(UserSettings.PREF_TABWIDTH)) || 4));
+        const wrap = userSettings.get(UserSettings.PREF_WRAPMODE_ACE) === true || userSettings.get(UserSettings.PREF_WRAPMODE_ACE) === "true";
+
+        const exts = [
+            EditorView.theme({
+                "&": { "fontSize": fontSize + "px" },
+                ".cm-content": { "tabSize": tabWidth },
+                ".cm-scroller": { "fontSize": fontSize + "px" }
+            }),
+            EditorState.tabSize.of(tabWidth),
+            indentUnit.of(" ".repeat(tabWidth))
+        ];
+        if (wrap) exts.push(EditorView.lineWrapping);
+        return exts;
+    }
+
     #getLanguageExtensions(syntax)
     {
         if (syntax == "glsl") return [glsl()];

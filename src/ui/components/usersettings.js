@@ -41,7 +41,6 @@ export class UserSettings extends Events
     static PREF_MAINTABS_VISIBLE = "maintabsVisible";
     static PREF_CHECK_OP_COLLISIONS = "checkOpCollisions";
     static PREF_DEVINFOS = "devinfos";
-    static PREF_HIDE_CANVAS_UI = "hideCanvasUi";
     static PREF_PATCH_ALLOW_CABLEDRAG = "patch_allowCableDrag";
     static PREF_LINETYPE = "linetype";
     static PREF_FILEMANAGER_ORDER = "filemanager_order";
@@ -66,6 +65,7 @@ export class UserSettings extends Events
     static PREF_HELPERMODE = "helperMode";
     static PREF_FONTSIZE_ACE = "fontsize_ace";
     static PREF_WRAPMODE_ACE = "wrapmode_ace";
+    static PREF_TABWIDTH = "tabwidth";
     static PREF_NO_FADEOUT_CABLES = "noFadeOutCables";
     static PREF_REDUCE_MOTION = "reduceMotion";
     static PREF_NO_REDUCE_FPS = "noReduceFps";
