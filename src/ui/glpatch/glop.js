@@ -650,7 +650,7 @@ export default class GlOp extends Events
         if (newAttribs && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this.#glPatch.selectOpId(this.#id);
 
-        this.opUiAttribs = cloneObject(attr);
+        this.opUiAttribs = cloneObject(attr) || {};
 
         if (this.opUiAttribs.extendTitlePort && (!this._titleExtPort || this._titleExtPort.name != this.opUiAttribs.extendTitlePort))
         {
