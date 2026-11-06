@@ -421,19 +421,11 @@ export default class EditorTabCodemirror extends EditorBase
         if (!this._options.allowEdit)
         {
             extensions.push(EditorState.readOnly.of(true));
-            extensions.push(EditorView.editable.of(false));
             extensions.push(EditorView.theme({
-                "&": {
-                    "opacity": "0.8 !important"
-                } }));
-            EditorView.theme({ // hide cursor
-                ".cm-cursor, .cm-dropCursor": {
-                    "display": "none"
-                },
-                "&.cm-focused": {
-                    "outline": "none"
-                }
-            });
+                "&": { "opacity": "0.8 !important" },
+                ".cm-dropCursor": { "display": "none" },
+                "&.cm-focused": { "outline": "none" }
+            }));
         }
 
         this.cmView = new EditorView(
