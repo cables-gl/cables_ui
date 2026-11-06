@@ -395,6 +395,82 @@ export default class GlLink
         this.updateVisible();
     }
 
+    /**
+     * position of the far end of a link, as seen from the given op
+     * @param {GlLink} link
+     * @param {boolean} atInput true: the link's input end, false: its output end
+     * @returns {{x:number,y:number}|null}
+     */
+    static #endPos(link, atInput)
+    {
+        const glop = atInput ? link.opIn : link.opOut;
+        const t = glop && glop.getUiAttribs().translate;
+        if (!t) return null;
+        if (atInput) return { "x": t.x + link._offsetXInput, "y": t.y };
+        return { "x": t.x + link._offsetXOutput, "y": t.y + glop.h };
+    }
+
+    /**
+     * @param {{x:number,y:number}} from
+     * @param {{x:number,y:number}} to
+     * @returns {{x:number,y:number}|null}
+     */
+    static #unit(from, to)
+    {
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        const len = Math.hypot(dx, dy);
+        if (len < 0.0001) return null;
+        return { "x": dx / len, "y": dy / len };
+    }
+
+    /**
+     * for reroute dots: direction (unit vector) the cable is flowing through the dot,
+     * smoothed by the link on the other side of the dot, if there is one
+     * @param {number} pos1x input end
+     * @param {number} pos1y
+     * @param {number} pos2x output end
+     * @param {number} pos2y
+     * @returns {{dirIn:{x:number,y:number}|null, dirOut:{x:number,y:number}|null}}
+     */
+    #getDotDirections(pos1x, pos1y, pos2x, pos2y)
+    {
+        let dirIn = null;
+        let dirOut = null;
+        const inPos = { "x": pos1x, "y": pos1y };
+        const outPos = { "x": pos2x, "y": pos2y };
+
+        if (this.#glOpIn.displayType === this.#glOpIn.DISPLAY_REROUTE_DOT)
+        {
+            let next = null;
+            for (const i in this.#glOpIn._links)
+            {
+                const l = this.#glOpIn._links[i];
+                if (l === this || l.opOut !== this.#glOpIn) continue;
+                next = GlLink.#endPos(l, true);
+                this.#glPatch.queueLinkPosition(l);
+                if (next) break;
+            }
+            dirIn = GlLink.#unit(outPos, next || inPos);
+        }
+
+        if (this.#glOpOut.displayType === this.#glOpOut.DISPLAY_REROUTE_DOT)
+        {
+            let prev = null;
+            for (const i in this.#glOpOut._links)
+            {
+                const l = this.#glOpOut._links[i];
+                if (l === this || l.opIn !== this.#glOpOut) continue;
+                prev = GlLink.#endPos(l, false);
+                this.#glPatch.queueLinkPosition(l);
+                if (prev) break;
+            }
+            dirOut = GlLink.#unit(prev || outPos, inPos);
+        }
+
+        return { dirIn, dirOut };
+    }
+
     _updatePosition()
     {
         if (this.#visible)
@@ -453,7 +529,8 @@ export default class GlLink
                         }
                     }
 
-                    this.#cable.setPosition(pos1x, pos1y, pos2x, pos2y);
+                    const dirs = this.#getDotDirections(pos1x, pos1y, pos2x, pos2y);
+                    this.#cable.setPosition(pos1x, pos1y, pos2x, pos2y, dirs.dirIn, dirs.dirOut);
                 }
             }
             else

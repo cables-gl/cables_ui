@@ -23,6 +23,12 @@ export default class GlCable
     #y = 0;
     #x2 = 0;
     #y2 = 0;
+
+    /** @type {{x:number,y:number}|null} flow direction through a reroute dot at the input end */
+    #dirIn = null;
+
+    /** @type {{x:number,y:number}|null} flow direction through a reroute dot at the output end */
+    #dirOut = null;
     #linetype = this.LINETYPE_CURVED;
 
     /** @type {number[]} */
@@ -352,10 +358,12 @@ export default class GlCable
         //         ]));
 
         const z = this.#getZ();
-        if (this._oldx != this.#x || this._oldy != this.#y || this._oldx2 != this.#x2 || this._oldy2 != this.#y2 || this._oldz != z)
+        const dirKey = (this.#dirIn ? this.#dirIn.x + "," + this.#dirIn.y : "") + "|" + (this.#dirOut ? this.#dirOut.x + "," + this.#dirOut.y : "");
+        if (this._oldDirKey != dirKey || this._oldx != this.#x || this._oldy != this.#y || this._oldx2 != this.#x2 || this._oldy2 != this.#y2 || this._oldz != z)
         {
             if (this._oldz != z) this.#setPositionButton();
             this._oldz = z;
+            this._oldDirKey = dirKey;
             let posX = this._oldx = this.#x;
             let posX2 = this._oldy = this.#y;
             this._oldx2 = this.#x2;
@@ -369,7 +377,8 @@ export default class GlCable
 
             if (this.#linetype == this.LINETYPE_CURVED)
             {
-                if (this.#x == this.#x2 || Math.abs(this.#x - this.#x2) < 50)
+                const hasDir = !!(this.#dirIn || this.#dirOut);
+                if (!hasDir && (this.#x == this.#x2 || Math.abs(this.#x - this.#x2) < 50))
                 {
                     this.#curvedSimple = true;
                     this.#updateDistFromPort();
@@ -404,15 +413,44 @@ export default class GlCable
                     }
 
                     const distY = Math.abs(this.#y - this.#y2);
+                    const curveY = gui.theme.patch.cablesCurveY || 1.25;
+
+                    let c1x = posX;
+                    let c1y = this.#y - (distY * 0.002) - this.#distFromPort * curveY;
+                    let c2x = posX2;
+                    let c2y = this.#y2 + (distY * 0.002) + this.#distFromPort * curveY;
+                    let midX = (posX + posX2) * 0.5;
+
+                    if (this.#dirIn || this.#dirOut)
+                    {
+                        const len = Math.hypot(posX2 - posX, this.#y2 - this.#y);
+                        const mag = Math.max(gluiconfig.portHeight * 0.5, Math.min(len * 0.35, gluiconfig.portHeight * 2.9 * curveY));
+                        if (this.#dirIn)
+                        {
+                            c1x = posX - this.#dirIn.x * mag;
+                            c1y = this.#y - this.#dirIn.y * mag;
+                        }
+                        if (this.#dirOut)
+                        {
+                            c2x = posX2 + this.#dirOut.x * mag;
+                            c2y = this.#y2 + this.#dirOut.y * mag;
+                        }
+
+                        if (this.#dirIn && this.#dirOut)
+                        {
+                            const dx = Math.abs(posX2 - posX);
+                            midX += mag * Math.max(0, 1 - dx / (mag * 2));
+                        }
+                    }
 
                     this.#points =
                         [
                             posX, this.#y, z,
-                            posX, this.#y - (distY * 0.002) - this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), z,
+                            c1x, c1y, z,
 
-                            (posX + posX2) * 0.5, (this.#y + this.#y2) * 0.5, z, // center point
+                            midX, (this.#y + this.#y2) * 0.5, z, // center point
 
-                            posX2, this.#y2 + (distY * 0.002) + this.#distFromPort * (gui.theme.patch.cablesCurveY || 1.25), z,
+                            c2x, c2y, z,
                             posX2, this.#y2, z,
                             posX2, this.#y2, z
 
@@ -469,6 +507,16 @@ export default class GlCable
         }
     }
 
+    /**
+     * @param {{x:number,y:number}|null} a
+     * @param {{x:number,y:number}|null} b
+     */
+    static #sameDir(a, b)
+    {
+        if (!a || !b) return a === b;
+        return a.x === b.x && a.y === b.y;
+    }
+
     #setPositionButton()
     {
         this.#buttonRect.setShape(1);
@@ -484,10 +532,16 @@ export default class GlCable
      * @param {number} y
      * @param {number} x2
      * @param {number} y2
+     * @param {{x:number,y:number}|null} [dirIn] flow direction (unit vector) through a reroute dot at the input end
+     * @param {{x:number,y:number}|null} [dirOut] flow direction (unit vector) through a reroute dot at the output end
      */
-    setPosition(x, y, x2, y2)
+    setPosition(x, y, x2, y2, dirIn = null, dirOut = null)
     {
-        if (!(this.#x != x || this.#y != y || this.#x2 != x2 || this.#y2 != y2)) return;
+        const dirChanged = !GlCable.#sameDir(this.#dirIn, dirIn) || !GlCable.#sameDir(this.#dirOut, dirOut);
+        if (!dirChanged && !(this.#x != x || this.#y != y || this.#x2 != x2 || this.#y2 != y2)) return;
+
+        this.#dirIn = dirIn;
+        this.#dirOut = dirOut;
 
         this.#x = x;
         this.#y = y;
