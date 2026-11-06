@@ -197,7 +197,7 @@ export default class GlArea
                 if (!this.#animating) this.#setRectResizePosition(this._w, this._h);
             }
         }
-        if (!this.#glOpScopeEnd && this.#glop.getUiAttribs().scopeArea)
+        if (!this.#glOpScopeEnd && this.#glop.getUiAttribs()?.scopeArea)
         {
             if (this.#glop.op.tempData.scopeAreaEndOp)
                 this.#glOpScopeEnd = this.#glop.glPatch.getGlOp(this.#glop.op.tempData.scopeAreaEndOp);
