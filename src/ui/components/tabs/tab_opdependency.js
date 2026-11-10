@@ -173,10 +173,6 @@ export default class OpDependencyTab extends Tab
                     }
                 });
             }
-            else
-            {
-
-            }
         }
         else if (this.#sourceType === "corelib")
         {
@@ -195,7 +191,9 @@ export default class OpDependencyTab extends Tab
         }
         else
         {
-            gui.serverOps.addOpDependency(opDoc.id, src, this.#jsType, exportName, (addErr) =>
+            let type = this.#jsType;
+            if (this.#sourceType === "op") type = this.#sourceType;
+            gui.serverOps.addOpDependency(opDoc.id, src, type, exportName, (addErr) =>
             {
                 if (!addErr)
                 {
