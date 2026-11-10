@@ -50,10 +50,25 @@ export default class LibLoader
         const jsBatch = [];
         const waitFor = [];
         const pending = [];
+        const added = {};
 
         for (const i in dependencies)
         {
-            pending.push(this._loadLib(dependencies[i], jsBatch, waitFor));
+            const module = dependencies[i];
+
+            // backwards compatibility...
+            if (module && Array.isArray(module.src)) module.src = module.src[0] || "";
+
+            let libName = module ? module.src : undefined;
+            if (libName && libName.startsWith("./")) libName = module.op + libName.substring(1);
+
+            if (libName)
+            {
+                if (added.hasOwnProperty(libName)) continue;
+                added[libName] = true;
+            }
+
+            pending.push(this._loadLib(module, libName, jsBatch, waitFor));
         }
 
         if (jsBatch.length > 0) this._loadJsBatch(jsBatch, waitFor);
@@ -70,17 +85,13 @@ export default class LibLoader
 
     /**
      * @param {OpDependency} module
+     * @param {String} libName
      * @param {Array} jsBatch
      * @param {Array<Promise<boolean|void>>} waitFor
      * @returns {Promise<boolean>}
      */
-    _loadLib(module, jsBatch, waitFor)
+    _loadLib(module, libName, jsBatch, waitFor)
     {
-        // backwards compatibility...
-        if (module && Array.isArray(module.src)) module.src = module.src[0] || "";
-
-        const libName = module ? module.src : undefined;
-
         // loading npms is done by electron
         if (module && module.type === "npm") return Promise.resolve(true);
 
