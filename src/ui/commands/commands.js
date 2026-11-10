@@ -47,6 +47,7 @@ class Commands
                 if (!Commands.commands[i].category) console.warn("cmd has no category ", Commands.commands[i].cmd);
                 if (titles[Commands.commands[i].cmd]) console.warn("duplicate cmd title ", Commands.commands[i].cmd);
                 titles[Commands.commands[i].cmd] = true;
+                if (typeof Commands.commands[i].func !== "function") console.warn("cmd has undefined func ", Commands.commands[i].cmd);
                 Commands.commands[i].id = uuid();
             }
         }
