@@ -1575,7 +1575,7 @@ export default class Gui extends Events
 
                 str += "<li class=\"divide\"></li>";
 
-                str += "<li id=\"nav_cablesweb\"><a target=\"_blank\" href=\"" + platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
+                str += "<li id=\"nav_cablesweb\"><a target=\"_blank\" href=\"" + platform.getCablesDocsUrl() + "/\">Open cables.gl</a></li>";
                 if (platform.isElectron) str += "<li id=\"nav_close\">Quit</li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
 
