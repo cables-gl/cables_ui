@@ -120,7 +120,7 @@ class Commands
     static getCommandByName(name)
     {
 
-        for (let i = 0; i < CMD.commands.length; i++)
+        for (let i = 0; i < Commands.commands.length; i++)
         {
             if (Commands.commands[i].cmd == name)
             {
@@ -135,6 +135,7 @@ class Commands
     static getCommandByFunction(func)
     {
         let cmd = null;
+        if (!func) return cmd;
         for (let i = 0; i < Commands.commands.length; i++)
         {
             if (Commands.commands[i].func == func)
