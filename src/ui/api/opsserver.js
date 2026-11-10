@@ -1902,7 +1902,7 @@ export default class ServerOps
         ops.forEach((op) =>
         {
             const opDeps = this.getOpDeps(op);
-            opDeps.forEach((lib) => { depsToLoad[lib.src] = lib; });
+            opDeps.forEach((lib) => { depsToLoad[lib.op + lib.src] = lib; });
         });
         this.libLoader.loadLibs(Object.values(depsToLoad), finishedCb);
     }
