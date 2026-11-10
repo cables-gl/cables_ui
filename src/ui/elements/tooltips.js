@@ -103,7 +103,8 @@ function eleTtOut(_e)
  */
 export function showInfo(txt, param)
 {
-    if (param)gui.bottomInfoArea?.setContentParam(txt);
+    if (!gui || !gui.bottomInfoArea) return;
+    if (param)gui.bottomInfoArea.setContentParam(txt);
     else gui.bottomInfoArea.setContent(txt);
 }
 
