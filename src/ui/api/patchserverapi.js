@@ -806,6 +806,7 @@ export default class PatchSaveServer extends Events
      */
     setPatchName(v, cb)
     {
+        if (!platform.frontendOptions.showSetProjectTitle) return;
 
         const currentProject = gui.project();
         platform.talkerAPI.send(
@@ -841,6 +842,7 @@ export default class PatchSaveServer extends Events
 
     showModalTitleDialog(cb = null)
     {
+        if (!platform.frontendOptions.showSetProjectTitle) return;
         const currentProject = gui.project();
         new ModalDialog({
             "prompt": true,

@@ -35,7 +35,6 @@ export default class PlatformElectron extends Platform
         this.frontendOptions.showExportPatch =
         this.frontendOptions.opRenameInEditor =
         this.frontendOptions.opDeleteInEditor =
-        this.frontendOptions.showSetProjectTitle =
         this.frontendOptions.showStartUpLog = true;
         this.frontendOptions.showFormatCodeButton = true;
 
