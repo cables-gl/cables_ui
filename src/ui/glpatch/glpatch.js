@@ -1751,11 +1751,9 @@ export default class GlPatch extends Events
         const bottom = vb.viewHeight - gui.getBottomPanelHeight();
         const floating = gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FLOAT;
 
-        // area right of the patch is covered by the right panel (full height),
-        // the renderer only covers the top part - below it the patch is still visible
-        const rightPanel = floating ? gui.rightPanelWidth + gui.rendererWidth : gui.rightPanelWidth;
-        const rendererH = floating ? 0 : (gui.rendererHeightScaled || 0);
-        const rendererW = floating ? 0 : (gui.rendererWidthScaled || gui.rendererWidth || 0);
+        const rightPanel = gui.rightPanelWidth;
+        const rendererH = floating ? gui.rendererHeight : (gui.rendererHeightScaled || 0);
+        const rendererW = floating ? gui.rightPanelWidth + gui.rendererWidth : (gui.rendererWidthScaled || gui.rendererWidth || 0);
 
         const rects = [];
         const left = gui.getLeftPanelsMaxWidth();

@@ -110,11 +110,13 @@ export function showInfo(txt, param)
 
 export function hideInfo()
 {
+    if (!gui || !gui.bottomInfoArea) return;
     gui.bottomInfoArea.setContent("");
 }
 
 function eleInfoOver(e)
 {
+    if (!gui || !gui.bottomInfoArea) return;
     gui.bottomInfoArea.hoverInfoEle(e);
 }
 
