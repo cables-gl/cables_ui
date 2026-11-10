@@ -1555,13 +1555,14 @@ export default class Gui extends Events
                 str += "<li class=\"divide\"></li>";
 
                 str += "<li id=\"nav_cablesweb\"><a target=\"_blank\" href=\"" + platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
-                str += "<li id=\"nav_close\">Quit</li>";
+                if (platform.isElectron) str += "<li id=\"nav_close\">Quit</li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
 
                 ele.byId("nav_patch_new").addEventListener("click", () => { CmdPatch.newPatch(); });
                 ele.byId("nav_help_forum").addEventListener("click", () => { window.open("https://github.com/cables-gl/cables/issues", "_blank"); });
                 ele.byId("nav_support").addEventListener("click", () => { window.open(platform.getCablesDocsUrl() + "/support", "_blank"); });
-                ele.byId("nav_close").addEventListener("click", () => { window.close(); });
+
+                if (platform.isElectron) ele.byId("nav_close").addEventListener("click", () => { window.close(); });
 
                 if (this.user.isSupporter) ele.hide(ele.byId("nav_support"));
             });
