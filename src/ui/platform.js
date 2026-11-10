@@ -1,7 +1,7 @@
 import { Events, Logger, TalkerAPI, ele } from "cables-shared-client";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
-import { notify, notifyError } from "./elements/notification.js";
+import { notify, notifyError, notifyWarn } from "./elements/notification.js";
 import defaultOps from "./defaultops.js";
 import ElectronOpDirs from "./components/tabs/tab_electronopdirs.js";
 import namespace from "./namespaceutils.js";
@@ -345,14 +345,14 @@ export class Platform extends Events
             CABLES.build &&
             CABLES.build.git.branch == "master"
         )
-            notifyError("core: using master branch not on live?!");
+            notifyWarn("core: using master branch");
         if (
             document.location.hostname != "cables.gl" &&
             document.location.hostname != "sandbox.cables.gl" &&
             CABLES.UI.build &&
             CABLES.UI.build.git.branch == "master"
         )
-            notifyError("UI: using master branch not on live?!");
+            notifyWarn("UI: using master branch");
     }
 
     /**
