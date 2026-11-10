@@ -140,12 +140,6 @@ class CmdDebug
                 "icon": "op"
             },
             {
-                "cmd": "Save without objnames",
-                "func": CmdDebug.saveWithOutObjnames,
-                "category": "debug",
-                "icon": "op"
-            },
-            {
                 "cmd": "Glui focusOpAnim",
                 "func": CmdDebug.focusOpAnim,
                 "category": "debug"
