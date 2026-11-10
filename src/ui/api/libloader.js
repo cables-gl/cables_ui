@@ -128,9 +128,13 @@ export default class LibLoader
         }
         else if (module.type === "op")
         {
-            promise = new Promise((resolve) =>
+            // only load one op dependency at a time
+            promise = Promise.resolve().then(() =>
             {
-                gui.serverOps.loadOpDependencies(module.src, () => { resolve(true); });
+                return new Promise((resolve) =>
+                {
+                    gui.serverOps.loadOpDependencies(module.src, () => { resolve(true); });
+                });
             });
         }
         else
