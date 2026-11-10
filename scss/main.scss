@@ -864,4 +864,25 @@ body
 .markdown
 {
     a{text-decoration:underline;}
+
+    code
+    {
+        font-family: monospace;
+        background-color: var(--color-04);
+        padding: 2px 4px;
+    }
+
+    pre
+    {
+        background-color: var(--color-04);
+        padding: 6px 8px;
+        overflow-x: auto;
+
+        code
+        {
+            background: none;
+            border: none;
+            padding: 0;
+        }
+    }
 }
