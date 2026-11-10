@@ -1273,6 +1273,27 @@ export default class Gui extends Events
         this._currentProject.summary = projectSummary;
     }
 
+    /**
+     * refetch the patch summary (description, licence, visibility, ...) via talkerapi and refresh the patch panel
+     */
+    updatePatchSummary()
+    {
+        platform.talkerAPI.send(TalkerAPI.CMD_GET_PATCH_SUMMARY, {}, (err, summary) =>
+        {
+            if (err || !summary || !summary.data || !this._currentProject) return;
+            this.setPatchSummary(summary.data);
+
+            const title = summary.data.title;
+            if (title)
+            {
+                this.setProjectName(title);
+                // have the title of the patch-editor iframe updated
+                platform.talkerAPI.send(TalkerAPI.CMD_UPDATE_PATCH_NAME, { "name": title });
+            }
+            this.patchParamPanel.show(true);
+        });
+    }
+
     createProject()
     {
         if (platform.isElectron())
@@ -2133,7 +2154,7 @@ export default class Gui extends Events
                 const c = e.data.split(":");
                 if (c.length > 1)
                 {
-                    if (c[0] == "projectname") this.setProjectName(c[1]);
+                    if (c[0] == "projectsettings") this.updatePatchSummary();
                     if (c[0] == "notify") notify(c[1]);
                     if (c[0] == "notifyerror") notifyError(c[1]);
                     if (c[0] == "cmd" && c[1] == "saveproject") this.patchView.store.saveCurrentProject();
@@ -2145,7 +2166,11 @@ export default class Gui extends Events
         const tab = gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
 
         editorSession.rememberOpenEditor(Gui.TABSESSION_NAME_PATCHSETTINGS, Gui.TABSESSION_NAME_PATCHSETTINGS, {}, true);
-        tab.on(Tab.EVENT_CLOSE, () => { editorSession.remove(Gui.TABSESSION_NAME_PATCHSETTINGS, Gui.TABSESSION_NAME_PATCHSETTINGS); });
+        tab.on(Tab.EVENT_CLOSE, () =>
+        {
+            editorSession.remove(Gui.TABSESSION_NAME_PATCHSETTINGS, Gui.TABSESSION_NAME_PATCHSETTINGS);
+            this.updatePatchSummary();
+        });
     }
 
     /**
