@@ -7,6 +7,7 @@ import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import { Commands } from "../../commands/commands.js";
 import { InputBindings } from "../../inputbindings.js";
+import { platform } from "../../platform.js";
 
 export default class TabInputBindings
 {
@@ -23,7 +24,7 @@ export default class TabInputBindings
         tabs.addTab(this.#tab, true);
 
         editorSession.rememberOpenEditor(TabInputBindings.TABSESSION_NAME, TabInputBindings.TABSESSION_NAME, { }, true);
-        this.#tab.html(getHandleBarHtml("tab_keybindings"));
+        this.#tab.html(getHandleBarHtml("tab_keybindings", { "docsUrl": platform.getCablesDocsUrl() }));
         this.update();
         gui.maintabPanel.show(true);
 

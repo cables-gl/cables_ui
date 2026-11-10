@@ -6,6 +6,7 @@ import { gui } from "../../gui.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import opNames from "../../opnameutils.js";
+import { platform } from "../../platform.js";
 
 export default class TabDebugger
 {
@@ -25,7 +26,7 @@ export default class TabDebugger
         tabs.addTab(this._tab, true);
 
         editorSession.rememberOpenEditor(TabDebugger.TABSESSION_NAME, "debugger", { }, true);
-        let html = getHandleBarHtml("tab_debugger");
+        let html = getHandleBarHtml("tab_debugger", { "docsUrl": platform.getCablesDocsUrl() });
         this._tab.html(html);
         this.update();
 

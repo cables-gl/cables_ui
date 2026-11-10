@@ -51,7 +51,7 @@ export const GuiText =
     "tlloopdelete": "Toggle loop area",
     "tlfit": "`f` Zoom to fit selected or all keys",
     "tlmute": "Mute animation",
-    "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='https://cables.gl/docs/2_1_timeline/animation'>read the documentation</a>",
+    "noanims": "No animations yet!\n\n to start keyframing, click *animate parameter* next to a port, or create an anim op\n\n<a target='_blank' class='link' href='https://cables.gl/docs/3_tools/timeline/animation'>read the documentation</a>",
 
     "tlbtnCreate": "Create new key in this animation",
     "tlbtnPrev": "Jump to previous key in this animation",

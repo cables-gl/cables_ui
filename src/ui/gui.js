@@ -1694,6 +1694,8 @@ export default class Gui extends Events
 
         ele.byId("nav_profiler").addEventListener("click", () => { CmdPatch.patchProfiler(); });
         ele.byId("nav_patchanalysis").addEventListener("click", () => { CmdPatch.analyze(); });
+        ele.byId("nav_patchdebugger").addEventListener("click", () => { CmdPatch.patchDebugger(); });
+        ele.byId("nav_keybindings").addEventListener("click", () => { CmdUi.keyBindings(); });
 
         if (!platform.isTrustedPatch())
         {
