@@ -51,6 +51,7 @@ class GlUiConfig
         this.zPosGreyOutRect = -0.1;
 
         this.zPosSubPatchAnimRect = 0.25;
+        this.zPosDragTarget = 0.29;
 
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;

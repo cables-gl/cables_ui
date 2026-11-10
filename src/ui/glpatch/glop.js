@@ -81,6 +81,12 @@ export default class GlOp extends Events
     #glRectHighlighted = null;
 
     /** @type {GlRect} */
+    #glRectDragTarget = null;
+
+    /** @type {{x:number,y:number}} */
+    #dragSnapPos = null;
+
+    /** @type {GlRect} */
     #glRectBg = null;
 
     /** @type {GlRect} */
@@ -476,6 +482,7 @@ export default class GlOp extends Events
 
             undo.endGroup(undoGroup, "Move Ops");
         }
+        else for (const i in glOps) glOps[i].endPassiveDrag();
     }
 
     /**
@@ -1082,6 +1089,7 @@ export default class GlOp extends Events
         for (let i = 0; i < this.#glRectsStack.length; i++) this.#glRectsStack[i].dispose();
         this.#glRectsStack = [];
         if (this.#glRectHighlighted) this.#glRectHighlighted = this.#glRectHighlighted.dispose();
+        if (this.#glRectDragTarget) this.#glRectDragTarget = this.#glRectDragTarget.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
         if (this.#titleExt) this.#titleExt = this.#titleExt.dispose();
@@ -2047,6 +2055,17 @@ export default class GlOp extends Events
 
     endPassiveDrag()
     {
+        if (this.#glRectDragTarget) this.#glRectDragTarget = this.#glRectDragTarget.dispose();
+
+        let from = null;
+        if (this.#dragSnapPos && this.#op)
+        {
+            from = { "x": this.x, "y": this.y };
+            this.opUiAttribs.translate = this.#dragSnapPos;
+            this.#op.uiAttribs.translate = { "x": this.x, "y": this.y };
+        }
+        this.#dragSnapPos = null;
+
         if (this._passiveDragStartX !== null && this._passiveDragStartY !== null)
             if (this._passiveDragStartX != this.x || this._passiveDragStartY != this.y)
             {
@@ -2076,6 +2095,8 @@ export default class GlOp extends Events
 
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
+
+        if (from) this.#glPatch.animateOpFrom(this.#op, from);
     }
 
     #commitDragPosition()
@@ -2084,6 +2105,21 @@ export default class GlOp extends Events
         const y = this.y;
         this.#op.uiAttribs.translate = { "x": this._passiveDragStartX, "y": this._passiveDragStartY };
         this.#op.setUiAttrib({ "translate": { "x": x, "y": y } });
+    }
+
+    /** dark rect showing where the dragged op will snap to on release */
+    #updateDragTargetRect()
+    {
+        if (!this.#glRectBg || !this.#instancer) return;
+        if (!this.#glRectDragTarget)
+        {
+            this.#glRectDragTarget = this.#instancer.createRect({ "name": "dragTarget", "interactive": false });
+            this.#glRectDragTarget.setColor(0, 0, 0, 0.25);
+        }
+
+        this.#glRectDragTarget.visible = this.#dragSnapPos.x != this.x || this.#dragSnapPos.y != this.y;
+        this.#glRectDragTarget.setSize(this.#glRectBg.w, this.#glRectBg.h);
+        this.#glRectDragTarget.setPosition(this.#dragSnapPos.x, this.#dragSnapPos.y, gluiconfig.zPosDragTarget);
     }
 
     startPassiveDrag()
@@ -2105,10 +2141,13 @@ export default class GlOp extends Events
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
-        x = this.#glPatch.snap.snapOpX(x, this.#op);
-        y = this.#glPatch.snap.snapY(y, this.#glPatch._pressedCtrlKey);
-
         if (this.op.tempData.scopeAreaStartOp) x = this.op.tempData.scopeAreaStartOp.uiAttribs.translate.x;
+
+        this.#dragSnapPos = {
+            "x": this.#glPatch.snap.snapOpX(x, this.#op),
+            "y": this.#glPatch.snap.snapY(y, this.#glPatch._pressedCtrlKey)
+        };
+        if (this.op.tempData.scopeAreaStartOp) this.#dragSnapPos.x = x;
 
         if (x != this.x || y != this.y)
         {
@@ -2116,6 +2155,7 @@ export default class GlOp extends Events
             this.opUiAttribs.translate = { "x": x, "y": y };
             this.updatePosition();
         }
+        this.#updateDragTargetRect();
         this.emitEvent(GlOp.EVENT_DRAG);
 
         if (!this.#op) return;

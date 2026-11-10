@@ -43,7 +43,6 @@ export default class GlCable
     /** @type {GlLink} */
     #link = null;
     #tension = 0.1;
-    #curvedSimple = false;
     #log = null;
 
     /** @type {GlPatch} */
@@ -257,13 +256,18 @@ export default class GlCable
 
     #updateDistFromPort()
     {
-        if (this.#linetype == this.LINETYPE_SIMPLE || this.#curvedSimple)
+        if (this.#linetype == this.LINETYPE_SIMPLE)
         {
             this.#distFromPort = 0;
             return;
         }
-        if (Math.abs(this.#y - this.#y2) < gluiconfig.portHeight * 2) this.#distFromPort = gluiconfig.portHeight * 0.5;
-        else this.#distFromPort = gluiconfig.portHeight * 2.9; // magic number...?!
+        // blend from 0.5 to 2.9 port heights as ops move apart vertically
+        const t = Math.min(1, Math.max(0, (Math.abs(this.#y - this.#y2) - gluiconfig.portHeight) / (gluiconfig.portHeight * 2)));
+        this.#distFromPort = gluiconfig.portHeight * (0.5 + 2.4 * t); // magic number...?!
+
+        // curved cables blend into a straight line when ports get close horizontally
+        if (this.#linetype == this.LINETYPE_CURVED && !this.#dirIn && !this.#dirOut)
+            this.#distFromPort *= Math.min(1, Math.abs(this.#x - this.#x2) / 50);
     }
 
     /**
@@ -377,41 +381,7 @@ export default class GlCable
 
             if (this.#linetype == this.LINETYPE_CURVED)
             {
-                const hasDir = !!(this.#dirIn || this.#dirOut);
-                if (!hasDir && (this.#x == this.#x2 || Math.abs(this.#x - this.#x2) < 50))
                 {
-                    this.#curvedSimple = true;
-                    this.#updateDistFromPort();
-
-                    if (this.#y < this.#y2)
-                        this.#points =
-                        [
-                            posX, this.#y - 10, z,
-                            posX, this.#y, z,
-                            posX2, this.#y2 + 10, z,
-                            posX2, this.#y2, z
-                        ];
-                    else
-                        this.#points =
-                        [
-                            posX, this.#y, z,
-                            posX2, this.#y2, z,
-                            posX2, this.#y2, z
-                        ];
-
-                    // make sure all curved cables are the same length
-                    while (this.#points.length < 66) this.#points.push(posX2, this.#y2, z);
-
-                    this.#setSplinePoints();
-                }
-                else
-                {
-                    if (this.#curvedSimple)
-                    {
-                        this.#curvedSimple = false;
-                        this.#updateDistFromPort();
-                    }
-
                     const distY = Math.abs(this.#y - this.#y2);
                     const curveY = gui.theme.patch.cablesCurveY || 1.25;
 

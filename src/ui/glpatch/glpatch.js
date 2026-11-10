@@ -1373,9 +1373,6 @@ export default class GlPatch extends Events
             this._glOpz[i].updateIfNeeded();
         }
 
-        for (const link of this.#queuedLinks) link._updatePosition();
-        this.#queuedLinks.clear();
-
         this.frameCount++;
         this.isAnimated = false;
 
@@ -1443,6 +1440,10 @@ export default class GlPatch extends Events
         this._drawCursor();
 
         this.portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+
+        // after mouseMove, so cables of dragged ops update in the same frame
+        for (const link of this.#queuedLinks) link._updatePosition();
+        this.#queuedLinks.clear();
 
         const perf = gui.uiProfiler.start("[glpatch] render");
 
