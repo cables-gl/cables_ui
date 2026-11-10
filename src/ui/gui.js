@@ -1554,7 +1554,7 @@ export default class Gui extends Events
 
                 str += "<li class=\"divide\"></li>";
 
-                str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
+                str += "<li id=\"nav_cablesweb\"><a target=\"_blank\" href=\"" + platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
                 ele.byId("nav_recentpatches").innerHTML = str;
 
                 ele.byId("nav_patch_new").addEventListener("click", () => { CmdPatch.newPatch(); });
