@@ -4,6 +4,7 @@ import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlPatch from "./glpatch.js";
+import GlRect from "../gldraw/glrect.js";
 
 export default class GlCursor extends Events
 {
@@ -27,7 +28,7 @@ export default class GlCursor extends Events
         this._instancer = instancer;
         this._cursorRect = this._instancer.createRect({ "name": "glcursor", "interactive": false });
         this._cursorRect.setSize(10, 10);
-        this._cursorRect.setShape(5);
+        this._cursorRect.setShape(GlRect.SHAPE_CURSOR);
         this._lastMovement = performance.now();
 
         /** @type {number|string} */

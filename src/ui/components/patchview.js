@@ -1110,12 +1110,16 @@ export default class PatchView extends Events
      */
     cursorNavOps(x, y)
     {
-        const ops = this.getSelectedOps();
-        let curOp;
-        if (ops.length == 0) curOp = this.getClosestOp();
-        else curOp = ops[0];
+        let curOp = this._patchRenderer?.glOpCursor?.op;
 
-        if (!curOp) return;
+        if (!curOp)
+        {
+
+            const ops = this.getSelectedOps();
+
+            if (ops.length == 0) curOp = this.getClosestOp();
+            else curOp = ops[0];
+        }
 
         const cursub = this.getCurrentSubPatch();
 
@@ -1130,7 +1134,6 @@ export default class PatchView extends Events
                 if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -1141,7 +1144,6 @@ export default class PatchView extends Events
                 if (y == -1 && op.uiAttribs.translate.y < curOp.uiAttribs.translate.y)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -1152,7 +1154,6 @@ export default class PatchView extends Events
                 if (x == 1 && op.uiAttribs.translate.x > curOp.uiAttribs.translate.x)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -1163,7 +1164,6 @@ export default class PatchView extends Events
                 if (x == -1 && op.uiAttribs.translate.x < curOp.uiAttribs.translate.x)
                 {
                     const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-                    // this._log.log("  score", op.name, score);
                     if (score < foundOpScore)
                     {
                         foundOp = op;
@@ -1175,8 +1175,9 @@ export default class PatchView extends Events
 
         if (foundOp)
         {
-            this.setSelectedOpById(foundOp.id);
-            this.focusOp(foundOp.id);
+            this.setKeyboardCursorToOp(foundOp);
+            // this.setSelectedOpById(foundOp.id);
+            // this.focusOp(foundOp.id);
         }
     }
 
@@ -2806,6 +2807,14 @@ export default class PatchView extends Events
         this._patchRenderer.viewBox.centerSelectedOps();
         if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
         this.focus();
+    }
+
+    /**
+     * @param { Op<any>} op
+     */
+    setKeyboardCursorToOp(op)
+    {
+        if (this._patchRenderer.setKeyboardCursorToOp) this._patchRenderer.setKeyboardCursorToOp(op);
     }
 
     /**

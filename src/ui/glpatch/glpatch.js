@@ -31,6 +31,8 @@ import { InputBindings } from "../inputbindings.js";
 import GlPatchAPI from "./patchapi.js";
 import { UiOp } from "../core_extend_op.js";
 import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
+import GlRect from "../gldraw/glrect.js";
+import GlOpCursor from "./glopcursor.js";
 
 let idleSoon = null;
 let lastUpdate = 0;
@@ -164,6 +166,9 @@ export default class GlPatch extends Events
     #hoverLink;
     #lines;
 
+    /** @type {GlRectInstancer} */
+    #overLayRects;
+
     /**
      * @param {CglContext} cgl
      */
@@ -192,16 +197,16 @@ export default class GlPatch extends Events
         this.#rectInstancer.isRectOccluded = (rect) => { return this.#isZBehindArea(rect.absZ); };
         this.#areaRectInstancer = new GlRectInstancer(cgl, { "name": "arearects" });
         this.#lines = new GlSplineDrawer(cgl, "links");
-        this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
+        this.#overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
         this.#rectInstancer.hoverWhenButton;
-        this._overLayRects.hoverWhenButton = false;
+        this.#overLayRects.hoverWhenButton = false;
 
         this.#textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
 
         /** @type {string} */
         this._currentSubpatch = "0";
-        this.#selectionArea = new GlSelectionArea(this._overLayRects);
+        this.#selectionArea = new GlSelectionArea(this.#overLayRects);
         this.portDragLine = new GlDragLine(this.#overlaySplines, this);
 
         // if (userSettings.get(UserSettings.PREF_DEVINFOS))
@@ -229,14 +234,16 @@ export default class GlPatch extends Events
         this._subpatchAnimOutH = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
 
         this._focusRectAnim = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
-        this._focusRect = this._overLayRects.createRect({ "name": "focusrect", "interactive": false });
+        this._focusRect = this.#overLayRects.createRect({ "name": "focusrect", "interactive": false });
         this._focusRect.setSize(1, 1);
         this._focusRect.setShape(4);
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
+        this.glOpCursor = null;
+
         this._glCursors = {};
-        this._localGlCursor = new GlCursor(this, this._overLayRects);
+        this._localGlCursor = new GlCursor(this, this.#overLayRects);
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
 
@@ -252,13 +259,13 @@ export default class GlPatch extends Events
         // this._redrawFlash.setColor(0, 1, 0, 1);
         this._fadeOutRectAnim = new Anim({ "defaultEasing": Anim.EASING_LINEAR });
 
-        this._fadeOutRect = this._overLayRects.createRect({ "name": "fadeoutrect", "interactive": false });
+        this._fadeOutRect = this.#overLayRects.createRect({ "name": "fadeoutrect", "interactive": false });
         this._fadeOutRect.setSize(100000000, 100000000);
         this._fadeOutRect.setPosition(-50000000, -50000000);
         this._fadeOutRect.setColor(0, 0, 0, 0.0);
         this._fadeOutRect.visible = true;
 
-        this.#dropInOpBorder = this._overLayRects.createRect({ "interactive": false, "name": "dropinborder" });
+        this.#dropInOpBorder = this.#overLayRects.createRect({ "interactive": false, "name": "dropinborder" });
         this.#dropInOpBorder.setSize(100, 100);
         this.#dropInOpBorder.setColor(1, 0, 0, 1);
         this.#dropInOpBorder.visible = false;
@@ -385,7 +392,7 @@ export default class GlPatch extends Events
             // update remote cursor positions
             gui.on("netCursorPos", (msg) =>
             {
-                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this._overLayRects, msg.clientId);
+                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this.#overLayRects, msg.clientId);
 
                 if (msg.hasOwnProperty("subpatch"))
                     this._glCursors[msg.clientId].setSubpatch(msg.subpatch);
@@ -395,7 +402,7 @@ export default class GlPatch extends Events
 
             gui.on("netSelectionArea", (msg) =>
             {
-                if (!this._glSelectionAreas[msg.clientId]) this._glSelectionAreas[msg.clientId] = new GlSelectionArea(this._overLayRects);
+                if (!this._glSelectionAreas[msg.clientId]) this._glSelectionAreas[msg.clientId] = new GlSelectionArea(this.#overLayRects);
                 const area = this._glSelectionAreas[msg.clientId];
                 if (msg.hide)
                 {
@@ -809,7 +816,7 @@ export default class GlPatch extends Events
 
         this.#rectInstancer.setDebugRenderer(this._debugRenderStyle);
         this.#areaRectInstancer.setDebugRenderer(this._debugRenderStyle);
-        this._overLayRects.setDebugRenderer(this._debugRenderStyle);
+        this.#overLayRects.setDebugRenderer(this._debugRenderStyle);
 
         this.#textWriter.setDebugRenderer(this._debugRenderStyle);
         this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
@@ -898,7 +905,7 @@ export default class GlPatch extends Events
     {
         if (this.greyOut && !this._greyOutRect)
         {
-            this._greyOutRect = this._overLayRects.createRect({ "interactive": false, "name": "greyoutrect" });
+            this._greyOutRect = this.#overLayRects.createRect({ "interactive": false, "name": "greyoutrect" });
             this._greyOutRect.setColor(
                 gui.theme.colors_patch.background[0],
                 gui.theme.colors_patch.background[1],
@@ -1376,8 +1383,9 @@ export default class GlPatch extends Events
         this.frameCount++;
         this.isAnimated = false;
 
-        for (const i in this._glCursors)
-            this._glCursors[i].updateAnim();
+        for (const i in this._glCursors) this._glCursors[i].updateAnim();
+
+        if (this.glOpCursor) this.glOpCursor.updateAnim();
 
         this.snap.render(this._canvasMouseDown);
 
@@ -1460,7 +1468,7 @@ export default class GlPatch extends Events
         this.#cgl.popDepthTest();
         this.#cgl.pushDepthTest(false);
 
-        this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.#overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this.#cgl.popDepthTest();
         this.#cgl.pushDepthTest(true);
@@ -1959,7 +1967,7 @@ export default class GlPatch extends Events
          */
 
         if (this._subpatchoprect) this._subpatchoprect.dispose();
-        this._subpatchoprect = this._overLayRects.createRect({ "name": "subpatchoprect", "interactive": false });
+        this._subpatchoprect = this.#overLayRects.createRect({ "name": "subpatchoprect", "interactive": false });
 
         let col = gui.theme.colors_patch.opBgRect;
         this._subpatchoprect.setColorArray(col);
@@ -2457,5 +2465,21 @@ export default class GlPatch extends Events
     get splineDrawers()// todo: delete, was debug
     {
         return this.#splineDrawers;
+    }
+
+    /**
+     * @param {Op<any>} op
+     */
+    setKeyboardCursorToOp(op)
+    {
+        if (!this.glOpCursor)
+        {
+            this.glOpCursor = new GlOpCursor(this, this.#overLayRects);
+            this.glOpCursor.updateAnim();
+
+            console.log("created...");
+        }
+
+        this.glOpCursor.moveToOp(op);
     }
 }
