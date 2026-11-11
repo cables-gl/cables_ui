@@ -14,13 +14,16 @@ export default class SavedState extends Events
     _timeout = null;
     _addedGuiListener = false;
 
+    /** set before a reload that already handled unsaved changes, the page then unloads without the leave dialog */
+    leaving = false;
+
     constructor()
     {
         super();
 
         window.addEventListener("beforeunload", (event) =>
         {
-            if (this.isSaved)
+            if (this.isSaved || this.leaving)
             {
                 gui.hide();
                 return;
