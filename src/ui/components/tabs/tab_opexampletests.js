@@ -2,8 +2,8 @@ import { Logger, ele } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
-import { getOpExamples, runOpExample } from "../../tests/opexamples.js";
-import { getTestPatches, runTestPatch } from "../../tests/optests.js";
+import { getOpExamples, runOpExample, TEST_SERVER } from "../../tests/opexamples.js";
+import { getTestPatches, runTestPatch, sendTestResults } from "../../tests/optests.js";
 import { platform } from "../../platform.js";
 import { gui } from "../../gui.js";
 
@@ -27,6 +27,7 @@ export default class OpExampleTestsTab
     #running = false;
     #stop = false;
     #current = 0;
+    #currentTitle = "";
     #total = 0;
     #startTime = 0;
     #commandIds = [];
@@ -67,7 +68,7 @@ export default class OpExampleTestsTab
             this.#commandIds.push(gui.cmdPalette.addDynamic("debug", actions[i].cmd, actions[i].func, "check"));
         }
 
-        this.#tab.html("<div class=\"tabContentScrollContainer testsTab\"><input class=\"medium info testsFilter\" type=\"search\" placeholder=\"filter op name\"/><div class=\"testsSummary\"></div><table class=\"testsTable\"><thead><tr><th>Status</th><th>Test</th><th>Passed</th><th>Failed</th><th>Known Bugs</th><th>Asserts</th></tr></thead></table></div>");
+        this.#tab.html("<div class=\"tabContentScrollContainer testsTab\"><div class=\"testsSummary sticky\"></div><input class=\"medium info testsFilter\" type=\"search\" placeholder=\"filter op name\"/><table class=\"testsTable\"><thead><tr><th>Status</th><th>Test</th><th>Passed</th><th>Failed</th><th>Known Bugs</th><th>Asserts</th></tr></thead></table></div>");
         this.#summaryEle = this.#tab.contentEle.querySelector(".testsSummary");
         this.#listEle = this.#tab.contentEle.querySelector(".testsTable");
 
@@ -247,6 +248,7 @@ export default class OpExampleTestsTab
             if (this.#stop) break;
             const example = examples[i];
             this.#current = i + 1;
+            this.#currentTitle = example.title;
             this.#setResult(example.projectId, "running");
             try
             {
@@ -264,6 +266,57 @@ export default class OpExampleTestsTab
 
         this.#running = false;
         this.#updateSummary();
+
+        sendTestResults(this.#getDiscordReport(examples));
+    }
+
+    /**
+     * @param {import("../../tests/optests.js").TestPatch[]} examples
+     * @returns {string}
+     */
+    #getDiscordReport(examples)
+    {
+        const serverUrl = TEST_SERVER.serverUrl;
+        const failedLines = [];
+        let numFailedPatches = 0;
+        let numPassed = 0;
+        let numFailed = 0;
+        let numKnownBugs = 0;
+
+        for (let i = 0; i < examples.length; i++)
+        {
+            const result = this.#results[examples[i].projectId];
+            if (!result) continue;
+            const cases = result.testCases || [];
+            for (let j = 0; j < cases.length; j++)
+            {
+                numPassed += cases[j].numPassed;
+                numFailed += cases[j].numFailed;
+                numKnownBugs += cases[j].numKnownBugs || 0;
+            }
+            if (result.state != "fail") continue;
+
+            numFailedPatches++;
+            failedLines.push("🔴 **" + examples[i].title + "** [" + examples[i].projectId + "](<" + serverUrl + "/edit/" + examples[i].projectId + ">)");
+            if (result.error) failedLines.push("> " + result.error.split("\n")[0]);
+            for (let j = 0; j < cases.length; j++)
+            {
+                const c = cases[j];
+                if (c.numFailed == 0 && c.done) continue;
+                failedLines.push("> " + c.name + (c.done ? "" : " (not finished)"));
+                for (let k = 0; k < c.failed.length; k++) failedLines.push("> - " + c.failed[k]);
+            }
+        }
+
+        const lines = [];
+        if (numFailedPatches == 0) lines.push("🟢 **" + this.#tab.title + "**: all " + examples.length + " patches passed");
+        else lines.push("🔴 **" + this.#tab.title + "**: " + numFailedPatches + " of " + examples.length + " patches failed");
+        let asserts = "asserts: " + numPassed + " passed · " + numFailed + " failed";
+        if (numKnownBugs) asserts += " · 🟡 " + numKnownBugs + " known bugs";
+        if (this.#stop) asserts += " · stopped";
+        lines.push(asserts);
+        if (failedLines.length) lines.push("", ...failedLines);
+        return lines.join("\n");
     }
 
     /**
@@ -299,7 +352,6 @@ export default class OpExampleTestsTab
         this.#results[projectId] = { "state": state, "error": errorText, "numKnownBugs": countKnownBugs(testCases), "testCases": testCases || [] };
         this.#renderRows(this.#getExample(projectId), state, errorText, testCases);
 
-        if (state == "running") this.#rowEles[projectId].scrollIntoView({ "block": "nearest" });
         this.#updateSummary();
     }
 
@@ -337,7 +389,7 @@ export default class OpExampleTestsTab
         const linkEle = document.createElement("a");
         linkEle.classList.add("link");
         linkEle.innerText = example.projectId;
-        ele.clickable(linkEle, () => { window.open(platform.getCablesDocsUrl() + "/edit/" + example.projectId, "_blank"); });
+        ele.clickable(linkEle, () => { window.open(TEST_SERVER.serverUrl + "/edit/" + example.projectId, "_blank"); });
 
         const testEle = document.createElement("span");
         testEle.append(titleEle, " (", linkEle, ")");
@@ -394,6 +446,14 @@ export default class OpExampleTestsTab
         html += "<span class=\"fail\">" + numFailed + " failed</span> ";
         if (numKnownBugs > 0) html += "<span class=\"knownbug\">" + numKnownBugs + " known bugs</span> ";
         if (!this.#running && this.#startTime) html += "in " + Math.round((performance.now() - this.#startTime) / 1000) + "s";
+        if (this.#running)
+        {
+            const titleEle = document.createElement("div");
+            titleEle.classList.add("testsCurrent");
+            titleEle.innerText = this.#currentTitle;
+            html += titleEle.outerHTML;
+            html += "<div class=\"testsProgress\"><div style=\"width:" + (100 * (this.#current - 1) / this.#total) + "%\"></div></div>";
+        }
         this.#summaryEle.innerHTML = html;
     }
 }

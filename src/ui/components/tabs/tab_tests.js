@@ -5,6 +5,7 @@ import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { setup, run, testEvents } from "../../tests/index.js";
+import { sendTestResults } from "../../tests/optests.js";
 
 export default class TestsTab
 {
@@ -102,7 +103,12 @@ export default class TestsTab
         {
             this.#running = false;
             this.#updateSummary();
-            this.#log.log(this.#numPassed + " passed, " + this.#numFailed + " failed, " + this.#numPending + " pending");
+            const summary = this.#numPassed + " passed, " + this.#numFailed + " failed, " + this.#numPending + " pending";
+            this.#log.log(summary);
+            let msg = (this.#numFailed ? "🔴" : "🟢") + " **Tests**: " + this.#numPassed + " passed · " + this.#numFailed + " failed";
+            if (this.#numPending) msg += " · " + this.#numPending + " pending";
+            if (this.#failedTitles.length) msg += "\n\n" + this.#failedTitles.map((title) => { return "🔴 " + title; }).join("\n");
+            sendTestResults(msg);
         });
     }
 

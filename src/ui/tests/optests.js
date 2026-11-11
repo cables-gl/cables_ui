@@ -1,14 +1,14 @@
-import { TalkerAPI } from "cables-shared-client";
+import { Logger, TalkerAPI } from "cables-shared-client";
 import { Patch } from "cables";
 import { platform } from "../platform.js";
-import { loadProject, runPatch } from "./opexamples.js";
+import { UserSettings, userSettings } from "../components/usersettings.js";
+import { loadProject, runPatch, TEST_SERVER } from "./opexamples.js";
 
 const DONE_TIMEOUT = 20000;
 
-export const OP_TESTS_PATCHLIST_ID = "jRV_GF";
+const log = new Logger("optests");
 
-// op test patches are always loaded from the dev server
-const TEST_SERVER = { "serverUrl": "https://dev.cables.gl", "assetUrl": "https://devsandbox.cables.gl" };
+export const OP_TESTS_PATCHLIST_ID = "jRV_GF";
 
 export const EVENT_TESTCASE_START = "opTestCaseStart";
 export const EVENT_TESTCASE_DONE = "opTestCaseDone";
@@ -16,6 +16,31 @@ export const EVENT_TESTCASE_CHECK = "opTestCaseCheck";
 export const EVENT_TESTCASE_CHECK_END = "opTestCaseCheckEnd";
 export const EVENT_TEST_ASSERT = "opTestAssert";
 export const ASSERT_ERROR_ID = "testAssert";
+
+/**
+ * posts test results to the discord info channel of dev.cables.gl, only with an api key in the preferences
+ * @param {string} msg
+ */
+export function sendTestResults(msg)
+{
+    const apiKey = userSettings.get(UserSettings.PREF_API_KEY);
+    if (!apiKey) return;
+
+    if (platform.isElectron())
+    {
+        platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_SEND_DISCORD, { "msg": msg, "server": TEST_SERVER.serverUrl });
+        return;
+    }
+
+    fetch(TEST_SERVER.serverUrl + "/api/webhooks/discord", {
+        "method": "POST",
+        "headers": { "x-apikey": apiKey, "content-type": "application/json" },
+        "body": JSON.stringify({ "channel": "info", "msg": msg })
+    }).then((response) =>
+    {
+        if (!response.ok) log.warn("sending test results failed:", response.status, response.statusText);
+    }).catch((e) => { log.warn("sending test results failed:", e.message); });
+}
 
 /**
  * @typedef TestPatch

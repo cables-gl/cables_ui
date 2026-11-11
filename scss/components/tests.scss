@@ -12,6 +12,38 @@
             margin-bottom: 10px;
             .pass { color: var(--color-special); }
             .fail { color: var(--color-error); }
+
+            // stays on top of the scrolling list, shows status and progress of the running test
+            &.sticky
+            {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                padding: 6px 0;
+                background-color: var(--color-02);
+            }
+
+            .testsCurrent
+            {
+                margin-top: 4px;
+                opacity: 0.7;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .testsProgress
+            {
+                height: 3px;
+                margin-top: 4px;
+                background-color: var(--color-button-bg);
+
+                div
+                {
+                    height: 100%;
+                    background-color: var(--color-special);
+                }
+            }
         }
 
         .testsSuite

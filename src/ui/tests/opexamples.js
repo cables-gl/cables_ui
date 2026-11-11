@@ -3,11 +3,15 @@ import { Patch, Port } from "cables";
 import undo from "../utils/undo.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
+import namespace from "../namespaceutils.js";
 
 const NUM_FRAMES = 30;
 const LOAD_TIMEOUT = 20000;
 const FRAMES_TIMEOUT = 10000;
 const IGNORE_ERRORS = ["multimainloop"];
+
+// example and op test patches are always loaded from the dev server
+export const TEST_SERVER = { "serverUrl": "https://dev.cables.gl", "assetUrl": "https://devsandbox.cables.gl" };
 
 /**
  * @typedef OpExample
@@ -26,7 +30,7 @@ export function getOpExamples()
     for (let i = 0; i < docs.length; i++)
     {
         const id = docs[i].exampleProjectId;
-        if (!id) continue;
+        if (!id || !namespace.isCoreOp(docs[i].name)) continue;
         if (!byId[id])
         {
             byId[id] = { "projectId": id, "opNames": [] };
@@ -43,7 +47,7 @@ export function getOpExamples()
  */
 export async function runOpExample(projectId)
 {
-    await runPatch(await loadProject(projectId));
+    await runPatch(await loadProject(projectId, TEST_SERVER));
 }
 
 /**
@@ -125,6 +129,15 @@ export async function runPatch(project, test = null)
 
     const listenAdd = patch.on(Patch.EVENT_OP_ADDED, (op) => { addedIds.push(op.id); });
     const listenException = patch.on(Port.EVENT_EXCEPTION, (ex, op) => { errors.push("exception in " + op.objName + ": " + ex.message); });
+
+    // errors outside of port callbacks (timers, loaders, promises) only reach the window
+    /** @param {ErrorEvent} e */
+    const onWindowError = (e) => { errors.push(e.message); };
+
+    /** @param {PromiseRejectionEvent} e */
+    const onRejection = (e) => { errors.push("unhandled rejection: " + (e.reason && e.reason.message ? e.reason.message : String(e.reason))); };
+    window.addEventListener("error", onWindowError);
+    window.addEventListener("unhandledrejection", onRejection);
     if (test) test.start(patch);
 
     undo.pause();
@@ -132,6 +145,10 @@ export async function runPatch(project, test = null)
     {
         Patch.replaceOpIds(project, { "parentSubPatchId": Patch.DEFAULT_SUBPATCHID });
         patch.deSerialize(project);
+
+        // ops that could not be created are skipped by the core without an error
+        for (let i = 0; i < project.ops.length; i++)
+            if (!patch.getOpById(project.ops[i].id)) errors.push("op not found: " + (project.ops[i].objName || project.ops[i].opId));
 
         await waitLoaded(patch, oldJobIds);
         if (test) await test.wait(patch);
@@ -163,6 +180,8 @@ export async function runPatch(project, test = null)
 
         patch.off(listenAdd);
         patch.off(listenException);
+        window.removeEventListener("error", onWindowError);
+        window.removeEventListener("unhandledrejection", onRejection);
         if (test) test.stop();
         undo.resume();
     }

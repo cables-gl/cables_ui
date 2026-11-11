@@ -11,6 +11,22 @@ export default function (t)
     {
         describe("electron: ops", () =>
         {
+            // ops left over from an earlier failed run
+            before((done) =>
+            {
+                const ids = ["Ops.Hund.Hund", "Ops.Hund.Katze"].map((name) => { return gui.opDocs.getOpDocByName(name); }).filter(Boolean).map((opDoc) => { return opDoc.id; });
+                let num = ids.length;
+                if (num == 0) return done();
+                ids.forEach((opId) =>
+                {
+                    t.platform.talkerAPI.send(TalkerAPI.CMD_ELECTRON_DELETE_OP, { "opId": opId }, (err, res) =>
+                    {
+                        gui.corePatch().emitEvent(ServerOps.EVENT_OP_FILE_DELETE_FINISHED, res?.data);
+                        if (--num == 0) done();
+                    });
+                });
+            });
+
             it("createop and rename", (done) =>
             {
                 const opname = "Ops.Hund.Hund";
