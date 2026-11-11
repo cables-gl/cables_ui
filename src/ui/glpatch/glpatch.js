@@ -950,6 +950,8 @@ export default class GlPatch extends Events
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
+        if (this.glOpCursor) this.glOpCursor.hide();
+
         this.emitEvent(GlPatch.EVENT_MOUSE_DOWN, e);
         this.#rectInstancer.interactive = true; // mouseup after a selection drag can return early and leave ops non-interactive, then op drags start a selection instead
         this.#updateHoverAreas(this.viewBox.mousePatchX, this.viewBox.mousePatchY);

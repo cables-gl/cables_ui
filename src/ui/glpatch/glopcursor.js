@@ -21,15 +21,16 @@ export default class GlOpCursor extends Events
     #animSizeX = new Anim();
     #animSizeY = new Anim();
 
-    _clientId;
     #glPatch;
+
+    /** @type {GlRect} */
+    #cursorRect;
 
     /**
      * @param {GlPatch} glPatch
      * @param {GlRectInstancer} instancer
-     * @param {number} [clientId]
      */
-    constructor(glPatch, instancer, clientId)
+    constructor(glPatch, instancer)
     {
         super();
 
@@ -37,13 +38,11 @@ export default class GlOpCursor extends Events
 
         this.#glPatch = glPatch;
         this._instancer = instancer;
-        this._cursorRect = this._instancer.createRect({ "name": "opcursor", "interactive": false });
-        this._cursorRect.setSize(10, 10);
-        this._cursorRect.setShape(GlRect.SHAPE_FRAME);
+        this.#cursorRect = this._instancer.createRect({ "name": "opcursor", "interactive": false });
+        this.#cursorRect.setSize(10, 10);
+        this.#cursorRect.setShape(GlRect.SHAPE_FRAME);
         this._lastMovement = performance.now();
-
-        this._cursorRect.setColor(0.7, 0.7, 0.7, 1);
-
+        this.#cursorRect.setColor(0.7, 0.7, 0.7, 1);
     }
 
     /**
@@ -55,27 +54,26 @@ export default class GlOpCursor extends Events
         this.updateAnim();
     }
 
+    hide()
+    {
+        this.#cursorRect.visible = false;
+    }
+
     updateAnim()
     {
         let x = this.#animPosX.getValue(this.#glPatch.time);
         let y = this.#animPosY.getValue(this.#glPatch.time);
 
-        this._cursorRect.setPosition(x, y);
+        this.#cursorRect.setPosition(x, y);
 
         let w = this.#animSizeX.getValue(this.#glPatch.time);
         let h = this.#animSizeY.getValue(this.#glPatch.time);
 
-        this._cursorRect.setSize(w, h);
-
-        const coord = this.#glPatch.viewBox.patchToScreenCoords(x, y);
+        this.#cursorRect.setSize(w, h);
 
         if (performance.now() - this._lastMovement > 10000 || gui.patchView.getCurrentSubPatch() != this._subPatch)
         {
-            this._cursorRect.visible = false;
-        }
-        else
-        {
-            this._cursorRect.visible = true;
+            this.hide();
         }
     }
 
@@ -85,11 +83,11 @@ export default class GlOpCursor extends Events
      * @param {number} _b
      * @param {number} _a
      */
-    setColor(_r, _g, _b, _a) { this._cursorRect.setColor(1, 1, 1, 1); }
+    setColor(_r, _g, _b, _a) { this.#cursorRect.setColor(1, 1, 1, 1); }
 
-    get visible() { return this._cursorRect.visible; }
+    get visible() { return this.#cursorRect.visible; }
 
-    set visible(v) { this._cursorRect.visible = v; }
+    set visible(v) { this.#cursorRect.visible = v; }
 
     /**
      * @param {number} w
@@ -124,7 +122,7 @@ export default class GlOpCursor extends Events
 
     dispose()
     {
-        if (this._cursorRect) this._cursorRect.dispose();
+        if (this.#cursorRect) this.#cursorRect.dispose();
     }
 
     /**
@@ -132,6 +130,8 @@ export default class GlOpCursor extends Events
      */
     moveToOp(op)
     {
+
+        this.#cursorRect.visible = true;
         this.op = op;
         this.setPosition(this.#glPatch._glOpz[op.id].x - GlOpCursor.padding, this.#glPatch._glOpz[op.id].y - GlOpCursor.padding);
         this.setSize(this.#glPatch._glOpz[op.id].w + GlOpCursor.padding * 2, this.#glPatch._glOpz[op.id].h + GlOpCursor.padding * 2);
