@@ -307,21 +307,37 @@ export default class GlPatch extends Events
             this.viewBox.keyScrollY(1);
         });
 
-        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
+        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
         {
-            this.#keyNav.move(0, -1);
+            this.#keyNav.move(0, -1, e.shiftKey);
         });
-        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
+        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
         {
-            this.#keyNav.move(0, 1);
+            this.#keyNav.move(0, 1, e.shiftKey);
         });
-        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
+        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
         {
-            this.#keyNav.move(-1, 0);
+            this.#keyNav.move(-1, 0, e.shiftKey);
         });
-        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, { "ignoreInput": true }, () =>
+        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
         {
-            this.#keyNav.move(1, 0);
+            this.#keyNav.move(1, 0, e.shiftKey);
+        });
+        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, { "ignoreInput": true, "shiftKey": true }, (e) =>
+        {
+            this.#keyNav.move(0, -1, e.shiftKey);
+        });
+        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, { "ignoreInput": true, "shiftKey": true }, (e) =>
+        {
+            this.#keyNav.move(0, 1, e.shiftKey);
+        });
+        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, { "ignoreInput": true, "shiftKey": true }, (e) =>
+        {
+            this.#keyNav.move(-1, 0, e.shiftKey);
+        });
+        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, { "ignoreInput": true, "shiftKey": true }, (e) =>
+        {
+            this.#keyNav.move(1, 0, e.shiftKey);
         });
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
@@ -378,6 +394,7 @@ export default class GlPatch extends Events
         gui.keys.key("!", "debug", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (_e) => { this._cycleDebug(); });
 
         gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.zoomStep(-1); });
+        gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor", "shiftKey": true }, (_e) => { this.zoomStep(-1); });
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.zoomStep(-1); });
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, { "displayGroup": "editor" }, (_e) => { this.zoomStep(1); });
 

@@ -21,7 +21,7 @@ export const GuiText =
     "nav_patch_new": "## New Patch\n\nCreates a new patch",
     "nav_patch_open": "## Open Patch\n\nLoad an existing patch",
 
-    "keynav": "## Keyboard Navigation\n\n* `arrow keys` Move between ports and cables\n* `enter` Select op\n* `shift` `enter` Add op to selection\n* `i` Insert op into cable\n* `a` Add op to port",
+    "keynav": "## Keyboard Navigation\n\n* `arrow keys` Move between ports and cables\n* `shift` `left`/`right` Jump to next cable\n* `enter` Select op\n* `shift` `enter` Add op to selection\n* `i` Insert op into cable\n* `a` Add op to port",
 
     "linkAddCircle": "## Cable \n\n* [LMB] Insert op \n* [RMB] Remove cable \n* [DRAG_RMB] Move cable \n* [RMB]+`alt` Duplicate cable ",
 

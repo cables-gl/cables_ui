@@ -109,8 +109,9 @@ export class KeyNav
     /**
      * @param {number} x
      * @param {number} y
+     * @param {boolean} [linkedOnly] left/right: skip ports without links
      */
-    move(x, y)
+    move(x, y, linkedOnly = false)
     {
 
         if (!this.#glPatch.glPortCursor)
@@ -127,8 +128,8 @@ export class KeyNav
 
         if (y > 0) this.moveDown();
         if (y < 0) this.moveUp();
-        if (x > 0) this.moveRight();
-        if (x < 0) this.moveLeft();
+        if (x > 0) this.moveRight(linkedOnly);
+        if (x < 0) this.moveLeft(linkedOnly);
 
     }
 
@@ -271,8 +272,9 @@ export class KeyNav
 
     /**
      * @param {number} dir
+     * @param {boolean} [linkedOnly] skip ports without links
      */
-    #step(dir)
+    #step(dir, linkedOnly = false)
     {
         const op = this.#glPort.port.op;
         const ports = this.#glPort.port.direction == Port.DIR_OUT ? op.portsOut : op.portsIn;
@@ -285,8 +287,13 @@ export class KeyNav
         }
 
         const idx = stops.findIndex((s) => { return s.port == this.#glPort.port && s.linkIdx == this.#linkIdx; });
-        const next = stops[(idx + dir + stops.length) % stops.length];
-        if (next) this.setPort(next.port, next.linkIdx);
+        for (let i = 1; i <= stops.length; i++)
+        {
+            const next = stops[((idx + dir * i) % stops.length + stops.length) % stops.length];
+            if (linkedOnly && next.linkIdx == -1) continue;
+            this.setPort(next.port, next.linkIdx);
+            return;
+        }
     }
 
     /**
@@ -351,14 +358,20 @@ export class KeyNav
         this.#moveVertical(Port.DIR_OUT);
     }
 
-    moveLeft()
+    /**
+     * @param {boolean} [linkedOnly]
+     */
+    moveLeft(linkedOnly)
     {
-        this.#step(-1);
+        this.#step(-1, linkedOnly);
     }
 
-    moveRight()
+    /**
+     * @param {boolean} [linkedOnly]
+     */
+    moveRight(linkedOnly)
     {
-        this.#step(1);
+        this.#step(1, linkedOnly);
     }
 
     get active()
