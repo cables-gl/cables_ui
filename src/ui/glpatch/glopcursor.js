@@ -130,7 +130,6 @@ export default class GlOpCursor extends Events
      */
     moveToOp(op)
     {
-
         this.#cursorRect.visible = true;
         this.op = op;
         this.setPosition(this.#glPatch._glOpz[op.id].x - GlOpCursor.padding, this.#glPatch._glOpz[op.id].y - GlOpCursor.padding);

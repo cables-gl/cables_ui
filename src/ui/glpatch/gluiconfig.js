@@ -5,6 +5,8 @@ class GlUiConfig
         this.OpTitlePaddingLeftRight = 10;
         this.OpTitlePaddingExtTitle = 1;
 
+        this.snapEdgeWidth = 60;
+
         this.portWidth = 10;
         this.portHeight = 5;
         this.portObjectOutline = 1.5;

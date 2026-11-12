@@ -227,8 +227,11 @@ export default class VizLayer extends Events
             const port = item.port;
             if (!port || !item.op || !item.op.uiAttribs || !item.op.uiAttribs.translate || item.op.uiAttribs.hidden) continue;
 
-            item.posX = item.op.uiAttribs.translate.x;
-            item.posY = item.op.uiAttribs.translate.y;
+            const glop = this._glPatch.getGlOp(item.op);
+            if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
+
+            item.posX = glop.x;
+            item.posY = glop.y;
 
             const pos = this._glPatch.viewBox.patchToScreenCoords(item.posX, item.posY);
             if (!item.op.uiAttribs.vizLayerFullOpSize)
@@ -239,9 +242,6 @@ export default class VizLayer extends Events
 
             pos[0] *= window.devicePixelRatio;
             pos[1] *= window.devicePixelRatio;
-
-            const glop = this._glPatch.getGlOp(item.op);
-            if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
 
             let ww = glop.w;
             if (glop.opUiAttribs.resizable)ww += gluiconfig.rectResizeSize;

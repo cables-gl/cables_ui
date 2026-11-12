@@ -550,7 +550,7 @@ export default class PatchView extends Events
                     {
                         let mulDirY = 1;
                         if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
-                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (uiconfig.snapY / 2 + glopB.h));
+                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (uiconfig.snapGridY / 2 + glopB.h));
                         let x = op.uiAttribs.translate.x;
 
                         const link = op.isConnectedTo(b);

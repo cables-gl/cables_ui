@@ -2,8 +2,8 @@ import uiconfig from "../uiconfig.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import { UiOp } from "../core_extend_op.js";
 
-const GRID_X = uiconfig.snapX;
-const GRID_Y = uiconfig.snapY;
+const GRID_X = uiconfig.snapGridX;
+const GRID_Y = uiconfig.snapGridY;
 const GAP_X = 2 * GRID_X;
 const GAP_Y = GRID_Y;
 const FANOUT_GAP_X = 4 * GRID_X;
@@ -224,7 +224,7 @@ export default class PatchLayout
             }
             groups.push(group);
         }
-        return groups.sort((a, b) => b.length - a.length);
+        return groups.sort((a, b) => { return b.length - a.length; });
     }
 
     /**
@@ -637,7 +637,7 @@ export default class PatchLayout
                 else desired.set(o, hints.has(o) ? hints.get(o).x : snapNearest(o.uiAttribs.translate.x, GRID_X));
                 order.set(o, parent ? this.#outLinkIndex(parent, o) : 0);
             }
-            row.sort((a, b) => (desired.get(a) - desired.get(b)) || (order.get(a) - order.get(b)) || (a.uiAttribs.translate.x - b.uiAttribs.translate.x));
+            row.sort((a, b) => { return (desired.get(a) - desired.get(b)) || (order.get(a) - order.get(b)) || (a.uiAttribs.translate.x - b.uiAttribs.translate.x); });
 
             const lastChild = new Map();
             for (const o of row)

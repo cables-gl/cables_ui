@@ -157,7 +157,7 @@ export default class Snap extends Events
         if (userSettings.get(UserSettings.PREF_SNAPTOGRID)) return Snap.snapOpPosX(_x);
 
         let hasLinks = false;
-        dist = dist || gluiconfig.portWidth;
+        dist = dist || gluiconfig.snapEdgeWidth;
         if (op)
         {
             let index = 0;
@@ -210,7 +210,7 @@ export default class Snap extends Events
  */
 Snap.snapOpPosX = function (posX)
 {
-    return (Math.round(posX / uiconfig.snapX) * uiconfig.snapX) || 1;
+    return (Math.round(posX / uiconfig.snapGridX) * uiconfig.snapGridX) || 1;
 };
 
 /**
@@ -218,5 +218,5 @@ Snap.snapOpPosX = function (posX)
  */
 Snap.snapOpPosY = function (posY)
 {
-    return Math.round(posY / uiconfig.snapY) * uiconfig.snapY;
+    return Math.round(posY / uiconfig.snapGridY) * uiconfig.snapGridY;
 };

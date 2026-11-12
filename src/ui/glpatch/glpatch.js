@@ -169,6 +169,8 @@ export default class GlPatch extends Events
     /** @type {GlRectInstancer} */
     #overLayRects;
 
+    #canvasMouseDown = false;
+
     /**
      * @param {CglContext} cgl
      */
@@ -215,7 +217,6 @@ export default class GlPatch extends Events
         //     const idx = this.#overlaySplines.getSplineIndex();
         //     this.#overlaySplines.setSpline(idx, [-1000000, 0, 0, 1000000, 0, 0]);
         //     this.#overlaySplines.setSplineColor(idx, [0.25, 0.25, 0.25, 1.0]);
-
         //     const idx2 = this.#overlaySplines.getSplineIndex();
         //     this.#overlaySplines.setSpline(idx2, [0, -1000000, 0, 0, 1000000, 0]);
         //     this.#overlaySplines.setSplineColor(idx2, [0.25, 0.25, 0.25, 1.0]);
@@ -957,7 +958,7 @@ export default class GlPatch extends Events
         this.#updateHoverAreas(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
         this.#rectInstancer.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY, 0, e); // refresh hover, it is stale while non-interactive and mouseDown only hits hovered rects
         this.#rectInstancer.mouseDown(e);
-        this._canvasMouseDown = true;
+        this.#canvasMouseDown = true;
         this._canvasMouseDownSelecting = this.mouseState.buttonStateForSelecting;
     }
 
@@ -980,10 +981,10 @@ export default class GlPatch extends Events
                 return;
             }
 
-            if (!this._canvasMouseDown) return;
+            if (!this.#canvasMouseDown) return;
         }
 
-        this._canvasMouseDown = false;
+        this.#canvasMouseDown = false;
         const perf = gui.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
         this._removeDropInRect();
@@ -1389,7 +1390,7 @@ export default class GlPatch extends Events
 
         if (this.glOpCursor) this.glOpCursor.updateAnim();
 
-        this.snap.render(this._canvasMouseDown);
+        this.snap.render(this.#canvasMouseDown);
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
 
