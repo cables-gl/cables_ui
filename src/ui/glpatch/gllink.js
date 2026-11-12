@@ -28,6 +28,7 @@ export default class GlLink
 
     flowStartFrame = 0;
     flowCount = 0;
+    keyNavHighlight = false;
     _offsetXInput = 0;
     _offsetXOutput = 0;
 
@@ -217,6 +218,7 @@ export default class GlLink
 
     get hovering()
     {
+        if (this.keyNavHighlight) return true;
         if (this.#cableSub && this.#cableSub.hovering) return true;
         return this.#cable.hovering;
     }
@@ -879,6 +881,17 @@ export default class GlLink
     {
         this.#cable.updateColor();
         if (this.#cableSub) this.#cableSub.updateColor();
+    }
+
+    /**
+     * @param {boolean} b
+     */
+    setKeyNavHighlight(b)
+    {
+        this.keyNavHighlight = b;
+        this.#cable.showButton(b);
+        this.updateColor();
+        this.cableHoverChanged();
     }
 
     cableHoverChanged()

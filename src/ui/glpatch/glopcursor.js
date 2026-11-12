@@ -56,6 +56,11 @@ export default class GlPortCursor extends Events
         this.updateAnim();
     }
 
+    hidden()
+    {
+        return !this.#cursorRect.visible;
+    }
+
     hide()
     {
         this.#cursorRect.visible = false;
@@ -132,11 +137,16 @@ export default class GlPortCursor extends Events
      */
     setGlPort(glPort)
     {
-        console.log("setglport", glPort.name);
+        if (!glPort)
+        {
+            console.log("no port given setglport");
+            return;
+        }
+        // console.log("setglport", glPort.name);
         this.#cursorRect.visible = true;
         this.op = glPort.port.op;
 
-        console.log("glp", glPort.glOp.x, glPort.y);
+        // console.log("glp", glPort.glOp.x, glPort.y);
         this.setPosition(glPort.rect.absX - GlPortCursor.padding, glPort.y - GlPortCursor.padding);
         this.setSize(gluiconfig.portWidth + GlPortCursor.padding * 2, gluiconfig.portHeight + GlPortCursor.padding * 2);
     }

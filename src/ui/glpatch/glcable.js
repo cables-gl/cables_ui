@@ -171,6 +171,15 @@ export default class GlCable
         }
     }
 
+    /**
+     * @param {boolean} b
+     */
+    showButton(b)
+    {
+        if (b) this.#setPositionButton();
+        this.#buttonRect.visible = b;
+    }
+
     #unHover()
     {
         this.setCloseToMouse(false);
@@ -541,6 +550,7 @@ export default class GlCable
         if (this.#link)
         {
             if (this.#link.isAPortHovering())hover = true;
+            if (this.#link.keyNavHighlight)hover = true;
             if (this.#link.isAOpSelected())selected = true;
         }
 
