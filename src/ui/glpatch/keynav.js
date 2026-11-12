@@ -31,6 +31,9 @@ export class KeyNav
 
     static MAX_HISTORY = 30;
 
+    /** @type {import("cables/src/core/core_op.js").Op<any>} last clicked op, keynav starts here */
+    #startOp = null;
+
     /**
      * @param {GlPatch} glPatch
      */
@@ -78,14 +81,29 @@ export class KeyNav
      */
     gotoOp(theOp)
     {
+        if (!theOp) return;
         this.#port = theOp.portsIn.find((p) => { return this.#getGlPort(p); });
         if (!this.#port) return;
         this.setPort(this.#port);
     }
 
-    useClosestOp()
+    /**
+     * @param {import("cables/src/core/core_op.js").Op<any>} op
+     */
+    setStartOp(op)
     {
-        this.gotoOp(gui.patchView.getClosestOp());
+        this.#startOp = op;
+    }
+
+    #start()
+    {
+        gui.patchView.unselectAllOps();
+
+        let op = this.#startOp;
+        if (!op || !gui.corePatch().getOpById(op.id) || op.getSubPatch() != gui.patchView.getCurrentSubPatch())
+            op = gui.patchView.getClosestOp(this.#glPatch.viewBox.mousePatchX, this.#glPatch.viewBox.mousePatchY);
+
+        this.gotoOp(op);
     }
 
     /**
@@ -99,38 +117,14 @@ export class KeyNav
         {
             this.#glPatch.glPortCursor = new GlPortCursor(this.#glPatch, this.#glPatch.overLayRects);
             this.#glPatch.glPortCursor.updateAnim();
-
-            gui.patchView.unselectAllOps();
-            console.log("created...");
         }
 
-        if (!this.#glPort)
+        if (!this.#glPort || !this.#glPatch.glPortCursor.visible)
         {
-            let theOp = this.#glPatch.glPortCursor?.op;
-
-            if (!theOp)
-            {
-                const ops = gui.patchView.getSelectedOps();
-
-                if (ops.length == 0) theOp = gui.patchView.getClosestOp();
-                else theOp = ops[0];
-            }
-
-            gui.patchView.unselectAllOps();
-            this.gotoOp(theOp);
+            this.#start();
             return;
         }
 
-        if (!this.#glPatch.glPortCursor.visible)
-        {
-            gui.patchView.unselectAllOps();
-
-            console.log("not active anymote!");
-            this.useClosestOp();
-            return;
-        }
-
-        console.log("dir", x, y);
         if (y > 0) this.moveDown();
         if (y < 0) this.moveUp();
         if (x > 0) this.moveRight();
@@ -156,6 +150,12 @@ export class KeyNav
 
         this.#port = port;
 
+        if (this.#glPort && !this.#glPort.glOp.isOnScreen())
+        {
+            const glop = this.#glPort.glOp;
+            this.#glPatch.viewBox.animateToCenterAt(glop.x + glop.w / 2, glop.y + glop.h / 2, 0.2);
+        }
+
         this.#linkIdx = linkIdx;
         this.#glPatch.glPortCursor.setGlPort(this.#glPort);
 
@@ -169,11 +169,24 @@ export class KeyNav
 
         gui.keys.setContextMode(KeyNav.CONTEXT_MODE, true);
         gui.showInfo(GuiText.keynav);
+
+        if (!gui.opParams.isCurrentOp(this.#glPort.glOp.op))
+        {
+            gui.opParams.show(this.#glPort.glOp.op);
+
+        }
     }
 
+    /** reset, next move starts again from last clicked op or closest to mouse */
     deactivate()
     {
         if (this.#glPatch.glPortCursor) this.#glPatch.glPortCursor.hide();
+        if (this.#glLink) this.#glLink.setKeyNavHighlight(false);
+        this.#glLink = null;
+        this.#glPort = null;
+        this.#port = null;
+        this.#history = [];
+        this.#startOp = null;
         gui.keys.setContextMode(KeyNav.CONTEXT_MODE, false);
     }
 

@@ -241,10 +241,11 @@ export default class GlViewBox
     /**
      * @param {number} x
      * @param {number} y
+     * @param {number} [dur]
      */
-    animateToCenterAt(x, y)
+    animateToCenterAt(x, y, dur = 0)
     {
-        this.animateScrollTo(x, y * (this.#viewResX / this.#viewResY), 0);
+        this.animateScrollTo(x, y * (this.#viewResX / this.#viewResY), dur);
     }
 
     /**

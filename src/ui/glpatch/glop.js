@@ -500,6 +500,8 @@ export default class GlOp extends Events
 
         const perf = gui.uiProfiler.start("[glop] mouseDown");
 
+        this.#glPatch.getKeyNav().setStartOp(this.#op);
+
         if (this.#op.uiAttribs.selectChildsOnClick && this.#op.uiAttribs.area)
         {
             const padding = 0;
@@ -2237,5 +2239,20 @@ export default class GlOp extends Events
 
         for (let i in this._links)
             this._links[i].setFlowModeActivity(0, 0);
+    }
+
+    isOnScreen()
+    {
+
+        const vb = this.glPatch.viewBox;
+        const tl = vb.screenToPatchCoord(0, 0);
+        const br = vb.screenToPatchCoord(vb.viewWidth, vb.viewHeight);
+
+        const onScreen = this.visible && this.x + this.w >= tl[0] &&
+            this.x <= br[0] &&
+            this.y + this.h >= tl[1] &&
+            this.y <= br[1];
+
+        return onScreen;
     }
 }

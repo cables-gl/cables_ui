@@ -1078,9 +1078,13 @@ export default class PatchView extends Events
         return score;
     }
 
-    getClosestOp()
+    /**
+     * @param {number} [x] patch coords, default: near top left of screen
+     * @param {number} [y]
+     */
+    getClosestOp(x, y)
     {
-        let coordArr = this._patchRenderer.screenToPatchCoord(150, 150);
+        let coordArr = x === undefined ? this._patchRenderer.screenToPatchCoord(150, 150) : [x, y];
         let minDist = 999999;
         let foundOp = null;
         const cursub = this.getCurrentSubPatch();
