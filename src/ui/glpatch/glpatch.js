@@ -126,6 +126,7 @@ export default class GlPatch extends Events
     #cachedNumSelectedOps = 0;
     #lastBoundsCheck = 0;
     #showingBoundsHint = false;
+    #checkedAfterLoad = false;
     _cachedFirstSelectedOp = null;
 
     _showingOpCursor = false;
@@ -1752,13 +1753,19 @@ export default class GlPatch extends Events
         this.#lastBoundsCheck = performance.now();
 
         const lost = gui.corePatch().getSubPatchOps().length > 0 && !this.isAnyOpVisible();
+
+        // a patch that is out of view right after loading is centered instead of showing the hint
+        if (!this.#checkedAfterLoad && gui.finishedLoading())
+        {
+            this.#checkedAfterLoad = true;
+            if (lost) return this.viewBox.centerSelectedOps(true);
+        }
+
         if (lost == this.#showingBoundsHint) return;
 
         this.#showingBoundsHint = lost;
         if (lost)gui.restriction.setMessage("outbounds", GuiText.patch_hint_overlay_outofbounds);
         else gui.restriction.setMessage("outbounds", null);
-        // if (lost) ele.show(eleHint);
-        // else ele.hide(eleHint);
     }
 
     /**
