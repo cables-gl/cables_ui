@@ -16,7 +16,7 @@ import undo from "../utils/undo.js";
 import GlRect from "../gldraw/glrect.js";
 import GlSpline from "../gldraw/glspline.js";
 import SpreadSheetTab from "../components/tabs/tab_spreadsheet.js";
-import uiconfig from "../uiconfig.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
 import { TlKeys } from "./tlkeys.js";
 import GlPatch from "../glpatch/glpatch.js";
 import { TlDragArea as GlDragArea } from "./tldragarea.js";
@@ -2598,7 +2598,7 @@ export class GlTimeline extends Events
                 "lastInputMove": this.#paramLastInputMove,
                 "displayunit": unit,
                 "errors": this.testAnim(this.#selectedKeys),
-                "commentColors": uiconfig.commentColors,
+                "commentColors": gluiconfig.commentColors,
                 "easing": ease,
                 "showCurves": showCurves,
                 "comment": comment

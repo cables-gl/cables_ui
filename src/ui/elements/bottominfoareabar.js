@@ -1,6 +1,6 @@
 import { ele, Events } from "cables-shared-client";
 import { GuiText } from "../text.js";
-import uiconfig from "../uiconfig.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
 import { userSettings } from "../components/usersettings.js";
 
 /** Info bar at the bottom of the window, shows context sensitive shortcuts etc. */
@@ -25,7 +25,7 @@ export default class BottomInfoAreaBar extends Events
     {
         if (this.hidden) return 0;
         if (this.showing)
-            return uiconfig.infoAreaHeight;
+            return gluiconfig.infoAreaHeight;
         else return 0;
     }
 

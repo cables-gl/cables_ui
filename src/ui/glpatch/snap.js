@@ -3,7 +3,6 @@ import { Port } from "cables";
 import { CglContext } from "cables/src/corelibs/index.js";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
-import uiconfig from "../uiconfig.js";
 import { gui } from "../gui.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import { UserSettings, userSettings } from "../components/usersettings.js";
@@ -210,7 +209,7 @@ export default class Snap extends Events
  */
 Snap.snapOpPosX = function (posX)
 {
-    return (Math.round(posX / uiconfig.snapGridX) * uiconfig.snapGridX) || 1;
+    return (Math.round(posX / gluiconfig.snapGridX) * gluiconfig.snapGridX) || 1;
 };
 
 /**
@@ -218,5 +217,5 @@ Snap.snapOpPosX = function (posX)
  */
 Snap.snapOpPosY = function (posY)
 {
-    return Math.round(posY / uiconfig.snapGridY) * uiconfig.snapGridY;
+    return Math.round(posY / gluiconfig.snapGridY) * gluiconfig.snapGridY;
 };

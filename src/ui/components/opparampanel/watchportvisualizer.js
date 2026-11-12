@@ -1,6 +1,6 @@
 // shows a curve of the current hovering output number value in op param panel
 
-import uiconfig from "../../uiconfig.js";
+import gluiconfig from "../../glpatch/gluiconfig.js";
 
 export default class WatchPortVisualizer
 {
@@ -124,7 +124,7 @@ export default class WatchPortVisualizer
         this.ctx.lineTo(this._canvasWidth, this._canvasHeight / 2);
         this.ctx.stroke();
 
-        this.ctx.strokeStyle = uiconfig.highlight;
+        // this.ctx.strokeStyle = gluiconfig.highlight;
         this.ctx.beginPath();
 
         this.ctx.lineWidth = 2;

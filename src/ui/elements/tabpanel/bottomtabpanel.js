@@ -1,7 +1,7 @@
 import { Events, ele } from "cables-shared-client";
 import Gui, { gui } from "../../gui.js";
 import { userSettings } from "../../components/usersettings.js";
-import uiconfig from "../../uiconfig.js";
+import gluiconfig from "../../glpatch/gluiconfig.js";
 import TabPanel from "./tabpanel.js";
 
 export default class BottomTabPanel extends Events
@@ -23,7 +23,7 @@ export default class BottomTabPanel extends Events
         this.#tabPanel.showTabListButton = false;
         this._ele = document.getElementById("bottomtabs");
         this._ele.style.display = "none";
-        this.height = userSettings.get(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT) || uiconfig.timingPanelHeight;
+        this.height = userSettings.get(Gui.PREF_LAYOUT_BOTTOM_PANEL_HEIGHT) || gluiconfig.timingPanelHeight;
 
         this.#tabPanel.on(TabPanel.EVENT_TAB_ADDED, (tab, existedBefore) =>
         {

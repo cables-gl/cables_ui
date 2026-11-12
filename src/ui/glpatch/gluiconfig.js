@@ -2,10 +2,23 @@ class GlUiConfig
 {
     constructor()
     {
+        this.snapGridX = 24;
+        this.snapGridY = 20;
+        this.snapEdgeWidth = 60; // non grid mode
+
+        this.idleModeTimeout = 120;
+
+        this.timingPanelHeight = 250;
+        this.rendererDefaultWidth = 640;
+        this.rendererDefaultHeight = 320;
+
+        this.watchValuesInterval = 50; // 33
+
+        this.infoAreaHeight = 29;
+        this.commentColors = ["#FFFFFF", "#888888", "#07F78C", "#F0D165", "#f59259", "#dc5751", "#db88ff", "#5dc0fd"];
+
         this.OpTitlePaddingLeftRight = 10;
         this.OpTitlePaddingExtTitle = 1;
-
-        this.snapEdgeWidth = 60;
 
         this.portWidth = 10;
         this.portHeight = 5;
@@ -13,18 +26,14 @@ class GlUiConfig
         this.objColorInactiveMul = 0.8;
 
         this.portPadding = 2;
-        // this.portLongPortHeight = this.portPadding * 1.5;
         this.portLongPortHeight = this.portHeight;
 
         this.opHeight = 31;
         this.opWidth = 20;
 
-        this.minZoom = 15;
         this.zoomDefault = 500;
 
         this.newOpDistanceY = 40;
-
-        this.drawBoundingRect = true;
         this.clickMaxDuration = 300;
 
         this.zPosOps = -0.45;

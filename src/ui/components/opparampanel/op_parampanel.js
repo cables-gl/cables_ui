@@ -14,7 +14,6 @@ import { platform } from "../../platform.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 import { CmdOps } from "../../commands/cmd_op.js";
-import uiconfig from "../../uiconfig.js";
 import undo from "../../utils/undo.js";
 
 /** Panel showing the parameters (ports) of the selected op. */
@@ -336,7 +335,7 @@ class OpParampanel extends Events
             perfLoopOut.finish();
         }
 
-        const footData = { "commentColors": uiconfig.commentColors, "op": op, "showDevInfos": userSettings.get(UserSettings.PREF_DEVINFOS) };
+        const footData = { "commentColors": gluiconfig.commentColors, "op": op, "showDevInfos": userSettings.get(UserSettings.PREF_DEVINFOS) };
         if (footData.showDevInfos)
         {
             const glop = gui.patchView.patchRenderer.getGlOp(op);

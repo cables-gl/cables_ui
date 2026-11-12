@@ -17,7 +17,7 @@ import Tab from "./elements/tabpanel/tab.js";
 import KeyBindingsManager from "./utils/keybindingsmanager.js";
 import ModalDialog from "./dialogs/modaldialog.js";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal.js";
-import uiconfig from "./uiconfig.js";
+import gluiconfig from "./glpatch/gluiconfig.js";
 import TexturePreviewer from "./components/texturepreviewer.js";
 import OpDocs from "./components/opdocs.js";
 import ModalError from "./dialogs/modalerror.js";
@@ -175,8 +175,8 @@ export default class Gui extends Events
         this.isRemoteClient = cfg.remoteClient;
         this._spaceBarStart = 0;
 
-        this.rendererWidth = uiconfig.rendererDefaultWidth;
-        this.rendererHeight = uiconfig.rendererDefaultHeight;
+        this.rendererWidth = gluiconfig.rendererDefaultWidth;
+        this.rendererHeight = gluiconfig.rendererDefaultHeight;
         this.showingtwoMetaPanel = true;
 
         this.patchParamPanel = new PatchPanel();

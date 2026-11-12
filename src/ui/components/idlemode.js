@@ -1,5 +1,5 @@
 import { ModalBackground, Logger } from "cables-shared-client";
-import uiConfig from "../uiconfig.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
 import { gui } from "../gui.js";
 import { UserSettings, userSettings } from "./usersettings.js";
 
@@ -46,7 +46,7 @@ function idleInteractivity()
     if (!document.hidden)
     {
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
+        idleTimeout = setTimeout(startIdleMode, gluiconfig.idleModeTimeout * 1000);
     }
 }
 
@@ -94,7 +94,7 @@ export default function startIdleListeners()
     {
         idleFocus = false;
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
+        idleTimeout = setTimeout(startIdleMode, gluiconfig.idleModeTimeout * 1000);
     });
 
     document.addEventListener("keydown", idleInteractivity, false);
@@ -102,5 +102,5 @@ export default function startIdleListeners()
     document.addEventListener("visibilitychange", visibilityChanged);
     gui.on("userActivity", idleInteractivity);
 
-    idleTimeout = setTimeout(startIdleMode, uiConfig.idleModeTimeout * 1000);
+    idleTimeout = setTimeout(startIdleMode, gluiconfig.idleModeTimeout * 1000);
 }

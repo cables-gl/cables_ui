@@ -17,7 +17,6 @@ import SuggestionDialog from "./suggestiondialog.js";
 import SuggestPortDialog from "./suggestionportdialog.js";
 import Snap from "../glpatch/snap.js";
 import subPatchOpUtil from "../subpatchop_util.js";
-import uiconfig from "../uiconfig.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import Gui, { gui } from "../gui.js";
@@ -550,7 +549,7 @@ export default class PatchView extends Events
                     {
                         let mulDirY = 1;
                         if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
-                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (uiconfig.snapGridY / 2 + glopB.h));
+                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (gluiconfig.snapGridY / 2 + glopB.h));
                         let x = op.uiAttribs.translate.x;
 
                         const link = op.isConnectedTo(b);
@@ -849,7 +848,7 @@ export default class PatchView extends Events
                     "bounds": this.getSelectionBounds(),
                     "numOps": numops,
                     "mulSubs": mulSubs,
-                    "commentColors": uiconfig.commentColors
+                    "commentColors": gluiconfig.commentColors
                 });
 
             gui.opParams.clear();

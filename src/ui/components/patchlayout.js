@@ -1,9 +1,8 @@
-import uiconfig from "../uiconfig.js";
 import gluiconfig from "../glpatch/gluiconfig.js";
 import { UiOp } from "../core_extend_op.js";
 
-const GRID_X = uiconfig.snapGridX;
-const GRID_Y = uiconfig.snapGridY;
+const GRID_X = gluiconfig.snapGridX;
+const GRID_Y = gluiconfig.snapGridY;
 const GAP_X = 2 * GRID_X;
 const GAP_Y = GRID_Y;
 const FANOUT_GAP_X = 4 * GRID_X;

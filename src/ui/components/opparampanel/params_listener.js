@@ -7,7 +7,6 @@ import WatchPortVisualizer from "./watchportvisualizer.js";
 import subPatchOpUtil from "../../subpatchop_util.js";
 import defaultOps from "../../defaultops.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
-import uiconfig from "../../uiconfig.js";
 import valueChanger from "./valuechanger.js";
 import { gui } from "../../gui.js";
 import { contextMenu } from "../../elements/contextmenu.js";
@@ -1292,9 +1291,9 @@ class ParamsListener extends Events
             perf.finish();
         }
 
-        if (uiconfig.watchValuesInterval == 0) return;
+        if (gluiconfig.watchValuesInterval == 0) return;
 
-        setTimeout(this._updateWatchPorts.bind(this), uiconfig.watchValuesInterval);
+        setTimeout(this._updateWatchPorts.bind(this), gluiconfig.watchValuesInterval);
     }
 
     removePorts()
