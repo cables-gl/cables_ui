@@ -188,7 +188,7 @@ function getPortDescription(thePort, overlink)
  * @param {import("cables").Port} port
  * @param {boolean | import("../glpatch/gllink.js").default} overlink
  */
-export function updateHoverToolTip(event, port, overlink)
+export function updateHoverToolTip(event, port, overlink, options = {})
 {
     gui.emitEvent("portHovered", port);
     if (!port) return;
@@ -278,7 +278,7 @@ export function updateHoverToolTip(event, port, overlink)
         CABLES.UI.hoverInterval = -1;
     }
 
-    if (CABLES.UI.hoverInterval == -1)
+    if (!options.noRepeat && CABLES.UI.hoverInterval == -1)
         CABLES.UI.hoverInterval = setInterval(
             () =>
             {

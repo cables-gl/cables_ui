@@ -3,6 +3,7 @@ import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPort from "./glport.js";
 import GlPortCursor from "./glopcursor.js";
+import { updateHoverToolTip } from "../elements/tooltips.js";
 
 export class KeyNav
 {
@@ -36,7 +37,8 @@ export class KeyNav
      */
     gotoOp(theOp)
     {
-        this.#port = theOp.getFirstPortIn();
+        this.#port = theOp.portsIn.find((p) => { return this.#getGlPort(p); });
+        if (!this.#port) return;
         this.setPort(this.#port);
     }
 
@@ -89,82 +91,44 @@ export class KeyNav
         if (x > 0) this.moveRight();
         if (x < 0) this.moveLeft();
 
-        //     const cursub = this.getCurrentSubPatch();
-        //     let foundOp = null;
-        //     let foundOpScore = 9999999;
-        //     for (let i = 0; i < this._p.ops.length; i++)
-        //     {
-        //         const op = this._p.ops[i];
-        //         if (op.getSubPatch() == cursub && op.uiAttribs.translate)
-        //         {
-        //             if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
-        //             {
-        //                 const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-        //                 if (score < foundOpScore)
-        //                 {
-        //                     foundOp = op;
-        //                     foundOpScore = score;
-        //                 }
-        //             }
-        //             else
-        //             if (y == -1 && op.uiAttribs.translate.y < curOp.uiAttribs.translate.y)
-        //             {
-        //                 const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-        //                 if (score < foundOpScore)
-        //                 {
-        //                     foundOp = op;
-        //                     foundOpScore = score;
-        //                 }
-        //             }
-        //             else
-        //             if (x == 1 && op.uiAttribs.translate.x > curOp.uiAttribs.translate.x)
-        //             {
-        //                 const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        //                 if (score < foundOpScore)
-        //                 {
-        //                     foundOp = op;
-        //                     foundOpScore = score;
-        //                 }
-        //             }
-        //             else
-        //             if (x == -1 && op.uiAttribs.translate.x < curOp.uiAttribs.translate.x)
-        //             {
-        //                 const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        //                 if (score < foundOpScore)
-        //                 {
-        //                     foundOp = op;
-        //                     foundOpScore = score;
-        //                 }
-        //             }
-        //         }
-        //     }
-
-    //     if (foundOp)
-    //     {
-    //         this.setKeyboardCursorToOp(foundOp);
-    //         // this.setSelectedOpById(foundOp.id);
-    //         // this.focusOp(foundOp.id);
-    //     }
     }
 
     /**
-     * @param {Port} p
+     * @param {Port} port
      * @param {number} [linkIdx] -1 = the port itself
      */
-    setPort(p, linkIdx = -1)
+    setPort(port, linkIdx = -1)
     {
-        if (linkIdx == -1 && p.links.length > 0) linkIdx = this.#sortedLinkStops(p)[0].linkIdx;
+        if (linkIdx == -1 && port.links.length > 0) linkIdx = this.#sortedLinkStops(port)[0].linkIdx;
 
-        this.#glPort = this.#getGlPort(p);
+        this.#glPort = this.#getGlPort(port);
+
+        this.#port = port;
+
         this.#linkIdx = linkIdx;
         this.#glPatch.glPortCursor.setGlPort(this.#glPort);
 
         if (this.#glLink) this.#glLink.setKeyNavHighlight(false);
 
-        const link = p.links[linkIdx];
+        const link = port.links[linkIdx];
         this.#glLink = link ? this.#glPatch.links[link.id] : null;
 
         if (this.#glLink) this.#glLink.setKeyNavHighlight(true);
+        this.#updateTooltip();
+    }
+
+    #updateTooltip()
+    {
+        let offY = 80;
+        if (this.#port.direction == Port.DIR_IN)offY = -60;
+        const coords = this.#glPatch.viewBox.patchToScreenCoords(this.#glPort.glOp.x, this.#glPort.glOp.y);
+        const event = {
+            "clientX": coords[0] + gui.patchView.boundingRect.left,
+            "clientY": coords[1] + gui.patchView.boundingRect.top + offY
+        };
+        clearInterval(CABLES.UI.hoverInterval);
+        CABLES.UI.hoverInterval = -1;
+        updateHoverToolTip(event, this.#port, false);
     }
 
     /**
@@ -199,6 +163,7 @@ export class KeyNav
         const stops = [];
         for (const p of ports)
         {
+            if (!this.#getGlPort(p)) continue;
             if (p.links.length == 0) stops.push({ "port": p, "linkIdx": -1 });
             else stops.push(...this.#sortedLinkStops(p));
         }
@@ -208,36 +173,63 @@ export class KeyNav
         if (next) this.setPort(next.port, next.linkIdx);
     }
 
-    gotoOtherDirPort()
+    /**
+     * visible port closest in x to the current port
+     * @param {Port[]} ports
+     * @param {(p:Port)=>boolean} filter
+     */
+    #nearestPort(ports, filter)
     {
-        console.log("otherport DIR");
-
-        const op = this.#glPort.port.op;
-        const p = this.#glPort.port.direction == Port.DIR_IN ? op.getFirstPortOut() : op.getFirstPortIn();
-        if (!p) return;
-        this.setPort(p);
-
+        const x = this.#glPort.rect.absX;
+        let found = null;
+        let foundDist = Infinity;
+        for (const p of ports)
+        {
+            const glp = this.#getGlPort(p);
+            if (!glp || !filter(p)) continue;
+            const dist = Math.abs(glp.rect.absX - x);
+            if (dist < foundDist)
+            {
+                found = p;
+                foundDist = dist;
+            }
+        }
+        return found;
     }
 
-    gotoOtherOpPort()
+    /**
+     * @param {number} followDir Port.DIR_IN for up, Port.DIR_OUT for down
+     */
+    #moveVertical(followDir)
     {
-        const link = this.#glPort.port.links[Math.max(0, this.#linkIdx)];
-        if (!link) return;
-        this.setPort(link.getOtherPort(this.#glPort.port));
+        const port = this.#glPort.port;
+        const op = port.op;
+        let p = null;
+
+        if (port.direction == followDir)
+        {
+            // follow selected link, or go to nearest port on this side that has links
+            const link = port.links[Math.max(0, this.#linkIdx)];
+            if (link) p = link.getOtherPort(port);
+            else p = this.#nearestPort(followDir == Port.DIR_IN ? op.portsIn : op.portsOut, (pp) => { return pp.links.length > 0; });
+        }
+        else
+        {
+            // switch side: nearest port on the other side
+            p = this.#nearestPort(followDir == Port.DIR_IN ? op.portsIn : op.portsOut, () => { return true; });
+        }
+
+        if (p) this.setPort(p);
     }
 
     moveUp()
     {
-        console.log("up");
-        if (this.#glPort.port.direction == Port.DIR_IN) this.gotoOtherOpPort();
-        else this.gotoOtherDirPort();
+        this.#moveVertical(Port.DIR_IN);
     }
 
     moveDown()
     {
-        console.log("down");
-        if (this.#glPort.port.direction == Port.DIR_IN) this.gotoOtherDirPort();
-        else this.gotoOtherOpPort();
+        this.#moveVertical(Port.DIR_OUT);
     }
 
     moveLeft()
