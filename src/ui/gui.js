@@ -1838,6 +1838,10 @@ export default class Gui extends Events
 
         this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { undo.undo(); });
         this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, () => { undo.redo(); });
+
+        this.keys.key("u", "undo", "down", null, { "ignoreInput": true }, () => { undo.undo(); });
+        this.keys.key("u", "redo", "down", null, { "ignoreInput": true, "shiftKey": true }, () => { undo.redo(); });
+
         this.keys.key(",", "Patch Settings", "down", null, { "ignoreInput": true, "cmdCtrl": true }, () => { CmdUi.settings(); });
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>

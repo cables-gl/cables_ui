@@ -958,7 +958,7 @@ export default class GlPatch extends Events
         try { this.#cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
-        if (this.glPortCursor) this.glPortCursor.hide();
+        this.#keyNav.deactivate();
 
         this.emitEvent(GlPatch.EVENT_MOUSE_DOWN, e);
         this.#rectInstancer.interactive = true; // mouseup after a selection drag can return early and leave ops non-interactive, then op drags start a selection instead
@@ -2485,4 +2485,9 @@ export default class GlPatch extends Events
 
     //     this.glPortCursor.moveToOp(op);
     // }
+
+    getKeyNav()
+    {
+        return this.#keyNav;
+    }
 }

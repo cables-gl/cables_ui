@@ -155,41 +155,7 @@ export default class GlLink
             if (
                 this._buttonDown == this.#glPatch.mouseState.buttonForLinkInsertOp && pressTime < gluiconfig.clickMaxDuration)
             {
-                const opIn = this.#glOpIn.op;// || gui.corePatch().getOpById(this._opIdInput);
-
-                const pIn = opIn.getPortById(this._portIdInput);
-                const opOut = this.#glOpOut || gui.corePatch().getOpById(this._opIdOutput);
-                const pOut = this.#glOpOut.op.getPortById(this._portIdOutput);
-                if (!pOut) return;
-                const llink = pOut.getLinkTo(pIn);
-
-                gui.opSelect().show(
-                    {
-                        "x": 0,
-                        "y": 0,
-                        "onOpAdd": (op) =>
-                        {
-                            const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
-                            const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this.#glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this.#glPatch.viewBox.mousePatchY) ** 2);
-
-                            let x = opOut.uiAttribs.translate.x;
-                            let y = this.#glPatch.viewBox.mousePatchY;
-                            if (distIn < distOut)x = opIn.uiAttribs.translate.x;
-
-                            if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
-                            {
-                                x = Snap.snapOpPosX(x);
-                                y = Snap.snapOpPosY(y);
-                            }
-
-                            op.setUiAttrib(
-                                {
-                                    "subPatch": this.#glPatch.subPatch,
-                                    "translate": {
-                                        "x": x,
-                                        "y": y
-                                    } });
-                        } }, null, null, llink);
+                this.insertOp({ "x": this.#glPatch.viewBox.mousePatchX, "y": this.#glPatch.viewBox.mousePatchY });
             }
 
             this._buttonDown = MouseState.BUTTON_NONE;
@@ -214,6 +180,51 @@ export default class GlLink
         this.#glPatch.addLink(this);
         this.updateVisible();
         this.update();
+    }
+
+    /**
+     * open op select to insert an op into this link
+     * @param {{x:number,y:number}} pos patch coords, new op is placed at y and x of the closer op
+     * @param {Function} [cb] called with the new op after it was added and linked
+     */
+    insertOp(pos, cb)
+    {
+        const opIn = this.#glOpIn.op;// || gui.corePatch().getOpById(this._opIdInput);
+
+        const pIn = opIn.getPortById(this._portIdInput);
+        const opOut = this.#glOpOut || gui.corePatch().getOpById(this._opIdOutput);
+        const pOut = this.#glOpOut.op.getPortById(this._portIdOutput);
+        if (!pOut) return;
+        const llink = pOut.getLinkTo(pIn);
+
+        gui.opSelect().show(
+            {
+                "x": 0,
+                "y": 0,
+                "onOpAdd": (op) =>
+                {
+                    const distOut = Math.sqrt((opOut.uiAttribs.translate.x - pos.x) ** 2 + (opOut.uiAttribs.translate.y - pos.y) ** 2);
+                    const distIn = Math.sqrt((opIn.uiAttribs.translate.x - pos.x) ** 2 + (opIn.uiAttribs.translate.y - pos.y) ** 2);
+
+                    let x = opOut.uiAttribs.translate.x;
+                    let y = pos.y;
+                    if (distIn < distOut)x = opIn.uiAttribs.translate.x;
+
+                    if (userSettings.get(UserSettings.PREF_SNAPTOGRID))
+                    {
+                        x = Snap.snapOpPosX(x);
+                        y = Snap.snapOpPosY(y);
+                    }
+
+                    op.setUiAttrib(
+                        {
+                            "subPatch": this.#glPatch.subPatch,
+                            "translate": {
+                                "x": x,
+                                "y": y
+                            } });
+                    if (cb) cb(op);
+                } }, null, null, llink);
     }
 
     get hovering()
@@ -470,7 +481,7 @@ export default class GlLink
             dirOut = GlLink.#unit(prev || outPos, inPos);
         }
 
-        return { dirIn, dirOut };
+        return { "dirIn": dirIn, "dirOut": dirOut };
     }
 
     _updatePosition()
@@ -889,6 +900,8 @@ export default class GlLink
     setKeyNavHighlight(b)
     {
         this.keyNavHighlight = b;
+
+        if (!this.#cable) return;
         this.#cable.showButton(b);
         this.updateColor();
         this.cableHoverChanged();

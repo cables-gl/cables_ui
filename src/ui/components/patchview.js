@@ -1120,7 +1120,7 @@ export default class PatchView extends Events
     /**
      * @returns {UiOp[]}
      */
-    getSelectedOps()
+    getSelectedOps(inclKeyNav)
     {
         const perf = gui.uiProfiler.start("patchview getSelectedOps");
 
@@ -1130,6 +1130,8 @@ export default class PatchView extends Events
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i] && this._p.ops[i].uiAttribs && this._p.ops[i].uiAttribs.selected)
                 ops.push(/** @type {UiOp} */ (this._p.ops[i]));
+
+        if (this.patchRenderer.getKeyNav().active && this.patchRenderer.getKeyNav().getCurrentOp())ops.push(this.patchRenderer.getKeyNav().getCurrentOp());
 
         perf.finish();
 
@@ -1205,7 +1207,7 @@ export default class PatchView extends Events
 
         const undoGroup = undo.startGroup();
         const ids = [];
-        const ops = this.getSelectedOps();
+        const ops = this.getSelectedOps(true);
 
         for (let i = 0; i < ops.length; i++) ids.push(ops[i].id);
         for (let i = 0; i < ids.length; i++) this._p.deleteOp(ids[i], true);
@@ -2699,6 +2701,8 @@ export default class PatchView extends Events
 
     unselectAllOps()
     {
+        if (this._patchRenderer && this._patchRenderer.unselectAll) return this._patchRenderer.unselectAll();
+
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i].uiAttribs.selected) this._p.ops[i].setUiAttribs({ "selected": false });
     }
@@ -2730,14 +2734,6 @@ export default class PatchView extends Events
         if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
         this.focus();
     }
-
-    // /**
-    //  * @param { Op<any>} op
-    //  */
-    // setKeyboardCursorToOpatchView(op)
-    // {
-    //     if (this._patchRenderer.setKeyboardCursorToOp) this._patchRenderer.setKeyboardCursorToOp(op);
-    // }
 
     /**
      * @param {String} opid

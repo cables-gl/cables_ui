@@ -13,11 +13,15 @@ import { InputBindings } from "../inputbindings.js";
  * @property {boolean} [shiftKey]
  * @property {boolean} [altKey]
  * @property {boolean} [ignoreInput]
+ * @property {string} [contextMode] only active while this mode is set via setContextMode(), wins over bindings without contextMode
 */
 
 /** Manages keybindings for hotkeys/shortcuts. */
 export default class KeyBindingsManager extends Events
 {
+    /** @type {Set<string>} */
+    #modes = new Set();
+
     constructor()
     {
         super();
@@ -136,14 +140,37 @@ export default class KeyBindingsManager extends Events
         return titles;
     }
 
+    /**
+     * @param {string} name
+     * @param {boolean} on
+     */
+    setContextMode(name, on)
+    {
+        if (on) this.#modes.add(name);
+        else this.#modes.delete(name);
+    }
+
+    /**
+     * keys with an active mode first, then keys without mode
+     */
+    #orderedKeys()
+    {
+        const withMode =this._keys.filter((k) => { return k.options.contextMode && this.#modes.has(k.options.contextMode); });
+        const plain = this._keys.filter((k) => { return !k.options.contextMode; });
+        return withMode.concat(plain);
+    }
+
     _onKeyUp(e)
     {
         this.shiftKey = false;
         if (gui.inputBindings && gui.inputBindings.handleKey(e)) return;
 
-        for (let i = 0; i < this._keys.length; i++)
+        const keys = this.#orderedKeys();
+        let firedMode = false;
+        for (let i = 0; i < keys.length; i++)
         {
-            const k = this._keys[i];
+            const k = keys[i];
+            if (firedMode && !k.options.contextMode) break;
 
             if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA" || document.activeElement.classList.contains("cm-content"))) continue;
 
@@ -170,6 +197,7 @@ export default class KeyBindingsManager extends Events
 
                 if (k.cb) k.cb(e);
                 else this._log.warn("[keys] key event has no callback", k);
+                if (k.options.contextMode) firedMode = true;
 
                 if (!e.dontPreventDefault) e.preventDefault();
 
@@ -193,9 +221,12 @@ export default class KeyBindingsManager extends Events
         this.shiftKey = e.shiftKey || e.keyCode == 16;
         if (gui.inputBindings && gui.inputBindings.handleKey(e)) return;
 
-        for (let i = 0; i < this._keys.length; i++)
+        const keys = this.#orderedKeys();
+        let firedMode = false;
+        for (let i = 0; i < keys.length; i++)
         {
-            const k = this._keys[i];
+            const k = keys[i];
+            if (firedMode && !k.options.contextMode) break;
 
             if (k.key != (e.key + "").toLowerCase() || k.event != "down") continue;
 
@@ -217,6 +248,7 @@ export default class KeyBindingsManager extends Events
 
                 if (k.cb) k.cb(e);
                 else this._log.warn("[keys] key event has no callback", k);
+                if (k.options.contextMode) firedMode = true;
 
                 if (!e.dontPreventDefault) e.preventDefault();
 
