@@ -1103,83 +1103,6 @@ export default class PatchView extends Events
         return foundOp;
     }
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    cursorNavOps(x, y)
-    {
-        let curOp = this._patchRenderer?.glOpCursor?.op;
-
-        if (!curOp)
-        {
-
-            const ops = this.getSelectedOps();
-
-            if (ops.length == 0) curOp = this.getClosestOp();
-            else curOp = ops[0];
-        }
-
-        const cursub = this.getCurrentSubPatch();
-
-        let foundOp = null;
-        let foundOpScore = 9999999;
-
-        for (let i = 0; i < this._p.ops.length; i++)
-        {
-            const op = this._p.ops[i];
-            if (op.getSubPatch() == cursub && op.uiAttribs.translate)
-            {
-                if (y == 1 && op.uiAttribs.translate.y > curOp.uiAttribs.translate.y)
-                {
-                    const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-                    if (score < foundOpScore)
-                    {
-                        foundOp = op;
-                        foundOpScore = score;
-                    }
-                }
-                else
-                if (y == -1 && op.uiAttribs.translate.y < curOp.uiAttribs.translate.y)
-                {
-                    const score = this.getDistScore(curOp.uiAttribs.translate.y, curOp.uiAttribs.translate.x, op.uiAttribs.translate.y, op.uiAttribs.translate.x);
-                    if (score < foundOpScore)
-                    {
-                        foundOp = op;
-                        foundOpScore = score;
-                    }
-                }
-                else
-                if (x == 1 && op.uiAttribs.translate.x > curOp.uiAttribs.translate.x)
-                {
-                    const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-                    if (score < foundOpScore)
-                    {
-                        foundOp = op;
-                        foundOpScore = score;
-                    }
-                }
-                else
-                if (x == -1 && op.uiAttribs.translate.x < curOp.uiAttribs.translate.x)
-                {
-                    const score = this.getDistScore(curOp.uiAttribs.translate.x, curOp.uiAttribs.translate.y, op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-                    if (score < foundOpScore)
-                    {
-                        foundOp = op;
-                        foundOpScore = score;
-                    }
-                }
-            }
-        }
-
-        if (foundOp)
-        {
-            this.setKeyboardCursorToOp(foundOp);
-            // this.setSelectedOpById(foundOp.id);
-            // this.focusOp(foundOp.id);
-        }
-    }
-
     getSelectedOpsIds()
     {
         const perf = gui.uiProfiler.start("patchview getSelectedOpsIds");
@@ -2808,13 +2731,13 @@ export default class PatchView extends Events
         this.focus();
     }
 
-    /**
-     * @param { Op<any>} op
-     */
-    setKeyboardCursorToOp(op)
-    {
-        if (this._patchRenderer.setKeyboardCursorToOp) this._patchRenderer.setKeyboardCursorToOp(op);
-    }
+    // /**
+    //  * @param { Op<any>} op
+    //  */
+    // setKeyboardCursorToOpatchView(op)
+    // {
+    //     if (this._patchRenderer.setKeyboardCursorToOp) this._patchRenderer.setKeyboardCursorToOp(op);
+    // }
 
     /**
      * @param {String} opid

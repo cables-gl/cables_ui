@@ -5,8 +5,10 @@ import { platform } from "../platform.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
 import GlPatch from "./glpatch.js";
 import GlRect from "../gldraw/glrect.js";
+import gluiconfig from "./gluiconfig.js";
+import GlPort from "./glport.js";
 
-export default class GlOpCursor extends Events
+export default class GlPortCursor extends Events
 {
     static durationAnim = 0.1;
     static padding = 5;
@@ -98,8 +100,8 @@ export default class GlOpCursor extends Events
         this.#animSizeX.clear(this.#glPatch.time);
         this.#animSizeY.clear(this.#glPatch.time);
 
-        this.#animSizeX.setValue(this.#glPatch.time + GlOpCursor.durationAnim, w);
-        this.#animSizeY.setValue(this.#glPatch.time + GlOpCursor.durationAnim, h);
+        this.#animSizeX.setValue(this.#glPatch.time + GlPortCursor.durationAnim, w);
+        this.#animSizeY.setValue(this.#glPatch.time + GlPortCursor.durationAnim, h);
         this.updateAnim();
     }
 
@@ -114,8 +116,8 @@ export default class GlOpCursor extends Events
         this.#animPosX.clear(this.#glPatch.time);
         this.#animPosY.clear(this.#glPatch.time);
 
-        this.#animPosX.setValue(this.#glPatch.time + GlOpCursor.durationAnim, x);
-        this.#animPosY.setValue(this.#glPatch.time + GlOpCursor.durationAnim, y);
+        this.#animPosX.setValue(this.#glPatch.time + GlPortCursor.durationAnim, x);
+        this.#animPosY.setValue(this.#glPatch.time + GlPortCursor.durationAnim, y);
 
         this.updateAnim();
     }
@@ -126,13 +128,16 @@ export default class GlOpCursor extends Events
     }
 
     /**
-     * @param {import("cables").Op<any>} op
+     * @param {GlPort} glPort
      */
-    moveToOp(op)
+    setGlPort(glPort)
     {
+        console.log("setglport", glPort.name);
         this.#cursorRect.visible = true;
-        this.op = op;
-        this.setPosition(this.#glPatch._glOpz[op.id].x - GlOpCursor.padding, this.#glPatch._glOpz[op.id].y - GlOpCursor.padding);
-        this.setSize(this.#glPatch._glOpz[op.id].w + GlOpCursor.padding * 2, this.#glPatch._glOpz[op.id].h + GlOpCursor.padding * 2);
+        this.op = glPort.port.op;
+
+        console.log("glp", glPort.glOp.x, glPort.y);
+        this.setPosition(glPort.rect.absX - GlPortCursor.padding, glPort.y - GlPortCursor.padding);
+        this.setSize(gluiconfig.portWidth + GlPortCursor.padding * 2, gluiconfig.portHeight + GlPortCursor.padding * 2);
     }
 }

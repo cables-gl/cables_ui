@@ -119,6 +119,11 @@ export default class GlPort
         return this.#posX;
     }
 
+    get y()
+    {
+        return this.#rect.absY;
+    }
+
     /**
      * @param {import("cables/src/core/core_port.js").PortUiAttribs} attribs
      */
