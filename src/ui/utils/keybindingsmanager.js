@@ -277,6 +277,15 @@ export default class KeyBindingsManager extends Events
             "cb": cb
         };
 
+        const same = (a, b) => { return Boolean(a) == Boolean(b); };
+        const double = this._keys.find((o) =>
+        {
+            return o.key == k.key && o.event == k.event && o.target == k.target &&
+                same(o.options.cmdCtrl, options.cmdCtrl) && same(o.options.shiftKey, options.shiftKey) && same(o.options.altKey, options.altKey) &&
+                o.options.contextMode == options.contextMode;
+        });
+        if (double) this._log.warn("[keys] key bound twice:", key, "\"" + double.title + "\" and \"" + title + "\"", target || "global");
+
         this._keys.push(k);
     }
 

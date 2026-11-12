@@ -101,6 +101,27 @@ class OpParampanel extends Events
         this._currentOp = null;
     }
 
+    /**
+     * focus the param of an input port, press it if it is a button or checkbox
+     * @param {Port} port
+     */
+    focusPort(port)
+    {
+        const index = this._portsIn.indexOf(port);
+        if (index == -1) return;
+
+        const id = index + "_" + this.panelId;
+        const pressEle = ele.byId("portbutton_" + id) || ele.byId("portcheckbox_" + id);
+        const focusEle = ele.byId("portval_" + id + "-container") || ele.byId("portval_" + id);
+
+        if (pressEle) pressEle.click();
+        else if (focusEle)
+        {
+            focusEle.scrollIntoView({ "block": "nearest" });
+            focusEle.focus();
+        }
+    }
+
     refresh()
     {
         this.show(this._currentOp);

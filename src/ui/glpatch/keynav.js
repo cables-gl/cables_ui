@@ -6,6 +6,7 @@ import GlPort from "./glport.js";
 import GlPortCursor from "./glopcursor.js";
 import { updateHoverToolTip } from "../elements/tooltips.js";
 import { GuiText } from "../text.js";
+import { KeyNavJump } from "./keynavjump.js";
 
 export class KeyNav
 {
@@ -34,12 +35,19 @@ export class KeyNav
     /** @type {import("cables/src/core/core_op.js").Op<any>} last clicked op, keynav starts here */
     #startOp = null;
 
+    /** @type {KeyNavJump} */
+    #jump;
+
+    /** @type {(e:KeyboardEvent)=>void} waits for the key after g */
+    #gotoKeyListener = null;
+
     /**
      * @param {GlPatch} glPatch
      */
     constructor(glPatch)
     {
         this.#glPatch = glPatch;
+        this.#jump = new KeyNavJump(glPatch, (op) => { this.gotoOp(op); });
 
         gui.corePatch().on(Patch.EVENT_OP_DELETED, (op) => { this.#onOpDeleted(op); });
 
@@ -49,6 +57,8 @@ export class KeyNav
         gui.keys.key("Enter", "Add op to selection", "down", canvasId, { ...options, "shiftKey": true }, () => { this.selectOp(true); });
         gui.keys.key("i", "Insert op into cable", "down", canvasId, options, () => { this.insertIntoLink(); });
         gui.keys.key("a", "Add op to port", "down", canvasId, options, () => { this.addOpToPort(); });
+        gui.keys.key("s", "Edit port in param panel", "down", canvasId, options, () => { this.editPort(); });
+        gui.keys.key("g", "Go to: g topmost op, w jump to op, s top of branch, e bottom of branch", "down", canvasId, { "displayGroup": "Keyboard Navigation" }, () => { this.#startGoto(); });
     }
 
     /**
@@ -82,7 +92,7 @@ export class KeyNav
     gotoOp(theOp)
     {
         if (!theOp) return;
-        this.#port = theOp.portsIn.find((p) => { return this.#getGlPort(p); });
+        this.#port = theOp.portsIn.find((p) => { return this.#getGlPort(p); }) || theOp.portsOut.find((p) => { return this.#getGlPort(p); });
         if (!this.#port) return;
         this.setPort(this.#port);
     }
@@ -113,13 +123,6 @@ export class KeyNav
      */
     move(x, y, linkedOnly = false)
     {
-
-        if (!this.#glPatch.glPortCursor)
-        {
-            this.#glPatch.glPortCursor = new GlPortCursor(this.#glPatch, this.#glPatch.overLayRects);
-            this.#glPatch.glPortCursor.updateAnim();
-        }
-
         if (!this.#glPort || !this.#glPatch.glPortCursor.visible)
         {
             this.#start();
@@ -158,6 +161,12 @@ export class KeyNav
         }
 
         this.#linkIdx = linkIdx;
+
+        if (!this.#glPatch.glPortCursor)
+        {
+            this.#glPatch.glPortCursor = new GlPortCursor(this.#glPatch, this.#glPatch.overLayRects);
+            this.#glPatch.glPortCursor.updateAnim();
+        }
         this.#glPatch.glPortCursor.setGlPort(this.#glPort);
 
         if (this.#glLink) this.#glLink.setKeyNavHighlight(false);
@@ -178,9 +187,106 @@ export class KeyNav
         }
     }
 
+    /** show params of the current op and focus the current port, buttons get pressed */
+    editPort()
+    {
+        if (!this.#port) return;
+        gui.opParams.show(this.#port.op);
+        gui.opParams.focusPort(this.#port);
+    }
+
+    /** show jump labels on all ops on screen */
+    startJump()
+    {
+        if (!this.#glPort) return;
+        this.#jump.start(this.#glPort.glOp.x, this.#glPort.glOp.y);
+    }
+
+    /** g pressed: next key g goes to topmost op, w jumps to op, s goes to top of branch, e to bottom. if not active, starts keynav at the selected op, else like arrow keys */
+    #startGoto()
+    {
+        if (!this.#glPort || !this.active)
+        {
+            const ops = gui.patchView.getSelectedOps();
+            if (ops.length == 1) this.gotoOp(ops[0]);
+            else this.#start();
+            if (!this.#glPort) return;
+        }
+
+        this.#stopGoto();
+        this.#gotoKeyListener = (e) =>
+        {
+            if (e.key == "Shift") return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            this.#stopGoto();
+            gui.showInfo(GuiText.keynav);
+
+            if (e.key == "g") this.#gotoTopmostOp();
+            if (e.key == "w") this.startJump();
+            if (e.key == "s") this.#gotoBranchEnd(Port.DIR_IN);
+            if (e.key == "e") this.#gotoBranchEnd(Port.DIR_OUT);
+        };
+        window.addEventListener("keydown", this.#gotoKeyListener, true);
+        gui.showInfo(GuiText.keynav_goto);
+    }
+
+    /** op with the smallest y in the current subpatch */
+    #gotoTopmostOp()
+    {
+        const subPatch = gui.patchView.getCurrentSubPatch();
+        let top = null;
+        for (const op of gui.corePatch().ops)
+        {
+            if (op.uiAttribs.subPatch != subPatch || !op.uiAttribs.translate || op.uiAttribs.hidden) continue;
+            if (!top || op.uiAttribs.translate.y < top.uiAttribs.translate.y) top = op;
+        }
+        this.gotoOp(top);
+    }
+
+    #stopGoto()
+    {
+        if (this.#gotoKeyListener) window.removeEventListener("keydown", this.#gotoKeyListener, true);
+        this.#gotoKeyListener = null;
+    }
+
+    /**
+     * follow cables up or down until an op without cables on that side
+     * @param {number} followDir Port.DIR_IN for up, Port.DIR_OUT for down
+     */
+    #gotoBranchEnd(followDir)
+    {
+        if (!this.#glPort) return;
+
+        let port = this.#glPort.port;
+        let linkIdx = this.#linkIdx;
+        const visited = new Set();
+
+        while (!visited.has(port.op))
+        {
+            visited.add(port.op);
+
+            if (port.direction != followDir || port.links.length == 0)
+            {
+                const ports = followDir == Port.DIR_IN ? port.op.portsIn : port.op.portsOut;
+                const p = this.#nearestPort(ports, (pp) => { return pp.links.length > 0; }, this.#getGlPort(port)?.rect.absX);
+                if (!p) break;
+                port = p;
+                linkIdx = -1;
+            }
+
+            port = port.links[Math.max(0, linkIdx)].getOtherPort(port);
+            linkIdx = -1;
+        }
+
+        this.setPort(port);
+    }
+
     /** reset, next move starts again from last clicked op or closest to mouse */
     deactivate()
     {
+        this.#jump.stop();
+        this.#stopGoto();
         if (this.#glPatch.glPortCursor) this.#glPatch.glPortCursor.hide();
         if (this.#glLink) this.#glLink.setKeyNavHighlight(false);
         this.#glLink = null;
@@ -245,7 +351,7 @@ export class KeyNav
         };
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
-        updateHoverToolTip(event, this.#port, false);
+        updateHoverToolTip(event, this.#port, false, { "noInfo": true });
     }
 
     /**
@@ -300,13 +406,12 @@ export class KeyNav
      * visible port closest in x to the current port
      * @param {Port[]} ports
      * @param {(p:Port)=>boolean} filter
+     * @param {number} [x] default: x of current port
      */
-    #nearestPort(ports, filter)
+    #nearestPort(ports, filter, x = this.#glPort?.rect?.absX)
     {
+        if (x === undefined) return;
 
-        if (!this.#glPort || !this.#glPort.rect) return;
-
-        const x = this.#glPort.rect.absX;
         let found = null;
         let foundDist = Infinity;
         for (const p of ports)

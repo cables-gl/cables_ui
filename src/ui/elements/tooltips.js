@@ -187,13 +187,14 @@ function getPortDescription(thePort, overlink)
  * @param {MouseEvent|Object} event
  * @param {import("cables").Port} port
  * @param {boolean | import("../glpatch/gllink.js").default} overlink
+ * @param {{noRepeat?:boolean, noInfo?:boolean}} [options] noInfo: do not show port mouse hints in the info line
  */
 export function updateHoverToolTip(event, port, overlink, options = {})
 {
     gui.emitEvent("portHovered", port);
     if (!port) return;
 
-    let txt = getPortDescription(port, overlink);
+    let txt = getPortDescription(port, overlink || options.noInfo);
     let val = null;
 
     if (port && !port.uiAttribs.hidePort) //! port.uiAttribs.hideParam
@@ -282,6 +283,6 @@ export function updateHoverToolTip(event, port, overlink, options = {})
         CABLES.UI.hoverInterval = setInterval(
             () =>
             {
-                updateHoverToolTip(event, port, overlink);
+                updateHoverToolTip(event, port, overlink, options);
             }, 50);
 }
