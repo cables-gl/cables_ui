@@ -420,11 +420,6 @@ export default class GlViewBox
 
         if (isNaN(z)) return console.error("zoom is nan");
         this._animZoom.clear();
-        if (userSettings.get(UserSettings.PREF_REDUCE_MOTION))
-        {
-            this._animZoom.setValue(this.glPatch.time, z);
-            return;
-        }
         this._animZoom.setValue(this.glPatch.time, this._zoom);
         this._animZoom.setValue(this.glPatch.time + dur, z);
     }
@@ -449,15 +444,6 @@ export default class GlViewBox
 
         if (_userInteraction || !gui.bottomTabPanel.isVisible())oy = 0;
         if (oy != oy)oy = 0;
-
-        if (userSettings.get(UserSettings.PREF_REDUCE_MOTION))
-        {
-            this._animScrollX.clear();
-            this._animScrollY.clear();
-            this._animScrollX.setValue(this.glPatch.time, x - ox);
-            this._animScrollY.setValue(this.glPatch.time, y + oy);
-            return;
-        }
 
         this._animScrollX.clear(this.glPatch.time);
         this._animScrollX.setValue(this.glPatch.time + dur, x - ox);
@@ -717,12 +703,9 @@ export default class GlViewBox
         // this._animZoom.defaultEasing = this._defaultEasing;
         this._restoreSubPatch(sub);
 
-        if (!userSettings.get(UserSettings.PREF_REDUCE_MOTION))
-        {
-            this._animZoom.clear();
-            this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
-            this._animZoom.setValue(this.glPatch.time + dur, this._zoom);
-        }
+        this._animZoom.clear();
+        this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
+        this._animZoom.setValue(this.glPatch.time + dur, this._zoom);
 
         if (next)next();
     }
