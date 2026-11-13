@@ -2151,13 +2151,20 @@ export default class GlOp extends Events
         };
         if (this.op.tempData.scopeAreaStartOp) this.#dragSnapPos.x = x;
 
+        const reduceMotion = userSettings.get(UserSettings.PREF_REDUCE_MOTION);
+        if (reduceMotion)
+        {
+            x = this.#dragSnapPos.x;
+            y = this.#dragSnapPos.y;
+        }
+
         if (x != this.x || y != this.y)
         {
             this.#op.uiAttribs.translate = { "x": x, "y": y };
             this.opUiAttribs.translate = { "x": x, "y": y };
             this.updatePosition();
         }
-        this.#updateDragTargetRect();
+        if (!reduceMotion) this.#updateDragTargetRect();
         this.emitEvent(GlOp.EVENT_DRAG);
 
         if (!this.#op) return;
