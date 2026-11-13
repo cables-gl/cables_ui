@@ -4,7 +4,7 @@ class GlUiConfig
     {
         this.snapGridX = 12;
         this.snapGridY = 20;
-        this.snapEdgeWidth = 60; // non grid mode
+        this.snapEdgeWidth = 30; // non grid mode
 
         this.idleModeTimeout = 120;
 
