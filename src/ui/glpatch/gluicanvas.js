@@ -78,6 +78,11 @@ export default class GlUiCanvas extends GlCanvas
             this.activityHigh();
         }, { "passive": true });
 
+        const elParams = document.getElementById(gui.getParamPanelEleId());
+        if (elParams)
+            for (const ev of ["pointermove", "pointerdown", "wheel", "keydown"])
+                elParams.addEventListener(ev, () => { this.activityHigh(); }, { "passive": true });
+
         this.parentResized();
         this.activityHigh();
 
