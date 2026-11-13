@@ -2,7 +2,7 @@ class GlUiConfig
 {
     constructor()
     {
-        this.snapGridX = 24;
+        this.snapGridX = 12;
         this.snapGridY = 20;
         this.snapEdgeWidth = 60; // non grid mode
 
