@@ -1797,7 +1797,7 @@ export default class GlOp extends Events
                 if (thePort)
                 {
                     let portVar = thePort.get();
-                    if (thePort.type == Port.TYPE_NUMBER && portVar.toPrecision)portVar = portVar.toPrecision(5);
+                    if (thePort.type == Port.TYPE_NUMBER) portVar = Math.round(portVar * 10000) / 10000;
                     const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + portVar);
 
                     if (str != this.#titleExt.text)
@@ -1808,9 +1808,9 @@ export default class GlOp extends Events
                 }
             }
             else
-            if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this.#titleExt.text)
+            if (this.opUiAttribs.hasOwnProperty("extendTitle"))
             {
-                const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle || "!?");
+                const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle);
 
                 // @ts-ignore
                 if (this.#titleExt.textOrig != str)
