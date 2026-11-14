@@ -49,7 +49,7 @@ export default class GlTextWriter
     {
         if (!this.#fontTex)
         {
-            if (!fontTextures.has(this.#cgl)) fontTextures.set(this.#cgl, Texture.load(this.#cgl, "img/worksans-regular.png", null, { "flip": false, "filter": Texture.FILTER_LINEAR, "imgBitmap": true }));
+            if (!fontTextures.has(this.#cgl)) fontTextures.set(this.#cgl, Texture.load(this.#cgl, "img/worksans-regular.webp", null, { "flip": false, "filter": Texture.FILTER_LINEAR, "imgBitmap": true }));
             this.#fontTex = fontTextures.get(this.#cgl);
         }
         this.#rectDrawer.setTexture(0, this.#fontTex, true);
