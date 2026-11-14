@@ -1,16 +1,13 @@
 import { utils } from "cables";
 import { ele, TalkerAPI } from "cables-shared-client";
-import { EditorView, lineNumbers } from "@codemirror/view";
-import { EditorState } from "@codemirror/state";
-import { javascript } from "@codemirror/lang-javascript";
-import { glsl } from "codemirror-lang-glsl";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { MergeView } from "@codemirror/merge";
 import Tab from "../../elements/tabpanel/tab.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import opNames from "../../opnameutils.js";
+
+/** @type {import("./cm_libs.js")} - codemirror, loaded when the first diff is shown */
+let cm = null;
 
 export default class TabOpVersionDiff
 {
@@ -27,7 +24,7 @@ export default class TabOpVersionDiff
     #previousName;
     #fileName;
 
-    /** @type {MergeView} */
+    /** @type {import("@codemirror/merge").MergeView} */
     #mergeView = null;
 
     /**
@@ -194,7 +191,11 @@ export default class TabOpVersionDiff
                     this.#setStatus("could not load " + (fileName || "op code"));
                     return;
                 }
-                this.#createMergeView(previousText, currentText);
+                import("./cm_libs.js").then((m) =>
+                {
+                    cm = m;
+                    this.#createMergeView(previousText, currentText);
+                });
             });
         });
     }
@@ -211,9 +212,9 @@ export default class TabOpVersionDiff
     #getLanguage()
     {
         const name = this.#fileName;
-        if (name == TabOpVersionDiff.OP_CODE_FILE) return javascript();
-        if (name.endsWith(".js") || name.endsWith(".json")) return javascript();
-        if (name.endsWith(".frag") || name.endsWith(".vert") || name.endsWith(".glsl") || name.endsWith(".wgsl")) return glsl();
+        if (name == TabOpVersionDiff.OP_CODE_FILE) return cm.javascript();
+        if (name.endsWith(".js") || name.endsWith(".json")) return cm.javascript();
+        if (name.endsWith(".frag") || name.endsWith(".vert") || name.endsWith(".glsl") || name.endsWith(".wgsl")) return cm.glsl();
         return [];
     }
 
@@ -229,14 +230,14 @@ export default class TabOpVersionDiff
         this.#destroy();
 
         const extensions = [
-            lineNumbers(),
+            cm.lineNumbers(),
             this.#getLanguage(),
-            oneDark,
-            EditorState.readOnly.of(true),
-            EditorView.editable.of(false)
+            cm.oneDark,
+            cm.EditorState.readOnly.of(true),
+            cm.EditorView.editable.of(false)
         ];
 
-        this.#mergeView = new MergeView({
+        this.#mergeView = new cm.MergeView({
             "a": { "doc": previousText, "extensions": extensions },
             "b": { "doc": currentText, "extensions": extensions },
             "parent": parent,

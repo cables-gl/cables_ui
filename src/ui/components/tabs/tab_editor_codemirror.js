@@ -1,26 +1,6 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
-import { linter, lintGutter, forEachDiagnostic, setDiagnosticsEffect } from "@codemirror/lint";
-import { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration, showPanel } from "@codemirror/view";
-import { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
-import { syntaxTree, bracketMatching, indentOnInput, indentUnit } from "@codemirror/language";
-import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
-import { markdown } from "@codemirror/lang-markdown";
-
-import { javascript, javascriptLanguage } from "@codemirror/lang-javascript";
-import { glsl } from "codemirror-lang-glsl";
-import { css } from "@codemirror/lang-css";
-import { json, jsonParseLinter } from "@codemirror/lang-json";
-import { html } from "@codemirror/lang-html";
-import { xml } from "@codemirror/lang-xml";
-import { sql } from "@codemirror/lang-sql";
-import { python } from "@codemirror/lang-python";
-
-import { oneDark } from "@codemirror/theme-one-dark";
-import { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
 // import { basicDark } from 'cm6-theme-basic-dark'
 // import { tokyoNightStorm } from "@fsegurai/codemirror-theme-tokyo-night-storm"
-import { indentWithTab, toggleComment, history, historyKeymap, defaultKeymap, insertNewlineAndIndent } from "@codemirror/commands";
-import { snippetCompletion } from "@codemirror/autocomplete"; // Built-in function
 
 import { createOpDocButton } from "../editor.js";
 import { platform } from "../../platform.js";
@@ -36,6 +16,9 @@ const CURSOR_LINES_STORAGE_KEY = "cables_editor_lines";
 const CURSOR_LINES_MAX_ENTRIES = 200;
 
 const DEFAULT_HELIX_CONFIG = "[editor]\ndefault-yank-register = \"+\"\n\n[editor.cursor-shape]\ninsert = \"bar\"\n";
+
+/** @type {import("./cm_libs.js")} - codemirror, loaded when the first editor opens */
+let cm = null;
 
 /** @type {import("helix-cm6")} - loaded on first use of a helix editor */
 let helixModule = null;
@@ -79,9 +62,9 @@ export default class EditorTabCodemirror extends EditorBase
 {
     #log = new Logger("editorTabCm");
     helix = false;
-    #highlightCompartment = new Compartment();
-    #languageCompartment = new Compartment();
-    #prefsCompartment = new Compartment();
+    #highlightCompartment = null;
+    #languageCompartment = null;
+    #prefsCompartment = null;
     #prefsListener = null;
 
     /** @type {import("../../api/opsserver.js").LinterDiag[]} */
@@ -90,6 +73,9 @@ export default class EditorTabCodemirror extends EditorBase
     /** @type {import("../../api/opsserver.js").LinterDiag[]} */
     #editorDiags = [];
     #lastStoredLine = 0;
+
+    /** @type {string} content for the editor while it is being created (codemirror loads async), null otherwise */
+    #pendingContent = null;
     #helixStatusEle = document.createElement("div");
 
     /**
@@ -174,13 +160,17 @@ export default class EditorTabCodemirror extends EditorBase
             this.cmView.dispatch(
                 {
                     "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
-                    "selection": EditorSelection.cursor(cursorPos),
-                    "annotations": Transaction.addToHistory.of(false)
+                    "selection": cm.EditorSelection.cursor(cursorPos),
+                    "annotations": cm.Transaction.addToHistory.of(false)
                 });
             this.cmView.focus();
         }
         else
         {
+            const creating = this.#pendingContent !== null;
+            this.#pendingContent = content;
+            if (creating) return;
+
             this.createEditor(() =>
             {
                 if (this._options.onClose)
@@ -198,7 +188,7 @@ export default class EditorTabCodemirror extends EditorBase
                 if (lastLine) this.gotoLine(lastLine);
 
                 if (this._options.onFinished) this._options.onFinished();
-            }, content);
+            });
         }
     }
 
@@ -237,13 +227,13 @@ export default class EditorTabCodemirror extends EditorBase
         {
             const effects = update.transactions[i].effects;
             for (let j = 0; j < effects.length; j++)
-                if (effects[j].is(setDiagnosticsEffect)) return true;
+                if (effects[j].is(cm.setDiagnosticsEffect)) return true;
         }
         return false;
     }
 
     /**
-     * @param {EditorState} state
+     * @param {import("@codemirror/state").EditorState} state
      */
     #updateEditorDiags(state)
     {
@@ -251,7 +241,7 @@ export default class EditorTabCodemirror extends EditorBase
 
         const severities = { "error": 2, "warning": 1 };
         const diags = [];
-        forEachDiagnostic(state, (d, from) =>
+        cm.forEachDiagnostic(state, (d, from) =>
         {
             const line = state.doc.lineAt(from);
             diags.push({
@@ -302,7 +292,7 @@ export default class EditorTabCodemirror extends EditorBase
             const lineInfo = this.cmView.state.doc.line(line); // 1-based line number
             this.cmView.dispatch({
                 "selection": { "anchor": lineInfo.from },
-                "effects": EditorView.scrollIntoView(lineInfo.from, { "y": "center" })
+                "effects": cm.EditorView.scrollIntoView(lineInfo.from, { "y": "center" })
             });
         }
         catch (e)
@@ -409,20 +399,34 @@ export default class EditorTabCodemirror extends EditorBase
     }
 
     /**
+     * creates the view with #pendingContent as initial document, so it is not part of the undo history
      * @param {function} cb
-     * @param {string} [content] initial document, not part of the undo history
      */
-    createEditor(cb, content = "")
+    createEditor(cb)
     {
+        if (!cm)
+        {
+            import("./cm_libs.js").then((m) =>
+            {
+                cm = m;
+                this.createEditor(cb);
+            });
+            return;
+        }
+
         if (this.helix && !helixModule)
         {
             import("helix-cm6").then((m) =>
             {
                 helixModule = m;
-                this.createEditor(cb, content);
+                this.createEditor(cb);
             });
             return;
         }
+
+        this.#highlightCompartment = new cm.Compartment();
+        this.#languageCompartment = new cm.Compartment();
+        this.#prefsCompartment = new cm.Compartment();
 
         const extensions = [];
         if (this.helix)
@@ -441,7 +445,7 @@ export default class EditorTabCodemirror extends EditorBase
                 }
             ),
             // helix colors default to system colors, use the oneDark ones, yellow cursor
-            EditorView.theme({
+            cm.EditorView.theme({
                 "&": {
                     "--hx-fg": "#abb2bf",
                     "--hx-bg": "#282c34",
@@ -458,53 +462,53 @@ export default class EditorTabCodemirror extends EditorBase
                 ".hx-statusline-mode-select": { "backgroundColor": "#c678dd" },
                 ".hx-statusline-spacer": { "flex": "1" }
             }),
-            showPanel.of(() => { return { "dom": this.#helixStatusEle, "top": false }; }));
+            cm.showPanel.of(() => { return { "dom": this.#helixStatusEle, "top": false }; }));
 
         extensions.push(this.#highlightCompartment.of([]));
 
         // extensions.push(customCommands);
-        extensions.push(highlightActiveLine());
-        extensions.push(highlightActiveLineGutter());
+        extensions.push(cm.highlightActiveLine());
+        extensions.push(cm.highlightActiveLineGutter());
         // before oneDark: earlier themes win over later ones with the same specificity
         // the ui's global ::selection sets black text, which editor text would inherit
-        extensions.push(EditorView.theme({
+        extensions.push(cm.EditorView.theme({
             ".cm-line::selection, .cm-line ::selection": { "color": "#ffffff" },
             ".cm-activeLine, .cm-activeLineGutter": { "backgroundColor": "#222222" },
             "&": { "--hx-cursorline": "#222222" }
         }));
-        extensions.push(oneDark);
-        extensions.push(lineNumbers());
-        extensions.push(bracketMatching());
+        extensions.push(cm.oneDark);
+        extensions.push(cm.lineNumbers());
+        extensions.push(cm.bracketMatching());
         if (!this.helix)
         {
-            extensions.push(closeBrackets());
-            extensions.push(keymap.of(closeBracketsKeymap));
+            extensions.push(cm.closeBrackets());
+            extensions.push(cm.keymap.of(cm.closeBracketsKeymap));
         }
-        extensions.push(indentOnInput());
-        extensions.push(autocompletion());
-        extensions.push(keymap.of([indentWithTab, { "key": "Enter", "run": insertNewlineAndIndent }]));
+        extensions.push(cm.indentOnInput());
+        extensions.push(cm.autocompletion());
+        extensions.push(cm.keymap.of([cm.indentWithTab, { "key": "Enter", "run": cm.insertNewlineAndIndent }]));
 
-        extensions.push(lintGutter());
-        extensions.push(keymap.of([...searchKeymap]));
-        extensions.push(highlightSelectionMatches());
-        extensions.push(EditorView.updateListener.of((update) => { this.#onEditorUpdate(update); }));
+        extensions.push(cm.lintGutter());
+        extensions.push(cm.keymap.of([...cm.searchKeymap]));
+        extensions.push(cm.highlightSelectionMatches());
+        extensions.push(cm.EditorView.updateListener.of((update) => { this.#onEditorUpdate(update); }));
 
         if (!this.helix)
         {
 
             extensions.push(
-                history(),
-                drawSelection(),
-                EditorState.allowMultipleSelections.of(true));
+                cm.history(),
+                cm.drawSelection(),
+                cm.EditorState.allowMultipleSelections.of(true));
             // undo/redo, move/copy/delete line, select all, smart home/end, ...
-            extensions.push(keymap.of([...defaultKeymap, ...historyKeymap]));
-            extensions.push(keymap.of([
+            extensions.push(cm.keymap.of([...cm.defaultKeymap, ...cm.historyKeymap]));
+            extensions.push(cm.keymap.of([
                 {
                     "key": "Mod-/",
-                    "run": toggleComment
+                    "run": cm.toggleComment
                 }, {
                     "key": "Mod-d",
-                    "run": selectNextOccurrence,
+                    "run": cm.selectNextOccurrence,
                     "preventDefault": true
                 }]));
         }
@@ -514,20 +518,24 @@ export default class EditorTabCodemirror extends EditorBase
 
         if (!this._options.allowEdit)
         {
-            extensions.push(EditorState.readOnly.of(true));
-            extensions.push(EditorView.theme({
+            extensions.push(cm.EditorState.readOnly.of(true));
+            extensions.push(cm.EditorView.theme({
                 "&": { "opacity": "0.8 !important" },
                 ".cm-dropCursor": { "display": "none" },
                 "&.cm-focused": { "outline": "none" }
             }));
         }
 
-        this.cmView = new EditorView(
+        this.cmView = new cm.EditorView(
             {
                 "parent": this.ele,
                 "extensions": extensions,
-                "doc": content
+                "doc": this.#pendingContent
             });
+        this.#pendingContent = null;
+
+        // diags set while codemirror was loading could not highlight their lines yet
+        if (this.#externalDiags.length) super.setDiags(this.#getAllDiags(), false);
 
         this.#prefsListener = userSettings.on(UserSettings.EVENT_CHANGE, (key) =>
         {
@@ -555,34 +563,34 @@ export default class EditorTabCodemirror extends EditorBase
         const wrap = userSettings.get(UserSettings.PREF_WRAPMODE_ACE) === true || userSettings.get(UserSettings.PREF_WRAPMODE_ACE) === "true";
 
         const exts = [
-            EditorView.theme({
+            cm.EditorView.theme({
                 "&": { "fontSize": fontSize + "px" },
                 ".cm-content": { "tabSize": tabWidth },
                 ".cm-scroller": { "fontSize": fontSize + "px" }
             }),
-            EditorState.tabSize.of(tabWidth),
-            indentUnit.of(" ".repeat(tabWidth))
+            cm.EditorState.tabSize.of(tabWidth),
+            cm.indentUnit.of(" ".repeat(tabWidth))
         ];
-        if (wrap) exts.push(EditorView.lineWrapping);
+        if (wrap) exts.push(cm.EditorView.lineWrapping);
         return exts;
     }
 
     #getLanguageExtensions(syntax)
     {
-        if (syntax == "glsl") return [glsl()];
-        if (syntax == "css" || syntax == "inline-css") return [css()];
-        if (syntax == "md" || syntax == "markdown") return [markdown()];
-        if (syntax == "html") return [html()];
-        if (syntax == "xml") return [xml()];
-        if (syntax == "sql") return [sql()];
-        if (syntax == "python") return [python()];
-        if (syntax == "json") return [json(), linter(jsonParseLinter())];
+        if (syntax == "glsl") return [cm.glsl()];
+        if (syntax == "css" || syntax == "inline-css") return [cm.css()];
+        if (syntax == "md" || syntax == "markdown") return [cm.markdown()];
+        if (syntax == "html") return [cm.html()];
+        if (syntax == "xml") return [cm.xml()];
+        if (syntax == "sql") return [cm.sql()];
+        if (syntax == "python") return [cm.python()];
+        if (syntax == "json") return [cm.json(), cm.linter(cm.jsonParseLinter())];
         if (syntax == "js")
         {
-            const syntaxErrorLinter = linter((view) =>
+            const syntaxErrorLinter = cm.linter((view) =>
             {
                 const diagnostics = [];
-                syntaxTree(view.state).iterate({
+                cm.syntaxTree(view.state).iterate({
                     "enter": function (node)
                     {
                         if (node.type.isError)
@@ -601,8 +609,8 @@ export default class EditorTabCodemirror extends EditorBase
 
             return [
                 syntaxErrorLinter,
-                javascript(),
-                javascriptLanguage.data.of({
+                cm.javascript(),
+                cm.javascriptLanguage.data.of({
                     "autocomplete": this.getSnippets()
                 })
             ];
@@ -630,206 +638,206 @@ export default class EditorTabCodemirror extends EditorBase
     {
         return [
 
-            snippetCompletion("op.setUiError = function (\"${1:id}\",\"${1:message}\")",
+            cm.snippetCompletion("op.setUiError = function (\"${1:id}\",\"${1:message}\")",
                 {
                     "label": "op.inTriggerButton"
                 }),
 
-            snippetCompletion("op.inTriggerButton(\"${1:name}\")",
+            cm.snippetCompletion("op.inTriggerButton(\"${1:name}\")",
                 {
                     "label": "op.inTriggerButton"
                 }),
 
-            snippetCompletion("op.inTrigger(\"${1:name}\")",
+            cm.snippetCompletion("op.inTrigger(\"${1:name}\")",
                 {
                     "label": "op.inTrigger"
                 }),
 
-            snippetCompletion("op.inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
+            cm.snippetCompletion("op.inMultiPort(\"#1\", CABLES.OP_PORT_TYPE_NUMBER)",
                 {
                     "label": "op.inMultiPort"
                 }),
 
-            snippetCompletion("op.outTrigger(\"${1:name}\")",
+            cm.snippetCompletion("op.outTrigger(\"${1:name}\")",
                 {
                     "label": "op.outTrigger"
                 }),
 
-            snippetCompletion("op.inBool(\"${1:name}\",${2:false})",
+            cm.snippetCompletion("op.inBool(\"${1:name}\",${2:false})",
                 {
                     "label": "op.inBool"
                 }),
 
-            snippetCompletion("op.inInt(\"${1:name}\",${2:0})",
+            cm.snippetCompletion("op.inInt(\"${1:name}\",${2:0})",
                 {
                     "label": "op.inInt"
                 }),
 
-            snippetCompletion("op.inFloatSlider(\"${1:name}\",${2:0})",
+            cm.snippetCompletion("op.inFloatSlider(\"${1:name}\",${2:0})",
                 {
                     "label": "op.inFloatSlider"
                 }),
 
-            snippetCompletion("op.inFloat(\"${1:name}\",${2:0})",
+            cm.snippetCompletion("op.inFloat(\"${1:name}\",${2:0})",
                 {
                     "label": "op.inFloat"
                 }),
 
-            snippetCompletion("op.inDropDown(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\)",
+            cm.snippetCompletion("op.inDropDown(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\)",
                 {
                     "label": "op.inDropDown"
                 }),
 
-            snippetCompletion("op.inSwitch(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\,\${3:\"default\"}\)",
+            cm.snippetCompletion("op.inSwitch(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\,\${3:\"default\"}\)",
                 {
                     "label": "op.inSwitch"
                 }),
 
-            snippetCompletion("op.inStringEditor(\"${1:name}\",\"${2:default}\",\"${3:syntax}\")",
+            cm.snippetCompletion("op.inStringEditor(\"${1:name}\",\"${2:default}\",\"${3:syntax}\")",
                 {
                     "label": "op.inStringEditor"
                 }),
 
-            snippetCompletion("op.inString(\"${1:name}\",\"${2:default}\")",
+            cm.snippetCompletion("op.inString(\"${1:name}\",\"${2:default}\")",
                 {
                     "label": "op.inString"
                 }),
 
-            snippetCompletion("op.inObject(\"${1:name}\")",
+            cm.snippetCompletion("op.inObject(\"${1:name}\")",
                 {
                     "label": "op.inObject"
                 }),
 
-            snippetCompletion("op.inTexture(\"${1:name}\")",
+            cm.snippetCompletion("op.inTexture(\"${1:name}\")",
                 {
                     "label": "op.inTexture"
                 }),
 
-            snippetCompletion("op.inArray(\"${1:name}\")",
+            cm.snippetCompletion("op.inArray(\"${1:name}\")",
                 {
                     "label": "op.inArray"
                 }),
 
-            snippetCompletion("op.inUrl(\"${1:name}\")",
+            cm.snippetCompletion("op.inUrl(\"${1:name}\")",
                 {
                     "label": "op.inUrl"
                 }),
 
-            snippetCompletion("op.outNumber(\"${1:name}\")",
+            cm.snippetCompletion("op.outNumber(\"${1:name}\")",
                 {
                     "label": "op.outNumber"
                 }),
 
-            snippetCompletion("op.outBoolNum(\"${1:name}\")",
+            cm.snippetCompletion("op.outBoolNum(\"${1:name}\")",
                 {
                     "label": "op.outBoolNum"
                 }),
 
-            snippetCompletion("op.outString(\"${1:name}\")",
+            cm.snippetCompletion("op.outString(\"${1:name}\")",
                 {
                     "label": "op.outString"
                 }),
 
-            snippetCompletion("op.outObject(\"${1:name}\")",
+            cm.snippetCompletion("op.outObject(\"${1:name}\")",
                 {
                     "label": "op.outObject"
                 }),
 
-            snippetCompletion("op.outArray(\"${1:name}\")",
+            cm.snippetCompletion("op.outArray(\"${1:name}\")",
                 {
                     "label": "op.outArray"
                 }),
 
-            snippetCompletion("op.outTexture(\"${1:name}\")",
+            cm.snippetCompletion("op.outTexture(\"${1:name}\")",
                 {
                     "label": "op.outTexture"
                 }),
 
-            snippetCompletion("CABLES.map(${1:name})",
+            cm.snippetCompletion("CABLES.map(${1:name})",
                 {
                     "label": "CABLES.map"
                 }),
 
-            snippetCompletion("console.log(\"${1:text}\");",
+            cm.snippetCompletion("console.log(\"${1:text}\");",
                 {
                     "label": "console.log"
                 }),
-            snippetCompletion("op.logError(\"${1:text}\");",
+            cm.snippetCompletion("op.logError(\"${1:text}\");",
                 {
                     "label": "op.logError"
                 }),
 
-            snippetCompletion("op.setPortGroup(\"${1:name}\",[${2:port},${3:port}]);",
+            cm.snippetCompletion("op.setPortGroup(\"${1:name}\",[${2:port},${3:port}]);",
                 {
                     "label": "op.setPortGroup"
                 }),
 
-            snippetCompletion("CABLES.map(${1:value},${2:oldMin},${3:oldMax},${4:newMin},${5:newMax});",
+            cm.snippetCompletion("CABLES.map(${1:value},${2:oldMin},${3:oldMax},${4:newMin},${5:newMax});",
                 {
                     "label": "CABLES.map"
                 }),
 
-            snippetCompletion("op.toWorkPortsNeedToBeLinked(${1:port1},${2:port2});",
+            cm.snippetCompletion("op.toWorkPortsNeedToBeLinked(${1:port1},${2:port2});",
                 {
                     "label": "op.toWorkPortsNeedToBeLinked"
                 }),
 
-            snippetCompletion("op.toWorkPortsNeedsString(${1:port1},${2:port2});",
+            cm.snippetCompletion("op.toWorkPortsNeedsString(${1:port1},${2:port2});",
                 {
                     "label": "op.toWorkPortsNeedsString"
                 }),
 
-            snippetCompletion("vec3.create();",
+            cm.snippetCompletion("vec3.create();",
                 {
                     "label": "vec3.create"
                 }),
 
-            snippetCompletion("vec3.set(${1:out},${2:x},${3:y},${4:z});",
+            cm.snippetCompletion("vec3.set(${1:out},${2:x},${3:y},${4:z});",
                 {
                     "label": "vec3.set(out, x, y, z)"
                 }),
 
-            snippetCompletion("mat4.create();",
+            cm.snippetCompletion("mat4.create();",
                 {
                     "label": "mat4.create"
                 }),
 
-            snippetCompletion("mat4.identity();",
+            cm.snippetCompletion("mat4.identity();",
                 {
                     "label": "mat4.identity"
                 }),
 
-            snippetCompletion("mat4.translate(${1:out},${2:a},${3:v});",
+            cm.snippetCompletion("mat4.translate(${1:out},${2:a},${3:v});",
                 {
                     "label": "mat4.translate(out,a,v);"
                 }),
 
-            snippetCompletion("CGL.Texture.PFORMATSTR_RGBA32F",
+            cm.snippetCompletion("CGL.Texture.PFORMATSTR_RGBA32F",
                 {
                     "label": "CGL.Texture.PFORMATSTR_RGBA32F"
                 }),
 
-            snippetCompletion("CGL.Texture.PFORMATSTR_RGBA8UB",
+            cm.snippetCompletion("CGL.Texture.PFORMATSTR_RGBA8UB",
                 {
                     "label": "CGL.Texture.PFORMATSTR_RGBA8UB"
                 }),
 
-            snippetCompletion("CGL.Texture.PIXELFORMATS",
+            cm.snippetCompletion("CGL.Texture.PIXELFORMATS",
                 {
                     "label": "CGL.Texture.PIXELFORMATS"
                 }),
 
-            snippetCompletion("op.setUiError(\"id\", \"text or null\");",
+            cm.snippetCompletion("op.setUiError(\"id\", \"text or null\");",
                 {
                     "label": "op.setUiError"
                 }),
 
-            snippetCompletion("op.patch.isEditorMode()",
+            cm.snippetCompletion("op.patch.isEditorMode()",
                 {
                     "label": "op.patch.isEditorMode"
                 }),
 
-            snippetCompletion("op.isCurrentUiOp()",
+            cm.snippetCompletion("op.isCurrentUiOp()",
                 {
                     "label": "op.isCurrentUiOp"
                 })
@@ -845,7 +853,7 @@ export default class EditorTabCodemirror extends EditorBase
      */
     highlightLines(lineNumbers, r, g, b)
     {
-        if (!this.cmView) return console.log("NO CMWIEW YET");
+        if (!this.cmView) return; // still loading, createEditor applies the diags afterwards
 
         const deco = lineNumbers
             .filter((n) => { return n >= 1 && n <= this.cmView.state.doc.lines; })
@@ -854,14 +862,14 @@ export default class EditorTabCodemirror extends EditorBase
             {
 
                 if (n > this.cmView.state.doc.lines) return;
-                return Decoration.line({ "attributes": { "style": "background-color: rgba(" + r + "," + b + "," + g + ",0.3)" } })
+                return cm.Decoration.line({ "attributes": { "style": "background-color: rgba(" + r + "," + b + "," + g + ",0.3)" } })
                     .range(this.cmView.state.doc.line(n).from);
             }
             );
 
         this.cmView.dispatch({
             "effects": this.#highlightCompartment.reconfigure(
-                EditorView.decorations.of(Decoration.set(deco))
+                cm.EditorView.decorations.of(cm.Decoration.set(deco))
             )
         });
     }
