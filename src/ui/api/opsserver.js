@@ -1729,7 +1729,6 @@ export default class ServerOps
                                     gui.serverOps.execute(opid, () =>
                                     {
                                         setStatus("Saved " + opname);
-                                        editor.focus();
 
                                         if (selOpTranslate) for (let i = 0; i < gui.corePatch().ops.length; i++)
                                             if (gui.corePatch().ops[i].uiAttribs &&
@@ -1743,6 +1742,7 @@ export default class ServerOps
 
                                         gui.savingTitleAnimEnd();
                                         gui.endModalLoading();
+                                        editor.focus();
                                     });
                                 }
                             }

@@ -435,6 +435,10 @@ export default class EditorTabCodemirror extends EditorBase
                     "config": EditorTabCodemirror.getHelixConfig(),
                     "syntax": false,
                     "onStatus": (status) => { this.#updateHelixStatus(status); },
+                    "keys": {
+                        "normal": { "g": { "o": "jump_backward", "i": "jump_forward" }, "space": { "s": ":write" }, "tab": "command_mode" },
+                        "select": { "g": { "o": "jump_backward", "i": "jump_forward" }, "space": { "s": ":write" }, "tab": "command_mode" }
+                    },
                     "commands": {
                         "write": ({ view }) =>
                         {
@@ -451,8 +455,17 @@ export default class EditorTabCodemirror extends EditorBase
                     "--hx-bg": "#282c34",
                     "--hx-selection": "#3e4451",
                     "--hx-cursor-primary-bg": "#ffd000",
-                    "--hx-cursor-bg": "#ffd00080"
+                    "--hx-cursor-bg": "#ffd00080",
+                    // key help menu, command line
+                    "--hx-panel": "#16181d",
+                    "--hx-border": "#3e4451",
+                    "--hx-accent": "#ffd000",
+                    "--hx-muted": "#9da5b4",
+                    "--hx-hover": "#2c313a",
+                    "--hx-shadow": "0 2px 8px rgb(0 0 0 / 0.6)"
                 },
+                ".hx-panel": { "color": "#e6e6e6" },
+                "&.hx .hx-jump-label": { "color": "#ffd000" },
                 ".cm-cursor": { "borderLeftColor": "#ffd000" },
                 "& ::highlight(hx-sel)": { "color": "#ffffff" },
                 ".hx-statusline": { "display": "flex", "gap": "1em", "padding": "0 1em 0 0", "fontFamily": "monospace", "lineHeight": "1.6", "backgroundColor": "#21252b", "color": "#abb2bf" },
