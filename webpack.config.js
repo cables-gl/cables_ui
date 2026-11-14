@@ -13,7 +13,9 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
     const plugins = [
         new webpack.DefinePlugin({
             "window.BUILD_INFO": JSON.stringify(buildInfo)
-        })
+        }),
+        // helix-cm6 runs with syntax: false, tree-sitter and its language list are never loaded
+        new webpack.IgnorePlugin({ "resourceRegExp": /(tree-sitter-wasm|languages)\.js$/, "contextRegExp": /helix-cm6/ })
     ];
 
     if (analyze)
@@ -36,7 +38,8 @@ export default (isLiveBuild, buildInfo, minify = false, analyze = false, sourceM
         "output": {
             "hashFunction": "xxhash64",
             "path": path.join(__dirname, "dist", "js"),
-            "filename": "cables.ui.js"
+            "filename": "cables.ui.js",
+            "chunkFilename": "cables.ui.[name].[contenthash].js"
         },
         "optimization": {
             "concatenateModules": true,

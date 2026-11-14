@@ -1,8 +1,7 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
 import { linter, lintGutter, forEachDiagnostic, setDiagnosticsEffect } from "@codemirror/lint";
-import { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration } from "@codemirror/view";
+import { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration, showPanel } from "@codemirror/view";
 import { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
-import { helix } from "codemirror-helix";
 import { syntaxTree, bracketMatching, indentOnInput, indentUnit } from "@codemirror/language";
 import { autocompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { markdown } from "@codemirror/lang-markdown";
@@ -29,11 +28,17 @@ import { gui } from "../../gui.js";
 import { UserSettings, userSettings } from "../usersettings.js";
 import { notify, notifyError } from "../../elements/notification.js";
 import { GuiText } from "../../text.js";
+import { escapeHTML } from "../../utils/helper.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import EditorBase from "./tab_editor.js";
 
 const CURSOR_LINES_STORAGE_KEY = "cables_editor_lines";
 const CURSOR_LINES_MAX_ENTRIES = 200;
+
+const DEFAULT_HELIX_CONFIG = "[editor]\ndefault-yank-register = \"+\"\n\n[editor.cursor-shape]\ninsert = \"bar\"\n";
+
+/** @type {import("helix-cm6")} - loaded on first use of a helix editor */
+let helixModule = null;
 
 function loadCursorLines()
 {
@@ -85,6 +90,7 @@ export default class EditorTabCodemirror extends EditorBase
     /** @type {import("../../api/opsserver.js").LinterDiag[]} */
     #editorDiags = [];
     #lastStoredLine = 0;
+    #helixStatusEle = document.createElement("div");
 
     /**
      * @param {import("../editor.js").EditorOptions} options
@@ -186,18 +192,13 @@ export default class EditorTabCodemirror extends EditorBase
                         this.focus();
                     }
                 );
-                this.cmView.dispatch(
-                    {
-                        "changes": { "from": 0, "to": this.cmView.state.doc.length, "insert": content },
-                        "annotations": Transaction.addToHistory.of(false)
-                    });
                 this.cmView.focus();
 
                 const lastLine = loadCursorLines()[this.#cursorLineKey()];
                 if (lastLine) this.gotoLine(lastLine);
 
                 if (this._options.onFinished) this._options.onFinished();
-            });
+            }, content);
         }
     }
 
@@ -362,30 +363,123 @@ export default class EditorTabCodemirror extends EditorBase
     }
 
     /**
-     * @param {function} cb
+     * apply a helix config.toml to all open helix editors
+     * @param {string} config
+     * @returns {string[]} warnings
      */
-    createEditor(cb)
+    static reconfigureHelix(config)
     {
-        const options = {};
+        if (!helixModule) return [];
+        let warnings = [];
+        for (let i = 0; i < gui.mainTabs.tabs.length; i++)
+        {
+            const editor = gui.mainTabs.tabs[i].editor;
+            if (editor && editor.helix && editor.cmView)
+                warnings = warnings.concat(helixModule.helixConfigure(editor.cmView, { "config": config || DEFAULT_HELIX_CONFIG }));
+        }
+        return warnings;
+    }
+
+    /**
+     * statusline like helix's default: mode, name, modified | pending keys, selections, register, position
+     * @param {import("helix-cm6").HelixStatus} status
+     */
+    #updateHelixStatus(status)
+    {
+        const modes = { "normal": "NOR", "insert": "INS", "select": "SEL" };
+        const left = [
+            "<span class=\"hx-statusline-mode hx-statusline-mode-" + status.mode + "\">" + modes[status.mode] + "</span>",
+            "<span>" + escapeHTML(this._options.title || this._options.name || "") + (status.modified ? " [+]" : "") + "</span>"
+        ];
+        if (status.recording) left.push("<span>[" + escapeHTML(status.recording) + "]</span>");
+
+        const right = [];
+        if (status.pending || status.count) right.push("<span>" + (status.count || "") + escapeHTML(status.pending) + "</span>");
+        right.push("<span>" + (status.selections > 1 ? (status.primaryIndex + 1) + "/" + status.selections + " sels" : "1 sel") + "</span>");
+        if (status.register) right.push("<span>reg=" + escapeHTML(status.register) + "</span>");
+        right.push("<span>" + status.line + ":" + status.column + "</span>");
+
+        this.#helixStatusEle.className = "hx-statusline";
+        this.#helixStatusEle.innerHTML = left.join("") + "<span class=\"hx-statusline-spacer\"></span>" + right.join("");
+    }
+
+    static getHelixConfig()
+    {
+        return userSettings.get(UserSettings.PREF_HELIX_CONFIG) || DEFAULT_HELIX_CONFIG;
+    }
+
+    /**
+     * @param {function} cb
+     * @param {string} [content] initial document, not part of the undo history
+     */
+    createEditor(cb, content = "")
+    {
+        if (this.helix && !helixModule)
+        {
+            import("helix-cm6").then((m) =>
+            {
+                helixModule = m;
+                this.createEditor(cb, content);
+            });
+            return;
+        }
 
         const extensions = [];
         if (this.helix)
-            extensions.push(helix(
+            extensions.push(helixModule.helix(
                 {
-                    "config": { "editor.cursor-shape.insert": "bar", "editor.default-yank-register": "+" }
+                    "config": EditorTabCodemirror.getHelixConfig(),
+                    "syntax": false,
+                    "onStatus": (status) => { this.#updateHelixStatus(status); },
+                    "commands": {
+                        "write": ({ view }) =>
+                        {
+                            this.save();
+                            helixModule.helixMarkSaved(view);
+                        }
+                    }
                 }
-            ));
+            ),
+            // helix colors default to system colors, use the oneDark ones, yellow cursor
+            EditorView.theme({
+                "&": {
+                    "--hx-fg": "#abb2bf",
+                    "--hx-bg": "#282c34",
+                    "--hx-selection": "#3e4451",
+                    "--hx-cursor-primary-bg": "#ffd000",
+                    "--hx-cursor-bg": "#ffd00080"
+                },
+                ".cm-cursor": { "borderLeftColor": "#ffd000" },
+                "& ::highlight(hx-sel)": { "color": "#ffffff" },
+                ".hx-statusline": { "display": "flex", "gap": "1em", "padding": "0 1em 0 0", "fontFamily": "monospace", "lineHeight": "1.6", "backgroundColor": "#21252b", "color": "#abb2bf" },
+                ".hx-statusline-mode": { "padding": "0 0.8em", "fontWeight": "bold", "color": "#21252b" },
+                ".hx-statusline-mode-normal": { "backgroundColor": "#61afef" },
+                ".hx-statusline-mode-insert": { "backgroundColor": "#98c379" },
+                ".hx-statusline-mode-select": { "backgroundColor": "#c678dd" },
+                ".hx-statusline-spacer": { "flex": "1" }
+            }),
+            showPanel.of(() => { return { "dom": this.#helixStatusEle, "top": false }; }));
 
         extensions.push(this.#highlightCompartment.of([]));
 
         // extensions.push(customCommands);
         extensions.push(highlightActiveLine());
         extensions.push(highlightActiveLineGutter());
+        // before oneDark: earlier themes win over later ones with the same specificity
+        // the ui's global ::selection sets black text, which editor text would inherit
+        extensions.push(EditorView.theme({
+            ".cm-line::selection, .cm-line ::selection": { "color": "#ffffff" },
+            ".cm-activeLine, .cm-activeLineGutter": { "backgroundColor": "#222222" },
+            "&": { "--hx-cursorline": "#222222" }
+        }));
         extensions.push(oneDark);
         extensions.push(lineNumbers());
         extensions.push(bracketMatching());
-        extensions.push(closeBrackets());
-        extensions.push(keymap.of(closeBracketsKeymap));
+        if (!this.helix)
+        {
+            extensions.push(closeBrackets());
+            extensions.push(keymap.of(closeBracketsKeymap));
+        }
         extensions.push(indentOnInput());
         extensions.push(autocompletion());
         extensions.push(keymap.of([indentWithTab, { "key": "Enter", "run": insertNewlineAndIndent }]));
@@ -432,7 +526,7 @@ export default class EditorTabCodemirror extends EditorBase
             {
                 "parent": this.ele,
                 "extensions": extensions,
-                "doc": options.content || ""
+                "doc": content
             });
 
         this.#prefsListener = userSettings.on(UserSettings.EVENT_CHANGE, (key) =>

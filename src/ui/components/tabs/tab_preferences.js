@@ -8,6 +8,8 @@ import { UserSettings, userSettings } from "../usersettings.js";
 import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import GlPatch from "../../glpatch/glpatch.js";
+import { createEditor } from "../editor.js";
+import EditorTabCodemirror from "./tab_editor_codemirror.js";
 
 /** Tab for the user's editor preferences, stored in {@link UserSettings}. */
 export default class Preferences
@@ -192,6 +194,24 @@ export default class Preferences
                 if (v == v) userSettings.set(target.dataset.setting, v);
             });
         }
+
+        ele.on(ele.byId("editHelixConfig"), "click", () =>
+        {
+            createEditor({
+                "title": "helix config",
+                "name": "helixconfig",
+                "syntax": "toml",
+                "content": EditorTabCodemirror.getHelixConfig(),
+                "showSaveButton": true,
+                "onSave": (cb, content) =>
+                {
+                    userSettings.set(UserSettings.PREF_HELIX_CONFIG, content);
+                    const warnings = EditorTabCodemirror.reconfigureHelix(content);
+                    if (warnings.length) cb("error: " + warnings.join(", "));
+                    else cb("helix config saved");
+                }
+            });
+        });
 
         ele.on(ele.byId("resetPrefs"), "click", () =>
         {

@@ -51,6 +51,7 @@ export class UserSettings extends Events
     static PREF_MINIOPSELECT = "miniopselect";
     static PREF_LOGGING_FILTER = "loggingFilter";
     static PREF_TEXTEDITOR = "texteditor";
+    static PREF_HELIX_CONFIG = "helixconfig";
     static PREF_IDLEMODE = "idlemode";
     static PREF_TEXPREVIEW_MODE = "texpreviewMode";
     static PREF_TEXPREVIEW_TRANSPARENT = "texpreviewTransparent";
