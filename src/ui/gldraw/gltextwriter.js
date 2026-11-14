@@ -7,6 +7,12 @@ import GlRectInstancer from "./glrectinstancer.js";
  * @property {Number} [initNum]
  */
 
+/**
+ * one font texture per gl context, shared by all text writers on it
+ * @type {WeakMap<CglContext, Texture>}
+ */
+const fontTextures = new WeakMap();
+
 /** Writes text with an msdf font texture, using {@link GlRectInstancer}. */
 export default class GlTextWriter
 {
@@ -43,11 +49,8 @@ export default class GlTextWriter
     {
         if (!this.#fontTex)
         {
-            this.#fontTex = Texture.load(this.#cgl, "img/worksans-regular.png", (err, tex) =>
-            {
-                // this.#rectDrawer.setTexture(0, this.#fontTex, true);
-                this.#rectDrawer.setTexture(0, tex, true);
-            }, { "flip": false, "filter": Texture.FILTER_LINEAR, "imgBitmap": true });
+            if (!fontTextures.has(this.#cgl)) fontTextures.set(this.#cgl, Texture.load(this.#cgl, "img/worksans-regular.png", null, { "flip": false, "filter": Texture.FILTER_LINEAR, "imgBitmap": true }));
+            this.#fontTex = fontTextures.get(this.#cgl);
         }
         this.#rectDrawer.setTexture(0, this.#fontTex, true);
 
