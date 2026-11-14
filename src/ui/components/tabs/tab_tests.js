@@ -4,8 +4,10 @@ import TabPanel from "../../elements/tabpanel/tabpanel.js";
 import { gui } from "../../gui.js";
 import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
-import { setup, run, testEvents } from "../../tests/index.js";
 import { sendTestResults } from "../../tests/optests.js";
+
+/** @type {import("../../tests/index.js")} - loaded when the tab opens, keeps mocha and chai out of the main bundle */
+let tests = null;
 
 export default class TestsTab
 {
@@ -43,8 +45,12 @@ export default class TestsTab
         this.#summaryEle = this.#tab.contentEle.querySelector(".testsSummary");
         this.#listEle = this.#tab.contentEle.querySelector(".testsList");
 
-        setup({ "gui": gui, "platform": platform, "TalkerAPI": TalkerAPI });
-        this.run();
+        import("../../tests/index.js").then((m) =>
+        {
+            tests = m;
+            tests.setup({ "gui": gui, "platform": platform, "TalkerAPI": TalkerAPI });
+            this.run();
+        });
     }
 
     runFailed()
@@ -58,7 +64,7 @@ export default class TestsTab
      */
     run(grep)
     {
-        if (this.#running) return;
+        if (this.#running || !tests) return;
         this.#running = true;
         this.#numPassed = 0;
         this.#numFailed = 0;
@@ -68,9 +74,9 @@ export default class TestsTab
         this.#listEle.innerHTML = "";
         this.#updateSummary();
 
-        const runner = run(grep ? new RegExp(grep) : null);
+        const runner = tests.run(grep ? new RegExp(grep) : null);
 
-        runner.on(testEvents.EVENT_SUITE_BEGIN, (suite) =>
+        runner.on(tests.testEvents.EVENT_SUITE_BEGIN, (suite) =>
         {
             if (suite.root) return;
             const suiteEle = document.createElement("div");
@@ -79,13 +85,13 @@ export default class TestsTab
             this.#listEle.appendChild(suiteEle);
         });
 
-        runner.on(testEvents.EVENT_TEST_PASS, (test) =>
+        runner.on(tests.testEvents.EVENT_TEST_PASS, (test) =>
         {
             this.#numPassed++;
             this.#addTest(test, "pass");
         });
 
-        runner.on(testEvents.EVENT_TEST_FAIL, (test, err) =>
+        runner.on(tests.testEvents.EVENT_TEST_FAIL, (test, err) =>
         {
             this.#numFailed++;
             this.#failedTitles.push(test.fullTitle());
@@ -93,13 +99,13 @@ export default class TestsTab
             this.#addTest(test, "fail", err);
         });
 
-        runner.on(testEvents.EVENT_TEST_PENDING, (test) =>
+        runner.on(tests.testEvents.EVENT_TEST_PENDING, (test) =>
         {
             this.#numPending++;
             this.#addTest(test, "pending");
         });
 
-        runner.on(testEvents.EVENT_RUN_END, () =>
+        runner.on(tests.testEvents.EVENT_RUN_END, () =>
         {
             this.#running = false;
             this.#updateSummary();
