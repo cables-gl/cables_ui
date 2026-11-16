@@ -166,6 +166,14 @@ class CmdPatch
                 "category": "patch",
                 "func": CmdPatch.clear
             },
+
+            {
+                "cmd": "Delete Patch",
+                "category": "patch",
+                "func": CmdPatch.patchDelete,
+                "icon": "trash",
+                "frontendOption": "hasCommunity"
+            },
             {
                 "cmd": "Open patch website",
                 "category": "patch",
@@ -960,6 +968,11 @@ class CmdPatch
     static addOp(x, y)
     {
         gui.opSelect().show({ "x": 0, "y": 0 });
+    }
+
+    static patchDelete()
+    {
+        window.open(platform.getCablesUrl() + "/patch/" + gui.project().shortId + "/settings#delete");
     }
 
     static patchWebsite()
