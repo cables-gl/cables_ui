@@ -36,10 +36,7 @@ export function getHandleBarHtml(name, obj)
     if (!template) return "error: missing handlebars template: " + name;
 
     obj = obj || {};
-    obj.frontendOptions = platform.frontendOptions;
-    obj.cablesUrl = platform.getCablesUrl();
-    obj.cablesDocsUrl = obj.cablesUrl;
-    if (platform.getCablesDocsUrl)obj.cablesDocsUrl = platform.getCablesDocsUrl();
+    obj = { ...platform.getDefaultTemplateVars(), ...obj };
 
     const html = template(obj, { "allowProtoMethodsByDefault": true, "allowProtoPropertiesByDefault": true });
 

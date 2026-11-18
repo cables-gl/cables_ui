@@ -270,4 +270,16 @@ export default class PlatformElectron extends Platform
         const { webUtils } = window.nodeRequire("electron");
         return webUtils.getPathForFile(file);
     }
+
+    /**
+     * set cablesUrl to http:// ... to fix links in handlebars
+     *
+     * @returns {Object}
+     */
+    getDefaultTemplateVars()
+    {
+        const obj = super.getDefaultTemplateVars();
+        obj.cablesUrl = this.getCablesDocsUrl();
+        return obj;
+    }
 }

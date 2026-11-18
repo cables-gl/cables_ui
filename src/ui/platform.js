@@ -773,4 +773,19 @@ export class Platform extends Events
     {
         return "";
     }
+
+    /**
+     * defaults available in handlebars, overriden to fix links in platform_electron
+     *
+     * @returns {Object}
+     */
+    getDefaultTemplateVars()
+    {
+        const obj = {};
+        obj.frontendOptions = this.frontendOptions;
+        obj.cablesUrl = this.getCablesUrl();
+        obj.cablesDocsUrl = obj.cablesUrl;
+        if (platform.getCablesDocsUrl) obj.cablesDocsUrl = this.getCablesDocsUrl();
+        return obj;
+    }
 }

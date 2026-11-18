@@ -8,6 +8,7 @@ import GlPort from "../glpatch/glport.js";
 import namespace from "../namespaceutils.js";
 import opNames from "../opnameutils.js";
 import { gui } from "../gui.js";
+import { platform } from "../platform.js";
 
 /** Loads and stores the documentation of all ops. */
 export default class OpDocs
@@ -326,7 +327,8 @@ export default class OpDocs
 
         const templateVars = {
             "opDoc": opDoc,
-            "showScreenshot": !isCollection
+            "showScreenshot": !isCollection,
+            "screenshotUrl": platform.getCablesUrl() + "/op/screenshot/" + opDoc.name + ".png"
         };
         if (isCollection)
         {
@@ -335,12 +337,15 @@ export default class OpDocs
                 "name": collectionInfo.name,
                 "shortName": collectionInfo.shortName,
                 "title": collectionTitle,
-                "ops": collectionInfo.ops,
-                "team": {
-                    "name": collectionInfo.teamName,
-                    "link": collectionInfo.teamLink
-                }
+                "ops": collectionInfo.ops
             };
+            if (collectionInfo.teamName)
+            {
+                templateVars.collection.team = {
+                    "name": collectionInfo.teamName
+                };
+                if (collectionInfo.teamLink) templateVars.collection.team.link = collectionInfo.teamLink;
+            }
         }
         return getHandleBarHtml("op-doc-template", templateVars);
     }
