@@ -307,19 +307,19 @@ export default class GlPatch extends Events
             this.viewBox.keyScrollY(1);
         });
 
-        gui.keys.key("ArrowUp", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
+        gui.keys.key("ArrowUp", "Move up", "down", cgl.canvas.id, { "ignoreInput": true, "displayGroup": "Keyboard Navigation" }, (e) =>
         {
             this.#keyNav.move(0, -1, e.shiftKey);
         });
-        gui.keys.key("ArrowDown", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
+        gui.keys.key("ArrowDown", "Move down", "down", cgl.canvas.id, { "ignoreInput": true, "displayGroup": "Keyboard Navigation" }, (e) =>
         {
             this.#keyNav.move(0, 1, e.shiftKey);
         });
-        gui.keys.key("ArrowLeft", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
+        gui.keys.key("ArrowLeft", "Move left", "down", cgl.canvas.id, { "ignoreInput": true, "displayGroup": "Keyboard Navigation" }, (e) =>
         {
             this.#keyNav.move(-1, 0, e.shiftKey);
         });
-        gui.keys.key("ArrowRight", "", "down", cgl.canvas.id, { "ignoreInput": true }, (e) =>
+        gui.keys.key("ArrowRight", "Move right", "down", cgl.canvas.id, { "ignoreInput": true, "displayGroup": "Keyboard Navigation" }, (e) =>
         {
             this.#keyNav.move(1, 0, e.shiftKey);
         });

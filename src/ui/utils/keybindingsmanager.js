@@ -19,6 +19,7 @@ import { InputBindings } from "../inputbindings.js";
 /** Manages keybindings for hotkeys/shortcuts. */
 export default class KeyBindingsManager extends Events
 {
+
     /** @type {Set<string>} */
     #modes = new Set();
 
@@ -38,7 +39,7 @@ export default class KeyBindingsManager extends Events
         this._tab = new CABLES.UI.Tab("keyboard shortcuts", { "icon": "help", "infotext": "tab_keys", "padding": true, "singleton": true });
         gui.mainTabs.addTab(this._tab, true);
 
-        const k = this._prepareKeysForDisplay(this._keys);
+        const k = this.#prepareKeysForDisplay(this._keys);
 
         let showDownloadButton = false;
         if (gui && gui.user && (gui.user.isStaff || gui.user.isAdmin)) showDownloadButton = true;
@@ -51,7 +52,7 @@ export default class KeyBindingsManager extends Events
 
     download()
     {
-        const k = this._prepareKeysForDisplay(this._keys);
+        const k = this.#prepareKeysForDisplay(this._keys);
 
         const markdown = getHandleBarHtml("tab_keys_markdown", { "keys": k });
 
@@ -67,7 +68,7 @@ export default class KeyBindingsManager extends Events
     /**
      * @param {any[]} keys
      */
-    _prepareKeysForDisplay(keys)
+    #prepareKeysForDisplay(keys)
     {
         let k = cloneObject(keys);
 
@@ -76,11 +77,10 @@ export default class KeyBindingsManager extends Events
             return a.key.localeCompare(b.key);
         });
 
+        for (let i = 0; i < k.length; i++) k[i].groupName = k[i].options.displayGroup || k[i].target || "global";
         k.sort(function (a, b)
         {
-            if (!a.target)a.target = "global";
-            if (!b.target)b.target = "global";
-            return a.target.localeCompare(b.target);
+            return a.groupName.localeCompare(b.groupName);
         });
 
         // remove double entries
@@ -93,15 +93,11 @@ export default class KeyBindingsManager extends Events
             lastCombined = combined;
         }
 
-        let lastTarget = "";
+        let lastGroup = "";
         for (let i = 0; i < lines.length; i++)
         {
-            if (lines[i].target != lastTarget)
-            {
-                const group = lines[i].options.displayGroup ? lines[i].options.displayGroup : lines[i].target;
-                lines[i].group = group;
-            }
-            lastTarget = lines[i].target;
+            if (lines[i].groupName != lastGroup) lines[i].group = lines[i].groupName;
+            lastGroup = lines[i].groupName;
 
             if (lines[i].key == " ")lines[i].key = "Space";
         }
@@ -155,7 +151,7 @@ export default class KeyBindingsManager extends Events
      */
     #orderedKeys()
     {
-        const withMode =this._keys.filter((k) => { return k.options.contextMode && this.#modes.has(k.options.contextMode); });
+        const withMode = this._keys.filter((k) => { return k.options.contextMode && this.#modes.has(k.options.contextMode); });
         const plain = this._keys.filter((k) => { return !k.options.contextMode; });
         return withMode.concat(plain);
     }
