@@ -290,19 +290,19 @@ export default class GlPatch extends Events
 
         gui.on(Gui.EVENT_THEMECHANGED, this.updateTheme.bind(this));
 
-        gui.keys.key("ArrowLeft", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
+        gui.keys.key("ArrowLeft", "Patchfield Scroll Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollX(-1);
         });
-        gui.keys.key("ArrowRight", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
+        gui.keys.key("ArrowRight", "Patchfield Scroll Right", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollX(1);
         });
-        gui.keys.key("ArrowUp", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
+        gui.keys.key("ArrowUp", "Patchfield Scroll Up", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollY(-1);
         });
-        gui.keys.key("ArrowDown", "Left", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
+        gui.keys.key("ArrowDown", "Patchfield Scroll Down", "down", cgl.canvas.id, { "cmdCtrl": true }, () =>
         {
             this.viewBox.keyScrollY(1);
         });
