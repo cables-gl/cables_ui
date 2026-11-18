@@ -1,4 +1,5 @@
 import { TalkerAPI } from "cables-shared-client";
+import { utils } from "cables";
 import ModalDialog from "./modaldialog.js";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
@@ -35,6 +36,8 @@ export default class ModalOpNotFound
         if (apiError && apiError.data)
         {
             if (apiError.data.text) errMsg = apiError.data.text;
+            if (apiError.data.title) title = apiError.data.title;
+            if (apiError.data.reasons) opLinks = opLinks.concat(apiError.data.reasons);
             if (apiError.data.otherEnvName)
             {
                 otherEnvButton = "Try " + apiError.data.otherEnvName;
@@ -44,7 +47,8 @@ export default class ModalOpNotFound
                 for (let i = 0; i < apiError.data.ops.length; i++)
                 {
                     const op = apiError.data.ops[i];
-                    opLinks.push("Found <a href=\"https://" + op.env + "/op/" + op.name + "\">" + op.name + "</a> on <a href=\"https://" + op.env + "/edit/" + project.shortId + "\">" + op.env + "</a>");
+                    if (op.env === "electron") opLinks.push(op.opDir);
+                    else opLinks.push("Found <a href=\"https://" + op.env + "/op/" + op.name + "\">" + op.name + "</a> on <a href=\"https://" + op.env + "/edit/" + project.shortId + "\">" + op.env + "</a>");
                 }
             }
             if (apiError.data.otherEnvUrl && project) editorLink = apiError.data.otherEnvUrl + "/edit/" + project.shortId;
@@ -58,14 +62,16 @@ export default class ModalOpNotFound
         }
         else
         {
-            const opText = oldName || opIdentifier;
-            if (!opLinks.includes(opText)) opLinks.push(opText);
+            const opText = apiError?.data?.name || oldName || opIdentifier;
+            if (!errMsg.includes(opText) && !opLinks.some((opLink) => { return opLink.includes(opText); })) opLinks.push(opText);
         }
+        opLinks = utils.uniqueArray(opLinks).filter((opLink) => { return opLink !== errMsg; });
 
         const modalOptions = {
             "title": title,
             "text": errMsg,
             "notices": opLinks,
+            "footer": apiError?.data?.footer,
             "choice": true
         };
 

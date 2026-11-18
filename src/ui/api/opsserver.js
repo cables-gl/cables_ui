@@ -46,6 +46,7 @@ import ModalOpNotFound from "../dialogs/modalopnotfound.js";
 
 /**
  * @typedef OpNotFoundErrorData
+ * @property {String} [name]
  * @property {String} [text]
  * @property {String} [otherEnvName]
  * @property {String} [otherEnvUrl]
@@ -53,6 +54,8 @@ import ModalOpNotFound from "../dialogs/modalopnotfound.js";
  * @property {String} [editorLink]
  * @property {String} [footer]
  * @property {Boolean} [hideEnvButton]
+ * @property {String} [title]
+ * @property {String[]} [reasons]
  * @property {{name: string, env: string, opDir: string}[]} [ops]
  */
 
@@ -2339,10 +2342,13 @@ export default class ServerOps
             let errMsg = "Failed to find op " + (oldName || opIdentifier);
             let opTexts = [];
             let footer = "";
+            let title = "Failed to load op";
             if (apiError && apiError.data)
             {
+                if (apiError.data.title) title = apiError.data.title;
                 if (apiError.data.footer) footer = apiError.data.footer;
                 if (apiError.data.text) errMsg += ". " + apiError.data.text;
+                if (apiError.data.reasons) opTexts = opTexts.concat(apiError.data.reasons);
                 if (apiError.data.ops)
                 {
                     for (let i = 0; i < apiError.data.ops.length; i++)
@@ -2350,18 +2356,17 @@ export default class ServerOps
                         const op = apiError.data.ops[i];
                         if (op.env === "electron")
                         {
-                            opTexts[i] = op.opDir;
-
+                            opTexts.push(op.opDir);
                         }
                         else
                         {
-                            opTexts[i] = "Found " + op.name + " on " + op.env;
+                            opTexts.push("Found " + op.name + " on " + op.env);
                         }
                     }
                 }
             }
-            this.#log.error(errMsg);
-            opTexts.forEach((opText) => { this.#log.error(opText); });
+            this.#log.error(title + ": " + errMsg);
+            utils.uniqueArray(opTexts).forEach((opText) => { this.#log.error(opText); });
             if (footer) this.#log.error(footer);
 
         }
