@@ -3,7 +3,7 @@ import { Patch } from "cables";
 import { gui } from "../gui.js";
 import GlPatch from "./glpatch.js";
 import GlPort from "./glport.js";
-import GlPortCursor from "./glopcursor.js";
+import GlPortCursor from "./glportcursor.js";
 import { updateHoverToolTip } from "../elements/tooltips.js";
 import { GuiText } from "../text.js";
 import { KeyNavJump } from "./keynavjump.js";

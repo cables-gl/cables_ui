@@ -32,7 +32,7 @@ import GlPatchAPI from "./patchapi.js";
 import { UiOp } from "../core_extend_op.js";
 import { GlLineDrawer } from "../gldraw/gllinedrawer.js";
 import GlRect from "../gldraw/glrect.js";
-import GlPortCursor from "./glopcursor.js";
+import GlPortCursor from "./glportcursor.js";
 import { KeyNav } from "./keynav.js";
 
 let idleSoon = null;
@@ -1052,7 +1052,7 @@ export default class GlPatch extends Events
                             {
                                 "translate":
                                 {
-                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate?.x ?? coord[0],this._selectedGlOps[i].op, 100),
+                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate?.x ?? coord[0], this._selectedGlOps[i].op, 100),
                                     "y": coord[1]
                                 } });
 
