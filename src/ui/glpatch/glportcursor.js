@@ -1,5 +1,5 @@
 import { Events } from "cables-shared-client";
-import { Anim } from "cables";
+import { Anim, Port } from "cables";
 import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import GlRectInstancer from "../gldraw/glrectinstancer.js";
@@ -11,7 +11,7 @@ import GlPort from "./glport.js";
 export default class GlPortCursor extends Events
 {
     static durationAnim = 0.1;
-    static padding = 5;
+    static padding = 3;
 
     op = null;
 
@@ -27,6 +27,7 @@ export default class GlPortCursor extends Events
 
     /** @type {GlRect} */
     #cursorRect;
+    #lastMovement = 0;
 
     /**
      * @param {GlPatch} glPatch
@@ -43,8 +44,8 @@ export default class GlPortCursor extends Events
         this.#cursorRect = this._instancer.createRect({ "name": "opcursor", "interactive": false });
         this.#cursorRect.setSize(10, 10);
         this.#cursorRect.setShape(GlRect.SHAPE_FRAME);
-        this._lastMovement = performance.now();
-        this.#cursorRect.setColor(0.7, 0.7, 0.7, 1);
+        this.#lastMovement = performance.now();
+        this.#cursorRect.setColor(1, 1, 1, 1);
     }
 
     /**
@@ -78,7 +79,7 @@ export default class GlPortCursor extends Events
 
         this.#cursorRect.setSize(w, h);
 
-        if (performance.now() - this._lastMovement > 10000 || gui.patchView.getCurrentSubPatch() != this._subPatch)
+        if (performance.now() - this.#lastMovement > 10000 || gui.patchView.getCurrentSubPatch() != this._subPatch)
         {
             this.hide();
         }
@@ -111,12 +112,18 @@ export default class GlPortCursor extends Events
     }
 
     /**
-     * @param {number} x
-     * @param {number} y
+     * @param {GlPort} glPort
      */
-    setPosition(x, y)
+    setPosition(glPort)
     {
-        this._lastMovement = performance.now();
+        let padding = 2;
+        let x = glPort.rect.absX - padding;
+        let y = glPort.y - padding;
+
+        this.setSize(
+            glPort.rect.w + padding * 2,
+            glPort.rect.h + padding * 2);
+        this.#lastMovement = performance.now();
 
         this.#animPosX.clear(this.#glPatch.time);
         this.#animPosY.clear(this.#glPatch.time);
@@ -147,7 +154,7 @@ export default class GlPortCursor extends Events
         this.op = glPort.port.op;
 
         // console.log("glp", glPort.glOp.x, glPort.y);
-        this.setPosition(glPort.rect.absX - GlPortCursor.padding, glPort.y - GlPortCursor.padding);
-        this.setSize(gluiconfig.portWidth + GlPortCursor.padding * 2, gluiconfig.portHeight + GlPortCursor.padding * 2);
+        this.setPosition(glPort);
+        // this.setSize(gluiconfig.portWidth + GlPortCursor.padding * 2, gluiconfig.portHeight + GlPortCursor.padding * 2);
     }
 }
