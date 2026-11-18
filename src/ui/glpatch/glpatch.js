@@ -1052,7 +1052,7 @@ export default class GlPatch extends Events
                             {
                                 "translate":
                                 {
-                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 100),
+                                    "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate?.x ?? coord[0],this._selectedGlOps[i].op, 100),
                                     "y": coord[1]
                                 } });
 
