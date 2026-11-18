@@ -1531,6 +1531,15 @@ class CmdPatch
                             gui.emitEvent(Gui.EVENT_REFRESH_MANAGE_OP, opName);
                         }, true);
                     }
+                    else
+                    {
+                        gui.savingTitleAnimEnd();
+                        new ModalDialog({
+                            "title": "Failed to set summary",
+                            "warning": true,
+                            "text": err.msg || err
+                        });
+                    }
                 });
             }
         });

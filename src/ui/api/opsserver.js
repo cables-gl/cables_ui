@@ -56,6 +56,7 @@ import ModalOpNotFound from "../dialogs/modalopnotfound.js";
  * @property {Boolean} [hideEnvButton]
  * @property {String} [title]
  * @property {String[]} [reasons]
+ * @property {Boolean} [opJsonInvalid]
  * @property {{name: string, env: string, opDir: string}[]} [ops]
  */
 
@@ -653,7 +654,7 @@ export default class ServerOps
                     html += "you are not allowed to add libraries to this op.<br/><br/>";
                     html += "to modify this op, try cloning it";
                     new ModalDialog({
-                        "title": "error adding core-lib",
+                        "title": "Error adding core-lib",
                         "showOkButton": true,
                         "html": html
                     });
@@ -663,7 +664,7 @@ export default class ServerOps
                     let html = "";
                     html += err.msg + "<br/><br/>";
                     new ModalDialog({
-                        "title": "error adding core-lib",
+                        "title": "Error adding core-lib",
                         "showOkButton": true,
                         "html": html
                     });
@@ -769,11 +770,13 @@ export default class ServerOps
                     this.#log.error(err.msg, err);
                 }
                 new ModalDialog({
-                    "title": "Error adding op-dependency",
+                    "title": "Failed to add dependency",
+                    "warning": true,
                     "showOkButton": true,
                     "html": html
                 });
                 if (next) next(err);
+                return;
             }
             gui.serverOps.loadOpDependencies(opId, (op) =>
             {
@@ -2332,6 +2335,12 @@ export default class ServerOps
      */
     _opNotFoundError(opIdentifier, oldName, apiError = null, cb = null)
     {
+        if (apiError?.data?.opJsonInvalid && gui.user?.isStaff)
+        {
+            const opName = apiError.data.name;
+            notifyError("Op has invalid json-file", "<a href=\"" + platform.getCablesUrl() + "/op/edit/" + opName + "\">" + opName + "</a>", { "closeable": true, "timeout": false });
+        }
+
         // only show dialog when ui is done (i.e. when pasting an unknown op)
         if (gui.finishedLoading())
         {

@@ -34,7 +34,9 @@
             {{#if opDoc.created}}<br/>Created {{displaydate opDoc.created}}{{/if}}
             <br/>
             {{opDoc.opDir.type}} - {{opDoc.opDir.dir}}
+            {{#if frontendOptions.isElectron}}
             <a class="button-small" onclick="CABLES.CMD.ELECTRON.openOpDir( '{{opname}}')"><span class="icon icon-folder"></span> open</a>
+            {{/if}}
             <br/>
             <hr/>
         {{/if}}

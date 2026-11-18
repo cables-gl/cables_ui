@@ -190,7 +190,11 @@ export default class OpAttachmentTab extends Tab
                 }
                 else
                 {
-                    this.#showErrors([err]);
+                    new ModalDialog({
+                        "title": "Failed to add attachment",
+                        "warning": true,
+                        "text": err.msg || err
+                    });
                     if (cb) cb(err);
                 }
             });
@@ -220,7 +224,11 @@ export default class OpAttachmentTab extends Tab
                 }
                 else
                 {
-                    this.#showErrors([err]);
+                    new ModalDialog({
+                        "title": "Failed to add attachment",
+                        "warning": true,
+                        "text": err.msg || err
+                    });
                     if (cb) cb(err);
                 }
             });
