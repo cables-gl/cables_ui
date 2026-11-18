@@ -32,6 +32,7 @@ export default class OpDocs
         const res = CABLESUILOADER.preload.opDocsAll;
         this._extensions = res.extensions;
         this._teamnamespaces = res.teamNamespaces;
+        this._teamnamespaces = this._teamnamespaces.filter((teamnamespace) => { return teamnamespace.hasOwnProperty("currentUserIsMember") ? teamnamespace.currentUserIsMember : true; });
         this.libs = res.libs;
         this.coreLibs = res.coreLibs;
 
