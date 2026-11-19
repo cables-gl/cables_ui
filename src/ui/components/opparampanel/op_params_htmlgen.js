@@ -149,6 +149,9 @@ class PortHtmlGenerator
                 "texts": GuiText
             };
 
+            if (ports[i].uiAttribs.useVariable)
+                tmplData.vars = ports[i].op.patch.getVars(ports[i].type);
+
             if (ports[i].uiAttribs.display === "file")
             {
                 const url = String(ports[i].value || "");
