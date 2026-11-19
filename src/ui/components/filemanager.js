@@ -6,7 +6,7 @@ import ModalDialog from "../dialogs/modaldialog.js";
 import { GuiText } from "../text.js";
 import { notify, notifyError, notifyWarn } from "../elements/notification.js";
 import opNames from "../opnameutils.js";
-import Gui, { gui } from "../gui.js";
+import { gui } from "../gui.js";
 import { platform } from "../platform.js";
 import { UserSettings, userSettings } from "./usersettings.js";
 import DragNDrop from "./filemanager_dragdrop.js";
@@ -48,7 +48,7 @@ export default class FileManager
         this._manager.setDisplay(userSettings.get(UserSettings.PREF_FILEMANAGER_DISPLAY) || "icons");
 
         this.reload(cb);
-        gui.on(Gui.EVENT_OP_SELECTIONCHANGED, (e) =>
+        gui.opParams.on("opSelected", (e) =>
         {
             if (this._filePortOp && this._filePortOp != e)
             {
