@@ -35,6 +35,7 @@ import { platform } from "../platform.js";
  * @property {number} pop popularity
  * @property {string} [teamName] collections only
  * @property {string} [teamLink] collections only
+ * @property {string} [teamId] collections only
  * @property {number} [numOps] collections only
  * @property {string[]} [ops] collections only
  * @property {number} [id] index in list, set by buildList
@@ -668,6 +669,7 @@ export default class OpSearch extends Events
                 let summary = gui.opDocs.getSummary(opName);
                 let type = "op";
                 if (namespace.isTeamNamespace(opName)) type = "team";
+                if (namespace.isTeamNamespace(opName)) type = "teamteaser";
                 if (namespace.isExtension(opName)) type = "extension";
                 if (namespace.isPatchOp(opName)) type = "patchop";
 
@@ -680,6 +682,12 @@ export default class OpSearch extends Events
                     const a = gui.opDocs.getNamespaceDocs(opName);
                     if (a && a.length > 0 && a[0].ops) collectionOpNames = a[0].ops.join(" ").toLowerCase();
                 }
+
+                let buttonText = "Add";
+                if (isCollection)buttonText = "Load";
+                if (isCollection)console.log(opName, opDoc);
+                if (isCollection && opDoc.teamName && !opDoc.currentUserIsMember) buttonText = null;
+                if (isCollection && opDoc.teamName) console.log(opDoc);
 
                 /** @type {OpSearchListItem} */
                 const op = {
@@ -702,12 +710,12 @@ export default class OpSearch extends Events
                     "oldState": oldState,
                     "lowercasename": lowerCaseName,
                     "isCollection": isCollection,
-                    "buttonText": isCollection ? "Load" : "Add",
+                    "buttonText": buttonText,
                     "type": type,
                     "pop": popularity,
                     "namespaces": []
-
                 };
+
                 if (namespace.isCollection(opName))
                 {
                     op.isOp = false;
@@ -718,6 +726,7 @@ export default class OpSearch extends Events
                         op.description = opDoc.description;
                         op.teamName = opDoc.teamName;
                         op.teamLink = opDoc.teamLink;
+                        op.teamId = opDoc.teamId;
                         op.numOps = opDoc.numOps;
                         op.ops = opDoc.ops || [];
                     }

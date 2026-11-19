@@ -586,8 +586,12 @@ export default class OpSelect
         }
     }
 
+    /**
+     * @param {PointerEvent} evt
+     */
     _onClickAddButton(evt)
     {
+
         this.addOp(evt.currentTarget.parentNode.dataset.opname, evt.shiftKey, evt.currentTarget.parentNode.dataset.itemType);
     }
 
