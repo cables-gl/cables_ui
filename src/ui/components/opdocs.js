@@ -29,6 +29,8 @@ export default class OpDocs
     addCoreOpDocs()
     {
         if (window.logStartup) logStartup("Op docs loaded");
+
+        /** @type {import("cables-shared-client").OpDocsAll} */
         const res = CABLESUILOADER.preload.opDocsAll;
         this._extensions = res.extensions;
         this._teamnamespaces = res.teamNamespaces;
