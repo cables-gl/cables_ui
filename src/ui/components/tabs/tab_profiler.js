@@ -17,7 +17,7 @@ export default class Profiler
      */
     constructor(tabs)
     {
-        this.#tab = new Tab("Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
+        this.#tab = new Tab("Patch Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this.#tab, true);
         this.show();
 
@@ -29,6 +29,10 @@ export default class Profiler
         this.#tab.on(Tab.EVENT_CLOSE, () =>
         {
             editorSession.remove(Profiler.TABSESSION_NAME, "profiler");
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+            const ops = gui.corePatch().ops;
+            for (let i = 0; i < ops.length; i++) ops[i].setUiAttribs({ "heatmapIntensity": 0, "commentOverwrite": null });
         });
 
         gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
@@ -257,7 +261,7 @@ export default class Profiler
 
                 if (item.percent > 0)
                 {
-                    htmlBar += "<div class=\"tt\" data-tt=\"" + item.title + "\" style=\"height:20px;background-color:" + this.colors[colorCounter] + ";float:left;padding:0px;overflow:hidden;min-width:0px;width:" + Math.floor(item.percent * 90) + "%\"></div>";
+                    htmlBar += "<div class=\"tt\" data-tt=\"" + item.title + "\" style=\"height:20px;background-color:" + this.colors[colorCounter] + ";padding:0px;overflow:hidden;min-width:0px;flex:" + item.percent + " 1 0\"></div>";
                     colorCounter++;
                     if (colorCounter > this.colors.length - 1)colorCounter = 0;
                 }
@@ -341,10 +345,4 @@ export default class Profiler
     }
 }
 
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(Profiler.TABSESSION_NAME, (id, data) =>
-    {
-        new Profiler(gui.mainTabs);
-    });
-});
+editorSession.addListener(Profiler.TABSESSION_NAME, () => { new Profiler(gui.mainTabs); });
