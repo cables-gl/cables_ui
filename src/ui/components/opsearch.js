@@ -685,9 +685,9 @@ export default class OpSearch extends Events
 
                 let buttonText = "Add";
                 if (isCollection)buttonText = "Load";
-                if (isCollection)console.log(opName, opDoc);
-                // if (isCollection && opDoc.teamName && !opDoc.currentUserIsMember) buttonText = null;
-                if (isCollection && opDoc.teamName) console.log(opDoc);
+                // if (isCollection)console.log(opName, opDoc);
+                if (isCollection && opDoc.teamName && !opDoc.currentUserIsMember) buttonText = null;
+                // if (isCollection && opDoc.teamName) console.log(opDoc);
 
                 /** @type {OpSearchListItem} */
                 const op = {

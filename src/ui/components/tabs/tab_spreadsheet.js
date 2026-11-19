@@ -116,13 +116,3 @@ export default class SpreadSheetTab extends Events
         this.#port.setRef(this.#cellMate.toObj());
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (id, data) =>
-    {
-        const op = gui.corePatch().getOpById(data.opId);
-        if (!op) return console.log("no spread op found..");
-        new SpreadSheetTab(gui.mainTabs, op.getPortByName(data.portname));
-    });
-});

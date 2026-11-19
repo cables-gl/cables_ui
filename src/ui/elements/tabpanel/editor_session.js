@@ -153,9 +153,6 @@ export default class EditorSession
      */
     open()
     {
-        // modules that imported this file before their own body ran missed the first init event, all are loaded now
-        window.dispatchEvent(new CustomEvent(CABLES.UI_EVENT_EDITORSESSION_INIT));
-
         const sessions = userSettings.get(UserSettings.PREF_OPEN_EDITORS);
 
         if (sessions)
@@ -184,4 +181,3 @@ export default class EditorSession
  */
 let editorSession = new EditorSession();
 export { editorSession };
-window.dispatchEvent(new CustomEvent(CABLES.UI_EVENT_EDITORSESSION_INIT));

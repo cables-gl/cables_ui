@@ -68,6 +68,15 @@ import { isFocusOnEditor } from "./components/editor.js";
 import { GradientEditor } from "./dialogs/canv_gradienteditor.js";
 import { CommandPalette } from "./dialogs/commandpalette.js";
 import { editorSession } from "./elements/tabpanel/editor_session.js";
+import Profiler from "./components/tabs/tab_profiler.js";
+import TabOpVersionDiff from "./components/tabs/tab_opversiondiff.js";
+import TabDebugger from "./components/tabs/tab_debugger.js";
+import OpWatchUiAttribs from "./components/tabs/tab_uiattribs.js";
+import TabManageOp from "./components/tabs/tab_manage_op.js";
+import { TabProfilerMemory } from "./components/tabs/tab_profiler_memory.js";
+import ItemManager from "./components/tabs/tab_item_manager.js";
+import TabThreeDebug from "./components/tabs/tab_threedebug.js";
+import SpreadSheetTab from "./components/tabs/tab_spreadsheet.js";
 
 /**
  * @type {Gui}
@@ -156,6 +165,22 @@ export default class Gui extends Events
         editorSession.addListener(TestsTab.TABSESSION_NAME, () => { new TestsTab(this.mainTabs); });
         editorSession.addListener(OpExampleTestsTab.TABSESSION_NAME, (name, data) => { new OpExampleTestsTab(this.mainTabs, data); });
         editorSession.addListener(OpExampleTestsTab.TABSESSION_NAME_OPTESTS, (name, data) => { new OpExampleTestsTab(this.mainTabs, data); });
+        editorSession.addListener(Profiler.TABSESSION_NAME, () => { new Profiler(this.mainTabs); });
+        editorSession.addListener(TabProfilerMemory.NAME, () => { new TabProfilerMemory(this.mainTabs); });
+        editorSession.addListener(TabDebugger.TABSESSION_NAME, () => { new TabDebugger(this.mainTabs); });
+        editorSession.addListener(TabThreeDebug.TABSESSION_NAME, () => { new TabThreeDebug(this.mainTabs); });
+        editorSession.addListener(OpWatchUiAttribs.TABSESSION_NAME, () => { new OpWatchUiAttribs(this.mainTabs); });
+        editorSession.addListener(TabInputBindings.TABSESSION_NAME, () => { new TabInputBindings(this.mainTabs); });
+        editorSession.addListener(TabManageOp.TABSESSION_NAME, (name) => { new TabManageOp(this.mainTabs, name); });
+        editorSession.addListener(TabOpVersionDiff.TABSESSION_NAME, (name, data) => { new TabOpVersionDiff(this.mainTabs, data.opname || name, data.attachmentName); });
+        editorSession.addListener(FindTab.TABSESSION_NAME, (name, data) => { this.find(data.search); });
+        editorSession.addListener(ItemManager.TABSESSION_NAME, () => { this.showFileManager(); });
+        editorSession.addListener(SpreadSheetTab.TABSESSION_NAME, (name, data) =>
+        {
+            const op = this.corePatch().getOpById(data.opId);
+            if (!op) return console.log("no spread op found..");
+            new SpreadSheetTab(this.mainTabs, op.getPortByName(data.portname));
+        });
 
         this._log = new Logger("gui");
 

@@ -107,11 +107,3 @@ export default class OpWatchUiAttribs extends Events
             hljs.highlightElement(el);
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(OpWatchUiAttribs.TABSESSION_NAME, (id, data) =>
-    {
-        new OpWatchUiAttribs(gui.mainTabs);
-    });
-});

@@ -319,11 +319,3 @@ export default class TabInputBindings
         });
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(TabInputBindings.TABSESSION_NAME, (id, data) =>
-    {
-        new TabInputBindings(gui.mainTabs);
-    });
-});

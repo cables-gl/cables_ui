@@ -123,11 +123,3 @@ export default class TabThreeDebug extends Events
         }
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(TabThreeDebug.TABSESSION_NAME, (id, data) =>
-    {
-        new TabThreeDebug(gui.mainTabs);
-    });
-});

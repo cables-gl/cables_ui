@@ -125,11 +125,3 @@ export default class TabDebugger
         ele.byId("debugger_log").innerHTML = html;
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(TabDebugger.TABSESSION_NAME, (id, data) =>
-    {
-        new TabDebugger(gui.mainTabs);
-    });
-});

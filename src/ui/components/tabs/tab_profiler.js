@@ -118,6 +118,12 @@ export default class Profiler
         {
             this.start();
         }.bind(this));
+
+        ele.byId("profiler_pause").addEventListener("click", () =>
+        {
+            gui.corePatch().profiler.togglePause();
+            this.update();
+        });
     }
 
     update()
@@ -174,7 +180,7 @@ export default class Profiler
                 }
                 else
                 {
-                    cumulated[item.title] = item;
+                    cumulated[item.title] = { ...item };
                     cumulated[item.title].numCumulated = 1;
                     sortedItems.push(cumulated[item.title]);
                 }
@@ -344,5 +350,3 @@ export default class Profiler
         if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
     }
 }
-
-editorSession.addListener(Profiler.TABSESSION_NAME, () => { new Profiler(gui.mainTabs); });

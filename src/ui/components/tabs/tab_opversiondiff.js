@@ -259,11 +259,3 @@ export default class TabOpVersionDiff
         this.#mergeView = null;
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(TabOpVersionDiff.TABSESSION_NAME, (name, data) =>
-    {
-        new TabOpVersionDiff(gui.mainTabs, data.opname || name, data.attachmentName);
-    });
-});

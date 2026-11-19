@@ -753,11 +753,3 @@ export default class TabManageOp
         };
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(TabManageOp.TABSESSION_NAME, (id, data) =>
-    {
-        new TabManageOp(gui.mainTabs, id);
-    });
-});

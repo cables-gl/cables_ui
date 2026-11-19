@@ -978,11 +978,3 @@ FindTab.searchExtensionOps = (ops, results) =>
     }
     return results;
 };
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(FindTab.TABSESSION_NAME, (id, data) =>
-    {
-        gui.find(data.search);
-    });
-});

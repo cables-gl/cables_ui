@@ -258,11 +258,3 @@ export default class ItemManager extends Events
         this.filterItems();
     }
 }
-
-window.addEventListener(CABLES.UI_EVENT_EDITORSESSION_INIT, () =>
-{
-    editorSession.addListener(ItemManager.TABSESSION_NAME, (id, data) =>
-    {
-        gui.showFileManager();
-    });
-});
