@@ -2338,7 +2338,7 @@ export default class ServerOps
         if (apiError?.data?.opJsonInvalid && gui.user?.isStaff)
         {
             const opName = apiError.data.name;
-            notifyError("Op has invalid json-file", "<a href=\"" + platform.getCablesUrl() + "/op/edit/" + opName + "\">" + opName + "</a>", { "closeable": true, "timeout": false });
+            notifyError("Op has invalid json", "<a href=\"" + platform.getCablesUrl() + "/op/edit/" + opName + "\">" + opName + "</a>", { "closeable": true, "timeout": false });
         }
 
         // only show dialog when ui is done (i.e. when pasting an unknown op)
