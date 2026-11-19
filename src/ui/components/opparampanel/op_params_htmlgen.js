@@ -146,8 +146,7 @@ class PortHtmlGenerator
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].op,
-                "texts": GuiText,
-                "vars": ports[i].op.patch.getVars(ports[i].type)
+                "texts": GuiText
             };
 
             if (ports[i].uiAttribs.display === "file")
