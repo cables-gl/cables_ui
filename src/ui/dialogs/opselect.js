@@ -778,7 +778,7 @@ export default class OpSelect
         {
             this._newOpOptions.createdLocally = true;
 
-            if (itemType === "extension" || itemType === "team")
+            if (itemType === "extension" || itemType === "team" || itemType === "teamteaser")
             {
                 gui.opSelect().loadCollection(opname);
             }
