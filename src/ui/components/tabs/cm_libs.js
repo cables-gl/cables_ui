@@ -6,9 +6,9 @@ export { linter, lintGutter, forEachDiagnostic, setDiagnosticsEffect } from "@co
 export { EditorView, highlightActiveLineGutter, highlightActiveLine, lineNumbers, keymap, drawSelection, Decoration, showPanel } from "@codemirror/view";
 export { Transaction, EditorSelection, EditorState, Compartment } from "@codemirror/state";
 export { syntaxTree, bracketMatching, indentOnInput, indentUnit } from "@codemirror/language";
-export { autocompletion, closeBrackets, closeBracketsKeymap, snippetCompletion } from "@codemirror/autocomplete";
+export { autocompletion, closeBrackets, closeBracketsKeymap, snippetCompletion, completionStatus, acceptCompletion, moveCompletionSelection } from "@codemirror/autocomplete";
 export { searchKeymap, highlightSelectionMatches, selectNextOccurrence } from "@codemirror/search";
-export { indentWithTab, toggleComment, history, historyKeymap, defaultKeymap, insertNewlineAndIndent } from "@codemirror/commands";
+export { indentWithTab, toggleComment, toggleLineComment, toggleBlockComment, history, historyKeymap, defaultKeymap, insertNewlineAndIndent } from "@codemirror/commands";
 export { MergeView } from "@codemirror/merge";
 export { oneDark } from "@codemirror/theme-one-dark";
 

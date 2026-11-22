@@ -388,6 +388,7 @@ export default class EditorTabCodemirror extends EditorBase
         right.push("<span>" + (status.selections > 1 ? (status.primaryIndex + 1) + "/" + status.selections + " sels" : "1 sel") + "</span>");
         if (status.register) right.push("<span>reg=" + escapeHTML(status.register) + "</span>");
         right.push("<span>" + status.line + ":" + status.column + "</span>");
+        right.push("<span>" + escapeHTML(this._options.syntax || "text") + "</span>");
 
         this.#helixStatusEle.className = "hx-statusline";
         this.#helixStatusEle.innerHTML = left.join("") + "<span class=\"hx-statusline-spacer\"></span>" + right.join("");
@@ -448,6 +449,27 @@ export default class EditorTabCodemirror extends EditorBase
                     }
                 }
             ),
+            helixModule.helixHooks.of({
+                // helix takes all keys before codemirror's completion keymap
+                "intercept": (key, view) =>
+                {
+                    if (cm.completionStatus(view.state) != "active") return false;
+                    if (key == "ret") return cm.acceptCompletion(view);
+                    if (key == "down" || key == "tab" || key == "C-n") return cm.moveCompletionSelection(true)(view);
+                    if (key == "up" || key == "S-tab" || key == "C-p") return cm.moveCompletionSelection(false)(view);
+                    if (key == "pagedown") return cm.moveCompletionSelection(true, "page")(view);
+                    if (key == "pageup") return cm.moveCompletionSelection(false, "page")(view);
+                    return false;
+                },
+                // helix-cm6 only knows comment tokens when it loads its own syntax, otherwise it uses #
+                "command": (name, cx) =>
+                {
+                    const cmd = { "toggle_comments": cm.toggleComment, "toggle_line_comments": cm.toggleLineComment, "toggle_block_comments": cm.toggleBlockComment }[name];
+                    if (!cmd) return false;
+                    cmd(cx.view);
+                    return true;
+                }
+            }),
             // helix colors default to system colors, use the oneDark ones, yellow cursor
             cm.EditorView.theme({
                 "&": {
