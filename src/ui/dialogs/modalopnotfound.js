@@ -25,46 +25,40 @@ export default class ModalOpNotFound
         this.#cb = cb;
 
         let title = "Failed to load op";
-        let otherEnvName = "dev.cables.gl";
         const project = gui.project();
-        let editorLink = "";
-        if (project) editorLink = "https://" + otherEnvName + "/edit/" + project.shortId;
-        let otherEnvButton = "Try " + otherEnvName;
+        let otherEnvLink = "";
+        let otherEnvButton = "";
         let errMsg = "";
         let opLinks = [];
-        let hideEnvButton = !platform.frontendOptions.suggestOtherEnvironmentsForOps;
         if (apiError && apiError.data)
         {
             if (apiError.data.text) errMsg = apiError.data.text;
             if (apiError.data.title) title = apiError.data.title;
             if (apiError.data.reasons) opLinks = opLinks.concat(apiError.data.reasons);
-            if (apiError.data.otherEnvName)
-            {
-                otherEnvButton = "Try " + apiError.data.otherEnvName;
-            }
             if (apiError.data.ops)
             {
                 for (let i = 0; i < apiError.data.ops.length; i++)
                 {
                     const op = apiError.data.ops[i];
-                    if (op.env === "electron") opLinks.push(op.opDir);
-                    else opLinks.push("Found <a href=\"https://" + op.env + "/op/" + op.name + "\">" + op.name + "</a> on <a href=\"https://" + op.env + "/edit/" + project.shortId + "\">" + op.env + "</a>");
+                    if (op.env === "electron")
+                    {
+                        opLinks.push(op.opDir);
+                    }
+                    else
+                    {
+                        opLinks.push("Found <a href=\"https://" + op.env + "/op/" + op.name + "\">" + op.name + "</a> on " + op.env);
+                    }
                 }
             }
-            if (apiError.data.otherEnvUrl && project) editorLink = apiError.data.otherEnvUrl + "/edit/" + project.shortId;
-            if (apiError.data.otherEnvButton) otherEnvButton = apiError.data.otherEnvButton;
-            if (apiError.data.editorLink) editorLink = apiError.data.editorLink;
-            if (apiError.data.hideEnvButton) hideEnvButton = true;
+            if (apiError.data.otherEnvUrl && apiError.data.otherEnvName && project)
+            {
+                otherEnvLink = apiError.data.otherEnvUrl + "/edit/" + project.shortId;
+                otherEnvButton = "Try " + apiError.data.otherEnvName;
+            }
         }
-        if (!editorLink)
-        {
-            hideEnvButton = true;
-        }
-        else
-        {
-            const opText = apiError?.data?.name || oldName || opIdentifier;
-            if (!errMsg.includes(opText) && !opLinks.some((opLink) => { return opLink.includes(opText); })) opLinks.push(opText);
-        }
+        const hideEnvButton = !platform.frontendOptions.suggestOtherEnvironmentsForOps || !otherEnvLink || apiError?.data?.hideEnvButton;
+        const opText = apiError?.data?.name || oldName || opIdentifier;
+        if (opText && !errMsg.includes(opText) && !opLinks.some((opLink) => { return opLink.includes(opText); })) opLinks.push(opText);
         opLinks = utils.uniqueArray(opLinks).filter((opLink) => { return opLink !== errMsg; });
 
         const modalOptions = {
@@ -78,14 +72,14 @@ export default class ModalOpNotFound
         if (!hideEnvButton)
         {
             modalOptions.okButton = {
-                "text": "Continue loading",
+                "text": "Continue",
                 "callback": this.#continueLoadingCallback.bind(this)
             };
-            modalOptions.cancelButton = { "text": otherEnvButton, "callback": () => { this.#tryOtherEnvCallback(editorLink); } };
+            modalOptions.cancelButton = { "text": otherEnvButton, "callback": () => { this.#tryOtherEnvCallback(otherEnvLink); } };
         }
         else
         {
-            modalOptions.okButton = { "text": "Continue loading", "callback": this.#continueLoadingCallback.bind(this) };
+            modalOptions.okButton = { "text": "Continue", "callback": this.#continueLoadingCallback.bind(this) };
             modalOptions.cancelButton = {
                 "cssClasses": "hidden"
             };
@@ -119,11 +113,11 @@ export default class ModalOpNotFound
 
     /**
      *
-     * @param {String} editorLink
+     * @param {String} otherEnvLink
      */
-    #tryOtherEnvCallback(editorLink)
+    #tryOtherEnvCallback(otherEnvLink)
     {
-        window.open(editorLink);
+        window.open(otherEnvLink);
     }
 
 }
