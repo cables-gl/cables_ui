@@ -483,6 +483,12 @@
       0,
       1
     ],
+    "opNotWorkingCross": [
+      0.4,
+      0.4,
+      0.4,
+      1
+    ],
     "patchComment": [
       1,
       1,
