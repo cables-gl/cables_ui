@@ -531,7 +531,7 @@ class UiOp extends Op
 
         if (!working)
         {
-            notWorkingMsg = "<span style=\"background-color:red;\" class=\"icon icon-x\"></span>&nbsp;" + notWorkingMsg;
+            notWorkingMsg = "<span style=\"background-color:black;\" class=\"icon icon-x\"></span>&nbsp;" + notWorkingMsg;
             this.setUiError("notworking", notWorkingMsg, Op.UI_ERRORLEVEL_NOTWORKING);
         }
         else if (hadError)
