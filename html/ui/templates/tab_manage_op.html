@@ -31,7 +31,7 @@
         {{#if opDoc.opDir}}
             <!-- this will only show in electron/local dev -->
             <hr/>
-            {{#if opDoc.created}}<br/>Created {{displaydate opDoc.created}}{{/if}}
+            {{#if opDoc.created}}<br/>Created {{displaydateNoTime opDoc.created}}{{/if}}
             <br/>
             {{opDoc.opDir.type}} - {{opDoc.opDir.dir}}
             {{#if frontendOptions.isElectron}}
@@ -239,16 +239,20 @@
             <table class="changelogtable" style="width:100%">
             {{#each changelog}}
                 <tr>
-                    <td style="vertical-align: top">
-                        <span style="font-size:11px">{{relativedate date}}</span>
-                    </td>
                     <td style="vertical-align: top;font-size:11px">
                         {{#if type}}
                             <span style="border-radius: 4px;text-transform: uppercase; background-color:#aaa;padding-left:4px;padding-right:4px;color:#000;" class="changelogtype-{{type}}">{{type}}</span>
                         {{/if}}
                     </td>
-                    <td style="width:65%;">
-                        <span class="changelogText">- {{message}}</span>
+                    <td style="width:60%;vertical-align: top">
+                        <span class="changelogText">{{message}}{{#if url}} - <a href="{{url}}" target="_blank" class="link">link</a>{{/if}}</span>
+                    </td>
+                    <td style="vertical-align: top;font-size:11px;white-space: nowrap">
+                        {{#if author}}
+                            <img alt="user avatar" src="{{../cablesUrl}}/api/avatar/{{author}}/mini" style="width:16px;height:16px;border-radius:100%;vertical-align:middle;"/>
+                            <a href="{{../cablesUrl}}/user/{{author}}" target="_blank" class="link">{{author}}</a> -
+                        {{/if}}
+                        {{logdate date}}
                     </td>
                 </tr>
             {{/each}}
