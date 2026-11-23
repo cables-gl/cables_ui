@@ -245,6 +245,14 @@ float samp(in vec2 uv, float w) {
         if(posSize.z<outlinefrag && posSize.y<edgefrag)edge=true;
         if(edge)finalColor.rgb-=vec3(decoration.a);
     }
+    else if (shape==17.0) // thin diagonal cross, line width in screen pixels
+    {
+        vec2 pxSize=1.0/fwidth(uv);
+        vec2 px=(uv-0.5)*pxSize;
+        vec2 dir=normalize(pxSize);
+        float dist=min(abs(px.x*dir.y-px.y*dir.x),abs(px.x*dir.y+px.y*dir.x));
+        finalColor.a=1.0-smoothstep(1.0,2.0,dist);
+    }
 
 
 

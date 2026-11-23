@@ -962,6 +962,7 @@ export default class GlOp extends Events
         if (this.#rectResize)ext += this.#rectResize.w;
         if (this._glColorSwatch)ext += this._height * (indicSize + indicSize);
         this.#glRectBg.setSize(this._width + ext, this._height);
+        if (this.#glNotWorkingCross) this.#glNotWorkingCross.setSize(this.#glRectBg.w, this.#glRectBg.h);
 
         if (this._glColorSwatch)
         {
@@ -1518,7 +1519,7 @@ export default class GlOp extends Events
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_HINT) hasHints = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_WARNING) hasWarnings = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_ERROR) hasErrors = true;
-                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_NOTWORKING) notworking = true;
+                if (this.opUiAttribs.uierrors[i].id == "notworking") notworking = true;
             }
 
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
@@ -1555,9 +1556,9 @@ export default class GlOp extends Events
             if (notworking && !this.#glNotWorkingCross)
             {
                 this.#glNotWorkingCross = this.#instancer.createRect({ "parent": this.#glRectBg, "interactive": false, "name": "notwork cross" });
-                this.#glNotWorkingCross.setSize(this._height * 0.25, this._height * 0.25);
-                this.#glNotWorkingCross.setColorArray(gui.theme.colors_patch.opErrorCross);
-                this.#glNotWorkingCross.setShape(GlRect.SHAPE_CROSS);
+                this.#glNotWorkingCross.setSize(this.#glRectBg.w, this.#glRectBg.h);
+                this.#glNotWorkingCross.setColorArray(gui.theme.colors_patch.opNotWorkingCross);
+                this.#glNotWorkingCross.setShape(GlRect.SHAPE_CROSS_THIN);
                 this.#glNotWorkingCross.interactive = false;
                 this.#glNotWorkingCross.visible = this.visible && notworking;
             }
@@ -1586,7 +1587,7 @@ export default class GlOp extends Events
 
             if (notworking)
             {
-                this.#glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375), gluiconfig.zOpLayerIndicator);
+                this.#glNotWorkingCross.setPosition(0, 0, gluiconfig.zOpLayerDecoration);
                 this.#glNotWorkingCross.visible = this.visible && notworking;
             }
 
@@ -2221,7 +2222,7 @@ export default class GlOp extends Events
         if (this.#glDotHint) this.#glDotHint.setColorArray(gui.theme.colors_patch.opErrorHint);
         if (this.#glDotWarning) this.#glDotWarning.setColorArray(gui.theme.colors_patch.opErrorWarning);
         if (this.#glDotError) this.#glDotError.setColorArray(gui.theme.colors_patch.opError);
-        if (this.#glNotWorkingCross) this.#glNotWorkingCross.setColorArray(gui.theme.colors_patch.opErrorCross);
+        if (this.#glNotWorkingCross) this.#glNotWorkingCross.setColorArray(gui.theme.colors_patch.opNotWorkingCross);
 
         if (this.#glDotHint) this.#glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
         if (this.#glDotWarning) this.#glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);

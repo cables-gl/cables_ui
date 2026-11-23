@@ -48,6 +48,7 @@ export default class GlRect extends Events
     static SHAPE_TRIANGLE_DOWN = 14;
     static SHAPE_TRIANGLE_UP = 15;
     static SHAPE_STACK = 16;
+    static SHAPE_CROSS_THIN = 17;
 
     /** @type {array} */
     color = vec4.create();

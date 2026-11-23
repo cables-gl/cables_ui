@@ -212,7 +212,8 @@ export default class GlPort
                 if (this.#rect.shape == GlRect.SHAPE_HALF_BLOCK_BOTTOM) visibleTop = this.#rect.h / 2;
 
                 let dotPosY = visibleTop;
-                if (this.direction == Port.DIR_OUT) dotPosY = visibleTop + this.visibleHeight - dotHeight;
+                if (this.#port.uiAttribs.notWorking) dotPosY = visibleTop + (this.visibleHeight - dotHeight) / 2;
+                else if (this.direction == Port.DIR_OUT) dotPosY = visibleTop + this.visibleHeight - dotHeight;
 
                 this.#dot.setSize(dotWidth, dotHeight);
                 this.#dot.setPosition(gluiconfig.portWidth / 2 - dotWidth / 2, dotPosY, gluiconfig.zPortDotOffset);
