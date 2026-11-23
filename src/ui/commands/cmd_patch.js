@@ -111,8 +111,7 @@ class CmdPatch
                 "cmd": "Export static html",
                 "category": "patch",
                 "func": CmdPatch.export,
-                "icon": "download",
-                "frontendOption": "showExport"
+                "icon": "download"
             },
             {
                 "cmd": "Show backups",

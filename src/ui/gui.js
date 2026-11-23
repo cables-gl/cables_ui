@@ -77,6 +77,7 @@ import { TabProfilerMemory } from "./components/tabs/tab_profiler_memory.js";
 import ItemManager from "./components/tabs/tab_item_manager.js";
 import TabThreeDebug from "./components/tabs/tab_threedebug.js";
 import SpreadSheetTab from "./components/tabs/tab_spreadsheet.js";
+import StandaloneExport from "./components/tabs/tab_standaloneexport.js";
 
 /**
  * @type {Gui}
@@ -1637,8 +1638,15 @@ export default class Gui extends Events
 
         ele.byId("nav_patch_save").addEventListener("click", () => { CmdPatch.save(); });
         ele.byId("nav_patch_saveas").addEventListener("click", () => { CmdPatch.saveAs(); });
-        ele.byId("nav_patch_export").addEventListener("click", () => { CmdPatch.export(); });
-        ele.byId("nav_patch_export_patch").addEventListener("click", () => { CmdPatch.export("patch"); });
+        ele.byId("nav_patch_export").addEventListener("click", () =>
+        {
+            if (platform.isElectron())
+            {
+                new StandaloneExport(this.mainTabs);
+                this.maintabPanel.show(true);
+            }
+            else CmdPatch.export();
+        });
 
         if (platform.frontendOptions.hasOpDirectories)
         {
@@ -1661,19 +1669,6 @@ export default class Gui extends Events
         if (!platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
 
         const exportLink = ele.byId("nav_patch_export");
-        if (!platform.frontendOptions.showExport)
-        {
-            ele.hide(exportLink);
-        }
-        if (platform.isElectron())
-        {
-            if (exportLink) exportLink.innerText = "Export - HTML";
-        }
-
-        if (!platform.frontendOptions.showExportPatch)
-        {
-            ele.hide(ele.byId("nav_patch_export_patch"));
-        }
 
         if (!platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
 
