@@ -23,6 +23,9 @@ let cm = null;
 /** @type {import("helix-cm6")} - loaded on first use of a helix editor */
 let helixModule = null;
 
+/** @type {import("@replit/codemirror-vim")} - loaded on first use of a vim editor */
+let vimModule = null;
+
 function loadCursorLines()
 {
     try
@@ -62,6 +65,7 @@ export default class EditorTabCodemirror extends EditorBase
 {
     #log = new Logger("editorTabCm");
     helix = false;
+    vim = false;
     #highlightCompartment = null;
     #languageCompartment = null;
     #prefsCompartment = null;
@@ -81,11 +85,13 @@ export default class EditorTabCodemirror extends EditorBase
     /**
      * @param {import("../editor.js").EditorOptions} options
      * @param {boolean} [helix]
+     * @param {boolean} [vim]
      */
-    constructor(options, helix)
+    constructor(options, helix, vim)
     {
         super(options);
         this.helix = helix;
+        this.vim = vim;
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
 
         gui.maintabPanel.show();
@@ -425,11 +431,32 @@ export default class EditorTabCodemirror extends EditorBase
             return;
         }
 
+        if (this.vim && !vimModule)
+        {
+            import("@replit/codemirror-vim").then((m) =>
+            {
+                vimModule = m;
+                // :w
+                vimModule.CodeMirror.commands.save = (cm5) =>
+                {
+                    for (let i = 0; i < gui.mainTabs.tabs.length; i++)
+                    {
+                        const editor = gui.mainTabs.tabs[i].editor;
+                        if (editor && editor.cmView == cm5.cm6) editor.save();
+                    }
+                };
+                this.createEditor(cb);
+            });
+            return;
+        }
+
         this.#highlightCompartment = new cm.Compartment();
         this.#languageCompartment = new cm.Compartment();
         this.#prefsCompartment = new cm.Compartment();
 
         const extensions = [];
+        // vim has to come before the other keymaps
+        if (this.vim) extensions.push(vimModule.vim({ "status": true }));
         if (this.helix)
             extensions.push(helixModule.helix(
                 {

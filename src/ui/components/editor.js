@@ -38,6 +38,7 @@ export function createEditor(options)
 {
     if (userSettings.get(UserSettings.PREF_TEXTEDITOR) == "textarea") return new EditorTabTextArea(options);
     else if (userSettings.get(UserSettings.PREF_TEXTEDITOR) == "cmhx") return new EditorTabCodemirror(options, true);
+    else if (userSettings.get(UserSettings.PREF_TEXTEDITOR) == "cmvim") return new EditorTabCodemirror(options, false, true);
     // else if (userSettings.get(UserSettings.PREF_TEXTEDITOR) == "ace") return new EditorTabAce(options);
     else return new EditorTabCodemirror(options);
 
