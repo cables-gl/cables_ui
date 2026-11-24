@@ -363,6 +363,44 @@ export default class VizLayer extends Events
         ctx.fillRect(layer.x, layer.y, layer.width, layer.height);
     }
 
+    /**
+     * fill an area with a checkerboard, e.g. behind transparent images
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {number} x
+     * @param {number} y
+     * @param {number} w
+     * @param {number} h
+     * @param {boolean} [bright]
+     */
+    drawCheckerboard(ctx, x, y, w, h, bright = false)
+    {
+        this._checkerPatterns = this._checkerPatterns || {};
+        const key = bright ? "bright" : "dark";
+
+        if (!this._checkerPatterns[key])
+        {
+            // same colors as the canvas background patterns in scss/components/meta.scss
+            const colors = bright ? ["#ffffff", "#cccccc"] : ["#333333", "#000000"];
+            const s = 8 * window.devicePixelRatio;
+            const tile = document.createElement("canvas");
+            tile.width = tile.height = s * 2;
+            const tileCtx = tile.getContext("2d");
+            tileCtx.fillStyle = colors[0];
+            tileCtx.fillRect(0, 0, s * 2, s * 2);
+            tileCtx.fillStyle = colors[1];
+            tileCtx.fillRect(0, 0, s, s);
+            tileCtx.fillRect(s, s, s, s);
+
+            this._checkerPatterns[key] = ctx.createPattern(tile, "repeat");
+        }
+
+        const pattern = this._checkerPatterns[key];
+        // anchored to the area, so the pattern moves with the op instead of staying fixed on screen
+        pattern.setTransform(new DOMMatrix([1, 0, 0, 1, x, y]));
+        ctx.fillStyle = pattern;
+        ctx.fillRect(x, y, w, h);
+    }
+
     _textWrap(str, max)
     {
         const space = " ";
