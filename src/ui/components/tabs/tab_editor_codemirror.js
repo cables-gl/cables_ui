@@ -622,28 +622,7 @@ export default class EditorTabCodemirror extends EditorBase
         if (syntax == "json") return [cm.json(), cm.linter(cm.jsonParseLinter())];
         if (syntax == "js")
         {
-            const syntaxErrorLinter = cm.linter((view) =>
-            {
-                const diagnostics = [];
-                cm.syntaxTree(view.state).iterate({
-                    "enter": function (node)
-                    {
-                        if (node.type.isError)
-                        {
-                            diagnostics.push({
-                                "from": node.from,
-                                "to": node.to,
-                                "severity": "error",
-                                "message": "Syntax error"
-                            });
-                        }
-                    }
-                });
-                return diagnostics;
-            });
-
             return [
-                syntaxErrorLinter,
                 cm.javascript(),
                 cm.javascriptLanguage.data.of({
                     "autocomplete": this.getSnippets()
