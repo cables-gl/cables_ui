@@ -91,6 +91,17 @@ export default class ModalOpNotFound
                     "callback": () => { platform.talkerAPI.send(TalkerAPI.CMD_CREATE_NEW_PATCH, {}); }
                 };
             }
+            else if (platform.frontendOptions.hasOpDirectories)
+            {
+                modalOptions.cancelButton = {
+                    "text": "Manage Op Directories",
+                    "callback": (done) =>
+                    {
+                        this.#continueLoadingCallback(done);
+                        platform.openOpDirsTab();
+                    }
+                };
+            }
         }
 
         this.#modal = new ModalDialog(modalOptions);

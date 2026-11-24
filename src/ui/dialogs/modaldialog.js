@@ -199,7 +199,7 @@ export default class ModalDialog extends Events
 
         if (this.#options.footer)
         {
-            html += this.#options.footer;
+            html += "<div class=\"modalfooter\">" + this.#options.footer + "</div>";
         }
 
         if (this.#options.prompt)
