@@ -2356,7 +2356,7 @@ export default class ServerOps
             {
                 if (apiError.data.title) title = apiError.data.title;
                 if (apiError.data.footer) footer = apiError.data.footer;
-                if (apiError.data.text) errMsg += ". " + apiError.data.text;
+                if (apiError.data.text) errMsg = apiError.data.text;
                 if (apiError.data.reasons) opTexts = opTexts.concat(apiError.data.reasons);
                 if (apiError.data.ops)
                 {
