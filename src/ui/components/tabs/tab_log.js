@@ -64,6 +64,8 @@ export default class LogTab extends Events
             navigator.clipboard.writeText(txt);
         });
 
+        this.#tab.addButton("Report a problem", () => { window.open(platform.getIssueTrackerUrl(), "_blank"); });
+
         this.#tab.addEventListener(Tab.EVENT_CLOSE, () =>
         {
             this.close();
