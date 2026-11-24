@@ -1518,8 +1518,8 @@ export default class GlOp extends Events
             {
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_HINT) hasHints = true;
                 if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_WARNING) hasWarnings = true;
-                if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_ERROR) hasErrors = true;
                 if (this.opUiAttribs.uierrors[i].id == "notworking") notworking = true;
+                else if (this.opUiAttribs.uierrors[i].level == Op.UI_ERRORLEVEL_ERROR) hasErrors = true;
             }
 
             let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
