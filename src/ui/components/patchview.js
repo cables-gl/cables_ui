@@ -2866,7 +2866,7 @@ export default class PatchView extends Events
                     {
                         newOp.portsIn[j].setAnimated(true);
                         newOp.portsIn[j].anim.clear();
-                        newOp.portsIn[j].anim.deserialize(origOp.portsIn[j].anim.getSerialized());
+                        newOp.portsIn[j].anim.deserialize(origOp.portsIn[i].anim.getSerialized());
                     }
                 }
 
@@ -3032,6 +3032,8 @@ export default class PatchView extends Events
 
                         this.copyOpInputPorts(origOp, newOp);
 
+                        const lostLinks = [];
+
                         for (let i = 0; i < origOp.portsIn.length; i++)
                         {
                             for (let j = 0; j < origOp.portsIn[i].links.length; j++)
@@ -3039,7 +3041,7 @@ export default class PatchView extends Events
                                 const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
                                 // origOp.portsIn[i].links[j].remove(); not needed, if it IS needed, upgrade with multiple links on one port, links will be lost!!
 
-                                this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                                if (!this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true)) lostLinks.push(origOp.portsIn[i].name);
                             }
                         }
 
@@ -3052,9 +3054,11 @@ export default class PatchView extends Events
                                 // origOp.portsOut[i].links[j].remove(); // not needed, if it IS needed, upgrade with multiple links on one port, links will be lost!!
 
                                 // origOp.portsOut[i].links[j].link(otherPort, newOp.getPort(origOp.portsOut[i].name.toLowerCase(), true))
-                                this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                                if (!this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true)) lostLinks.push(origOp.portsOut[i].name);
                             }
                         }
+
+                        if (lostLinks.length) notifyWarn("Upgrade lost " + lostLinks.length + " link(s)", lostLinks.join(", "), { "closeable": true, "timeout": false });
 
                         this._p.deleteOp(origOp.id);
 
