@@ -31,7 +31,6 @@ export default class PlatformElectron extends Platform
         this.frontendOptions.showBuildInfoMenuLink =
         this.frontendOptions.opDependencies =
         this.frontendOptions.showOpenPatch =
-        this.frontendOptions.showExportPatch =
         this.frontendOptions.opRenameInEditor =
         this.frontendOptions.opDeleteInEditor =
         this.frontendOptions.showStartUpLog = true;

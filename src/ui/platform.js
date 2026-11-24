@@ -38,7 +38,6 @@ import { GuiText } from "./text.js";
  * @typedef PlatformFrontendOptions
  * @property {boolean} [showLocalOpDirButton]
  * @property {boolean} [opDeleteInEditor]
- * @property {boolean} [showExportPatch]
  * @property {boolean} [showPatchBackups]
  * @property {boolean} [showMyLinks]
  * @property {boolean} [showAssetUpload]
