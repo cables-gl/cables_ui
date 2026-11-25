@@ -61,8 +61,7 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         if (p.dir == 0) // INPUT
         {
-            if (p.type == Port.TYPE_STRING && p.display == "switch") src += "op.inSwitch";
-            else if (p.type == Port.TYPE_NUMBER) src += "op.inFloat";
+            if (p.type == Port.TYPE_NUMBER) src += "op.inFloat";
             else if (p.type == Port.TYPE_TRIGGER) src += "op.inTrigger";
             else if (p.type == Port.TYPE_OBJECT) src += "op.inObject";
             else if (p.type == Port.TYPE_ARRAY) src += "op.inArray";
@@ -72,6 +71,7 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
             if (p.type == Port.TYPE_STRING) src += ",\"" + String(p.value).replaceAll("\n", "\\n") + "\""; // 2. param default value
             if (p.type == Port.TYPE_NUMBER) src += "," + p.value; // 2. param default value
+            if (p.type == Port.TYPE_OBJECT) src += ",null," + JSON.stringify(p.objType || null); // 2. value, 3. objType
 
             src += ");";
         }
@@ -84,6 +84,7 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
             if (p.type == Port.TYPE_STRING) src += "op.outString";
 
             src += "(\"" + p.id + "\""; // 1. name
+            if (p.type == Port.TYPE_OBJECT) src += ",null," + JSON.stringify(p.objType || null); // 2. value, 3. objType
 
             src += ");";
         }
@@ -92,9 +93,9 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
 
-        if (p.uiDisplay == "texture")src += "display:\"texture\",objType:\"texture\",";
+        if (p.type == Port.TYPE_OBJECT && p.objType == "texture")src += "display:\"texture\",";
         else if (p.uiDisplay == "int")src += "increment:\"integer\",";
-        else if (p.uiDisplay)src += "display:\"" + p.uiDisplay + "\",";
+        else if (p.uiDisplay && p.type != Port.TYPE_OBJECT)src += "display:\"" + p.uiDisplay + "\",";
 
         if (p.objType)src += "objType:\"" + p.objType + "\"";
 
@@ -123,13 +124,15 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         let outPortFunc = "outNumber";
 
-        if (p.type == Port.TYPE_OBJECT && p.uiDisplay == "texture") outPortFunc = "outTexture";
+        if (p.type == Port.TYPE_OBJECT && p.objType == "texture") outPortFunc = "outTexture";
         else if (p.type == Port.TYPE_TRIGGER) outPortFunc = "outTrigger";
         else if (p.type == Port.TYPE_OBJECT) outPortFunc = "outObject";
         else if (p.type == Port.TYPE_ARRAY) outPortFunc = "outArray";
         else if (p.type == Port.TYPE_STRING) outPortFunc = "outString";
 
-        src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");" + nl;
+        let innerOutArgs = "\"innerOut_" + p.id + "\"";
+        if (outPortFunc == "outObject") innerOutArgs += ",null," + JSON.stringify(p.objType || null);
+        src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(" + innerOutArgs + ");" + nl;
 
         if (ports.ports[i].type == Port.TYPE_NUMBER || ports.ports[i].type == Port.TYPE_STRING)
             src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );" + nl;
@@ -160,7 +163,9 @@ subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (ports.ports[i].type == Port.TYPE_ARRAY) inPortFunc = "inArray";
         if (ports.ports[i].type == Port.TYPE_STRING) inPortFunc = "inString";
 
-        src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");" + nl;
+        let innerInArgs = "\"innerIn_" + p.id + "\"";
+        if (inPortFunc == "inObject") innerInArgs += ",null," + JSON.stringify(p.objType || null);
+        src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(" + innerInArgs + ");" + nl;
         if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
         if (p.type == 0 || p.type == 5) src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });" + nl;
@@ -564,7 +569,7 @@ subPatchOpUtil.getAutoName = (short) =>
     return newOpName;
 };
 
-/** second choice per port type: the param display, or for objects the object type */
+/** param display choices per port type */
 subPatchOpUtil.portDisplays = {
     [Port.TYPE_NUMBER]: [
         { "value": "", "title": "Float" },
@@ -577,20 +582,14 @@ subPatchOpUtil.portDisplays = {
         { "value": "file", "title": "URL" },
         { "value": "editor", "title": "Editor" },
         { "value": "switch", "title": "Switch" },
-        { "value": "dropdown", "title": "Dropdown" }
+        { "value": "dropdown", "title": "Dropdown" },
+        { "value": "gradient", "title": "Gradient" }
     ],
     [Port.TYPE_TRIGGER]: [
         { "value": "", "title": "Trigger" },
         { "value": "button", "title": "Button" }
     ],
-    [Port.TYPE_OBJECT]: [
-        { "value": "", "title": "Any" },
-        { "value": "texture", "title": "Texture" },
-        { "value": "geometry", "title": "Geometry" },
-        { "value": "element", "title": "Element" },
-        { "value": "audioNode", "title": "AudioNode" },
-        { "value": "gradient", "title": "Gradient" }
-    ],
+    [Port.TYPE_OBJECT]: [],
     [Port.TYPE_ARRAY]: []
 };
 
@@ -611,7 +610,7 @@ subPatchOpUtil.getPortDisplayOptions = (type, current) =>
  */
 subPatchOpUtil.getPortDisplay = (port) =>
 {
-    if (port.type == Port.TYPE_OBJECT) return port.objType || "";
+    if (port.type == Port.TYPE_OBJECT) return "";
     return port.uiDisplay || "";
 };
 
@@ -621,28 +620,43 @@ subPatchOpUtil.getPortDisplay = (port) =>
  */
 subPatchOpUtil.setPortDisplay = (port, display) =>
 {
+    if (port.type == Port.TYPE_OBJECT) return;
     delete port.uiDisplay;
-    delete port.objType;
-    if (!display) return;
-
-    if (port.type == Port.TYPE_OBJECT)
-    {
-        port.objType = display;
-        // texture and gradient ports also need the display, see generatePortsAttachmentJsSrc
-        if (display == "texture" || display == "gradient") port.uiDisplay = display;
-    }
-    else port.uiDisplay = display;
+    if (display) port.uiDisplay = display;
 };
+
+/**
+ * @param {object} port port json, changed in place
+ * @param {string} objType
+ */
+subPatchOpUtil.setPortObjType = (port, objType) =>
+{
+    delete port.objType;
+    if (port.type != Port.TYPE_OBJECT) return;
+    delete port.uiDisplay;
+    objType = (objType || "").trim();
+    if (objType) port.objType = objType;
+};
+
+/** port ui attributes that have their own fields in the port dialog, stored in addUiAttribs */
+subPatchOpUtil.portDialogUiAttribs = ["group", "hideParam", "hidePort", "greyout"];
 
 subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 {
     if (!portId)portId = utils.shortId();
-    const html = getHandleBarHtml("dialog_createport", { "portId": portId, "port": portData });
+
+    const uiAttribs = (portData && portData.addUiAttribs) || {};
+    let otherUiAttribs = { ...uiAttribs };
+    for (let i = 0; i < subPatchOpUtil.portDialogUiAttribs.length; i++) delete otherUiAttribs[subPatchOpUtil.portDialogUiAttribs[i]];
+    if (Object.keys(otherUiAttribs).length == 0) otherUiAttribs = undefined;
+
+    const html = getHandleBarHtml("dialog_createport", { "portId": portId, "port": portData, "uiAttribs": uiAttribs, "otherUiAttribs": otherUiAttribs });
 
     new ModalDialog({ "html": html });
 
     const eleType = ele.byId("createPortType");
     const eleDisplay = ele.byId("createPortDisplay");
+    const eleObjTypeRow = ele.byId("createPortObjTypeRow");
 
     const fillDisplays = (selected) =>
     {
@@ -657,6 +671,8 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
             eleDisplay.appendChild(o);
         }
         eleDisplay.disabled = options.length == 0;
+        if (eleType.value == Port.TYPE_OBJECT) ele.show(eleObjTypeRow);
+        else ele.hide(eleObjTypeRow);
     };
     fillDisplays(portData ? subPatchOpUtil.getPortDisplay(portData) : "");
     eleType.addEventListener("change", () => { fillDisplays(""); });
@@ -691,20 +707,29 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 "type": type
             };
 
+            let addUiAttribs = {};
             try
             {
-                if (eleAddUiAttribs.value)
-                    port.addUiAttribs = JSON.parse(eleAddUiAttribs.value);
+                if (eleAddUiAttribs.value) addUiAttribs = JSON.parse(eleAddUiAttribs.value);
             }
             catch (e)
             {
                 _log.warn("could not parse add ui attribs...");
             }
 
+            for (let i = 0; i < subPatchOpUtil.portDialogUiAttribs.length; i++) delete addUiAttribs[subPatchOpUtil.portDialogUiAttribs[i]];
+            const group = ele.byId("createPortGroup").value.trim();
+            if (group) addUiAttribs.group = group;
+            if (ele.byId("createPortHideParam").checked) addUiAttribs.hideParam = true;
+            if (ele.byId("createPortHidePort").checked) addUiAttribs.hidePort = true;
+            if (ele.byId("createPortGreyout").checked) addUiAttribs.greyout = true;
+            if (Object.keys(addUiAttribs).length) port.addUiAttribs = addUiAttribs;
+
             if (type == Port.TYPE_STRING) port.value = eleValue.value;
             if (type == Port.TYPE_NUMBER) port.value = parseFloat(eleValue.value) || 0;
 
             subPatchOpUtil.setPortDisplay(port, eleDisplay.value);
+            subPatchOpUtil.setPortObjType(port, ele.byId("createPortObjType").value);
 
             subPatchOpUtil.portJsonUtil(opId, portId, { "port": port });
         });

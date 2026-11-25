@@ -40,6 +40,14 @@
                 <select id="createPortDisplay"></select>
             </td>
         </tr>
+        <tr id="createPortObjTypeRow" class="hidden">
+            <td>
+                Object type
+            </td>
+            <td>
+                <input id="createPortObjType" value="{{port.objType}}"/>
+            </td>
+        </tr>
         <tr>
             <td>
                 Title
@@ -66,10 +74,27 @@
         </tr>
         <tr>
             <td>
+                Group
+            </td>
+            <td>
+                <input id="createPortGroup" value="{{uiAttribs.group}}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <label><input type="checkbox" id="createPortHideParam" {{#if uiAttribs.hideParam}}checked{{/if}}/> Hide parameter</label><br/>
+                <label><input type="checkbox" id="createPortHidePort" {{#if uiAttribs.hidePort}}checked{{/if}}/> Hide port</label><br/>
+                <label><input type="checkbox" id="createPortGreyout" {{#if uiAttribs.greyout}}checked{{/if}}/> Greyed out</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 Additional uiattribs
             </td>
             <td>
-                <input id="createPortAddUiAttribs" value="{{json port.addUiAttribs}}"/>
+                <input id="createPortAddUiAttribs" value="{{json otherUiAttribs}}"/>
             </td>
         </tr>
     </table>

@@ -646,7 +646,7 @@ export default class TabManageOp
                             const selectDisplay = /** @type {HTMLSelectElement} */ (ele.byId(this.#id + "_port_display_" + id));
                             const current = subPatchOpUtil.getPortDisplay(p);
                             const displays = subPatchOpUtil.getPortDisplayOptions(p.type, current);
-                            if (selectDisplay && displays.length && (p.dir == 0 || p.type == Port.TYPE_OBJECT))
+                            if (selectDisplay && displays.length && p.dir == 0)
                             {
                                 for (let j = 0; j < displays.length; j++)
                                 {

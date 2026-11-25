@@ -54,6 +54,12 @@ class PortHtmlGenerator
             newestVersion = doc.newestVersion;
         }
 
+        // subpatch ops and their inner input/output ops link to managing the subpatch op's ports
+        let managePortsOpId = null;
+        let portsOp = op;
+        if (op.innerInput || op.innerOutput) portsOp = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
+        if (portsOp && portsOp.storage && portsOp.storage.blueprintVer === 2) managePortsOpId = portsOp.opId;
+
         let opChanged = false;
         if (gui.serverOps.opIdsChangedOnServer[op.opId])
             opChanged = true;
@@ -74,6 +80,7 @@ class PortHtmlGenerator
             "newestVersion": newestVersion,
             "cablesUrl": platform.getCablesUrl(),
             "hasExample": hasExample,
+            "managePortsOpId": managePortsOpId,
             "canStack": gui.patchView.canStackOp(op),
             "isStacked": op.isStacked,
             "numStackCopies": op.getNumStacks()

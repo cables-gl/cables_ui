@@ -526,6 +526,7 @@ class OpParampanel extends Events
         this._startPortLineDragListeners();
 
         ele.clickable(ele.byId("parampanel_manage_op"), () => { CABLES.CMD.OP.manageOp(op.opId); });
+        ele.clickable(ele.byId("parampanel_manage_ports"), (e) => { CABLES.CMD.OP.manageOp(e.currentTarget.dataset.opid); });
         ele.clickable(ele.byId("parampanel_stack_op"), () => { gui.patchView.setOpStacked(op, !op.isStacked); });
         ele.clickable(ele.byId("parampanel_edit_op"), CABLES.CMD.OP.editOp);
         ele.clickable(ele.byId("watchOpSerialized"), CABLES.CMD.DEBUG.watchOpSerialized);

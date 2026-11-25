@@ -65,7 +65,8 @@
                 <thead>
                     <tr>
                         <th>{{title}}</th>
-                        <th style="width:40%">{{#if @first}}Title{{/if}}</th>
+                        <th style="width:30%">{{#if @first}}Title{{/if}}</th>
+                        <th>{{#if @first}}Display{{/if}}</th>
                         <th>{{#if @first}}Attributes{{/if}}</th>
                         <th></th>
                     </tr>
@@ -83,18 +84,20 @@
                         {{title}}
                     </td>
                     <td>
+                        <select class="hidden" id="{{@root.viewId}}_port_display_{{id}}"></select>
+                        {{objType}}
+                    </td>
+                    <td>
                         {{#if value}}
                             Default: {{value}}<br/>
                         {{/if}}
-
-                        <select class="hidden" id="{{@root.viewId}}_port_display_{{id}}"></select>
                         {{#if addUiAttribs}}
                             UiAttribs: {{json addUiAttribs}}<br/>
                         {{/if}}
 
                     </td>
                     <td>
-                        <span class="button-small button-icon" id="{{@root.viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
+                        <span class="button-small button-icon" id="{{@root.viewId}}_port_delete_{{id}}"><span class="icon icon-trash"></span></span>
                     </td>
                 </tr>
                 {{/each}}
