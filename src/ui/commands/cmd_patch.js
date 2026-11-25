@@ -605,6 +605,7 @@ class CmdPatch
 
             let selectedOpIds = gui.patchView.getSelectedOpsIds();
             const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
+            subPatchOpUtil.creatingOps.add(newOpname);
             const currentSubpatch = gui.patchView.getCurrentSubPatch();
             // const loadingModal = gui.startModalLoading("Create Subpatch");
 
@@ -625,6 +626,7 @@ class CmdPatch
             {
                 if (!newOpRes)
                 {
+                    subPatchOpUtil.creatingOps.delete(newOpname);
                     if (createErr && createErr.msg === "CANCELLED") notifyError("Please save your new project before creating ops!");
                     gui.patchView.patchRenderer.subPatchOpAnimEndBounds(origOpsBounds);
                     return;
@@ -797,6 +799,7 @@ class CmdPatch
                                                         subPatchOpUtil.updateSubPatchOpAttachment(newOp, { "oldSubId": subPatchId });
                                                         gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                                         gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);
+                                                        subPatchOpUtil.creatingOps.delete(newOpname);
                                                         gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
                                                     };
 

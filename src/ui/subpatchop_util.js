@@ -13,6 +13,9 @@ import { UiOp } from "./core_extend_op.js";
 
 const subPatchOpUtil = {};
 
+/** names of ops being created from a selection, the build watcher must not reload them meanwhile */
+subPatchOpUtil.creatingOps = new Set();
+
 subPatchOpUtil.blueprintPortJsonAttachmentFilename = "att_ports.json";
 subPatchOpUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
 

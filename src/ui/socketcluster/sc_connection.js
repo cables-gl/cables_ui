@@ -568,7 +568,8 @@ export default class ScConnection extends Events
                                     {
                                         console.log("currently saving...");
                                     }
-                                    else
+                                    // subpatch op tools execute the op themselves after writing it, a second reload would race them
+                                    else if (!usedOps[0].isSubPatchOp() && !subPatchOpUtil.creatingOps.has(opName))
                                     {
 
                                         gui.serverOps.execute(opName, () =>
@@ -594,7 +595,7 @@ export default class ScConnection extends Events
                                 if (opName)
                                 {
                                     const usedOps = gui.corePatch().getOpsByObjName(opName);
-                                    if (usedOps && usedOps.length > 0)
+                                    if (usedOps && usedOps.length > 0 && !usedOps[0].isSubPatchOp() && !subPatchOpUtil.creatingOps.has(opName))
                                     {
 
                                         gui.serverOps.execute(opName, () =>
