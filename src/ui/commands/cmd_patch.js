@@ -346,6 +346,13 @@ class CmdPatch
                 "icon": "op"
             },
             {
+                "cmd": "Create op from selection",
+                "keybindable": true,
+                "func": () => { CmdPatch.createOpFromSelection(); },
+                "category": "patch",
+                "icon": "op"
+            },
+            {
                 "cmd": "Delete unused patch ops",
                 "func": CmdPatch.deleteUnusedPatchOps,
                 "category": "patch",
