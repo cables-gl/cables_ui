@@ -273,6 +273,20 @@
             color: var(--color-08);
         }
     }
+
+    .portDragList {
+        user-select: none;
+    }
+
+    .portDragHandle {
+        cursor: grab;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+
+    .portDragGhost {
+        opacity: 0.3;
+    }
 }
 
 .fileTypeColor_gl {

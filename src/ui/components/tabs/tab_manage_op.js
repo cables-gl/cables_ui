@@ -1,6 +1,7 @@
 import { Logger, ele, TalkerAPI } from "cables-shared-client";
-import { utils } from "cables";
+import { Port, utils } from "cables";
 import { EventListener } from "cables-shared-client/src/eventlistener.js";
+import Sortable from "sortablejs";
 import TabOpVersionDiff from "./tab_opversiondiff.js";
 import { CmdOps } from "../../commands/cmd_op.js";
 import { CmdPatch } from "../../commands/cmd_patch.js";
@@ -171,7 +172,8 @@ export default class TabManageOp
         }, true);
 
         this.#id = utils.shortId();
-        this.#tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
+        // on a refresh keep the old content until the new one is ready, a spinner in between flickers
+        if (!this.#tab.contentEle.querySelector(".tabManageOp")) this.#tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
         const opDoc = gui.opDocs.getOpDocById(this.#currentId);
 
         if (!opDoc)
@@ -316,15 +318,15 @@ export default class TabManageOp
                 opFiles = this.sortFilesByReadableType(opFiles, order);
 
                 summary = gui.opDocs.getSummary(opName) || "No Summary";
+                const portGroups = [];
                 if (portJson && portJson.ports)
                 {
                     portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
 
-                    if (portJson.ports.length > 1)
-                        for (let i = 1; i < portJson.ports.length; i++)
-                        {
-                            if (portJson.ports[i - 1].dir != portJson.ports[i].dir) portJson.ports[i].divider = true;
-                        }
+                    const inputs = portJson.ports.filter((p) => { return p.dir == 0; });
+                    const outputs = portJson.ports.filter((p) => { return p.dir != 0; });
+                    if (inputs.length) portGroups.push({ "title": "Inputs", "ports": inputs });
+                    if (outputs.length) portGroups.push({ "title": "Outputs", "ports": outputs });
                 }
 
                 this.canDeleteOp = this.canEditOp;// && namespace.isPatchOp(opName);
@@ -344,6 +346,7 @@ export default class TabManageOp
                     "viewId": this.#id,
                     "subPatchSaved": gui.savedState.isSavedSubOp(opName),
                     "portJson": portJson,
+                    "portGroups": portGroups,
                     "summary": summary,
                     "canEditOp": this.canEditOp,
                     "canDeleteOp": this.canDeleteOp,
@@ -354,7 +357,11 @@ export default class TabManageOp
                     "hasDependencies": (opDoc.coreLibs && opDoc.coreLibs.length) || (opDoc.libs && opDoc.libs.length) || (opDoc.dependencies && opDoc.dependencies.length)
                 });
 
+                const oldScroll = this.#tab.contentEle.querySelector(".tabContentScrollContainer");
+                const scrollTop = oldScroll ? oldScroll.scrollTop : 0;
                 this.#tab.html(html);
+                const newScroll = this.#tab.contentEle.querySelector(".tabContentScrollContainer");
+                if (newScroll) newScroll.scrollTop = scrollTop;
 
                 ele.clickables(this.#tab.contentEle, ".opthreedot", (e, dataset) =>
                 {
@@ -636,24 +643,53 @@ export default class TabManageOp
                                 subPatchOpUtil.portJsonDelete(opName, id);
                             });
 
+                            const selectDisplay = /** @type {HTMLSelectElement} */ (ele.byId(this.#id + "_port_display_" + id));
+                            const current = subPatchOpUtil.getPortDisplay(p);
+                            const displays = subPatchOpUtil.getPortDisplayOptions(p.type, current);
+                            if (selectDisplay && displays.length && (p.dir == 0 || p.type == Port.TYPE_OBJECT))
+                            {
+                                for (let j = 0; j < displays.length; j++)
+                                {
+                                    const o = document.createElement("option");
+                                    o.value = displays[j].value;
+                                    o.innerText = displays[j].title;
+                                    o.selected = displays[j].value == current;
+                                    selectDisplay.appendChild(o);
+                                }
+                                ele.show(selectDisplay);
+                                selectDisplay.addEventListener("change", () =>
+                                {
+                                    const port = structuredClone(p);
+                                    subPatchOpUtil.setPortDisplay(port, selectDisplay.value);
+                                    subPatchOpUtil.portJsonUtil(opName, id, { "port": port });
+                                });
+                            }
+
                             const buttonTitle = ele.byId(this.#id + "_port_title_" + id);
                             if (buttonTitle) buttonTitle.addEventListener("click", () =>
                             {
                                 subPatchOpUtil.portEditDialog(opName, id, p);
                             });
-
-                            const buttonMoveUp = ele.byId(this.#id + "_port_up_" + id);
-                            if (buttonMoveUp) buttonMoveUp.addEventListener("click", () =>
-                            {
-                                subPatchOpUtil.portJsonMove(opName, id, -1);
-                            });
-
-                            const buttonMoveDown = ele.byId(this.#id + "_port_down_" + id);
-                            if (buttonMoveDown) buttonMoveDown.addEventListener("click", () =>
-                            {
-                                subPatchOpUtil.portJsonMove(opName, id, 1);
-                            });
                         }
+
+                        const portsTable = ele.byId(this.#id + "_ports");
+                        if (portsTable)
+                            portsTable.querySelectorAll(".portDragList").forEach((listEle) =>
+                            {
+                                new Sortable(listEle, {
+                                    "animation": 150,
+                                    "forceFallback": true, // native drag and drop does not reorder table rows here
+                                    "handle": ".portDragHandle",
+                                    "ghostClass": "portDragGhost",
+                                    "onEnd": (e) =>
+                                    {
+                                        if (e.oldIndex == e.newIndex) return;
+                                        const ids = [];
+                                        portsTable.querySelectorAll("[data-portid]").forEach((row) => { ids.push(row.dataset.portid); });
+                                        subPatchOpUtil.portJsonSetOrder(opName, ids);
+                                    }
+                                });
+                            });
                     }
                 }
                 else

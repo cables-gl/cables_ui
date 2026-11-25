@@ -299,15 +299,17 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
     );
 };
 
-subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
+/**
+ * @param {string} opId
+ * @param {string[]} portIds all port ids in their new order
+ */
+subPatchOpUtil.portJsonSetOrder = (opId, portIds) =>
 {
-    // const loadingModal = gui.startModalLoading("Moving port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
     let setSavedParentSubpatch = false;
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
-    // loadingModal.setTask("getting ports json");
     platform.talkerAPI.send(
         TalkerAPI.CMD_GET_OP_ATTACHMENT,
         {
@@ -320,32 +322,8 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
             res.content = res.content || JSON.stringify({ "ports": [] });
             const js = JSON.parse(res.content);
 
-            let idx = -1;
-            for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
-
-            function array_move(arr, old_index, new_index)
-            {
-                if (new_index >= arr.length)
-                {
-                    let k = new_index - arr.length + 1;
-                    while (k--)
-                    {
-                        arr.push(undefined);
-                    }
-                }
-                arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-                return arr; // for testing
-            }
-
-            if (idx + dir < 0)
-            {
-                gui.endModalLoading();
-                return;
-            }
-
-            let newIndex = idx + dir;
-
-            array_move(js.ports, idx, newIndex);
+            const index = (p) => { return p ? portIds.indexOf(p.id) : -1; };
+            js.ports = js.ports.filter((p) => { return index(p) > -1; }).sort((a, b) => { return index(a) - index(b); });
 
             // loadingModal.setTask("saving ports json");
 
@@ -357,7 +335,11 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
                 {
                     gui.opParams.refresh();
 
-                    if (subOuter) gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+                    if (subOuter)
+                    {
+                        gui.patchView._patchRenderer.viewBox.storeCurrentSubPatch(newOps[0].patchId.get());
+                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+                    }
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
@@ -582,6 +564,76 @@ subPatchOpUtil.getAutoName = (short) =>
     return newOpName;
 };
 
+/** second choice per port type: the param display, or for objects the object type */
+subPatchOpUtil.portDisplays = {
+    [Port.TYPE_NUMBER]: [
+        { "value": "", "title": "Float" },
+        { "value": "range", "title": "Slider" },
+        { "value": "int", "title": "Integer" },
+        { "value": "bool", "title": "Boolean" }
+    ],
+    [Port.TYPE_STRING]: [
+        { "value": "", "title": "Text" },
+        { "value": "file", "title": "URL" },
+        { "value": "editor", "title": "Editor" },
+        { "value": "switch", "title": "Switch" },
+        { "value": "dropdown", "title": "Dropdown" }
+    ],
+    [Port.TYPE_TRIGGER]: [
+        { "value": "", "title": "Trigger" },
+        { "value": "button", "title": "Button" }
+    ],
+    [Port.TYPE_OBJECT]: [
+        { "value": "", "title": "Any" },
+        { "value": "texture", "title": "Texture" },
+        { "value": "geometry", "title": "Geometry" },
+        { "value": "element", "title": "Element" },
+        { "value": "audioNode", "title": "AudioNode" },
+        { "value": "gradient", "title": "Gradient" }
+    ],
+    [Port.TYPE_ARRAY]: []
+};
+
+/**
+ * @param {number} type
+ * @param {string} current keeps a display that is not in the list, e.g. copied from an existing op port
+ */
+subPatchOpUtil.getPortDisplayOptions = (type, current) =>
+{
+    const options = subPatchOpUtil.portDisplays[type] || [];
+    if (current && !options.some((o) => { return o.value == current; })) return options.concat([{ "value": current, "title": current }]);
+    return options;
+};
+
+/**
+ * @param {object} port port json
+ * @returns {string}
+ */
+subPatchOpUtil.getPortDisplay = (port) =>
+{
+    if (port.type == Port.TYPE_OBJECT) return port.objType || "";
+    return port.uiDisplay || "";
+};
+
+/**
+ * @param {object} port port json, changed in place
+ * @param {string} display value from portDisplays
+ */
+subPatchOpUtil.setPortDisplay = (port, display) =>
+{
+    delete port.uiDisplay;
+    delete port.objType;
+    if (!display) return;
+
+    if (port.type == Port.TYPE_OBJECT)
+    {
+        port.objType = display;
+        // texture and gradient ports also need the display, see generatePortsAttachmentJsSrc
+        if (display == "texture" || display == "gradient") port.uiDisplay = display;
+    }
+    else port.uiDisplay = display;
+};
+
 subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 {
     if (!portId)portId = utils.shortId();
@@ -589,37 +641,44 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 
     new ModalDialog({ "html": html });
 
+    const eleType = ele.byId("createPortType");
+    const eleDisplay = ele.byId("createPortDisplay");
+
+    const fillDisplays = (selected) =>
+    {
+        const options = subPatchOpUtil.getPortDisplayOptions(parseInt(eleType.value), selected);
+        eleDisplay.innerHTML = "";
+        for (let i = 0; i < options.length; i++)
+        {
+            const o = document.createElement("option");
+            o.value = options[i].value;
+            o.innerText = options[i].title;
+            o.selected = options[i].value == selected;
+            eleDisplay.appendChild(o);
+        }
+        eleDisplay.disabled = options.length == 0;
+    };
+    fillDisplays(portData ? subPatchOpUtil.getPortDisplay(portData) : "");
+    eleType.addEventListener("change", () => { fillDisplays(""); });
+
     const elSubmit = ele.byId("createPortSubmit");
 
     elSubmit.addEventListener("click",
         () =>
         {
-            // const elePortId = ele.byId("createPortId");
             const eleDir = ele.byId("createPortDir");
             const eleName = ele.byId("createPortName");
-            const eleType = ele.byId("createPortType");
             const eleValue = ele.byId("createPortValue");
             const eleValues = ele.byId("createPortUiAttrValues");
 
             const eleAddUiAttribs = ele.byId("createPortAddUiAttribs");
 
-            let type = 0;
-            if (eleType.value.indexOf("Number") == 0)type = Port.TYPE_NUMBER;
-            if (eleType.value.indexOf("Boolean") == 0)type = Port.TYPE_NUMBER;
-            if (eleType.value.indexOf("String") == 0)type = Port.TYPE_STRING;
-            if (eleType.value.indexOf("Array") == 0)type = Port.TYPE_ARRAY;
-            if (eleType.value.indexOf("Object") == 0)type = Port.TYPE_OBJECT;
-            if (eleType.value.indexOf("Trigger") == 0)type = Port.TYPE_TRIGGER;
-
+            const type = parseInt(eleType.value);
             const values = String(eleValues.value);
 
             if (!eleName.value)
             {
-                eleName.value = eleType.value;
-
-                if (eleName.value.indexOf(" ") > -1)
-                    eleName.value = eleName.value.slice(0, eleName.value.indexOf(" "));
-
+                eleName.value = eleType.options[eleType.selectedIndex].text;
                 if (eleDir.value == 0)eleName.value += " Input";
                 else eleName.value += " Output";
             }
@@ -642,37 +701,10 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 _log.warn("could not parse add ui attribs...");
             }
 
-            if (type == Port.TYPE_STRING)
-            {
-                port.value = eleValue.value;
-                if (eleType.value.indexOf("Editor") > -1) port.uiDisplay = "editor";
-                if (eleType.value.indexOf("URL") > -1) port.uiDisplay = "file";
-                if (eleType.value.indexOf("Switch") > -1) port.uiDisplay = "switch";
-                if (eleType.value.indexOf("Dropdown") > -1) port.uiDisplay = "dropdown";
-            }
+            if (type == Port.TYPE_STRING) port.value = eleValue.value;
+            if (type == Port.TYPE_NUMBER) port.value = parseFloat(eleValue.value) || 0;
 
-            if (type == Port.TYPE_TRIGGER)
-            {
-                if (eleType.value.indexOf("Button") > -1) port.uiDisplay = "button";
-            }
-
-            if (type == Port.TYPE_NUMBER)
-            {
-                port.value = parseFloat(eleValue.value) || 0;
-
-                if (eleType.value.indexOf("Integer") > -1) port.uiDisplay = "int";
-                if (eleType.value.indexOf("Slider") > -1) port.uiDisplay = "range";
-                if (eleType.value.indexOf("Boolean") > -1) port.uiDisplay = "bool";
-            }
-
-            if (type == Port.TYPE_OBJECT)
-            {
-                if (eleType.value.indexOf("Gradient") > -1) port.uiDisplay = port.objType = "gradient";
-                if (eleType.value.indexOf("Texture") > -1) port.uiDisplay = port.objType = "texture";
-                if (eleType.value.indexOf("Geometry") > -1) port.objType = "geometry";
-                if (eleType.value.indexOf("Element") > -1) port.objType = "element";
-                if (eleType.value.indexOf("AudioNode") > -1) port.objType = "audioNode";
-            }
+            subPatchOpUtil.setPortDisplay(port, eleDisplay.value);
 
             subPatchOpUtil.portJsonUtil(opId, portId, { "port": port });
         });

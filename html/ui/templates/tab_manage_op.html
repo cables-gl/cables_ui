@@ -60,29 +60,23 @@
                 <span class="error">Please save your subpatch to make changes to ports!</span>
             {{/if}}
 
-            <table class="table" style="{{#if subPatchSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}"">
-                <tr>
-                    <th>Inputs</th>
-                    <th style="width:40%">Title</th>
-                    <th>Attributes</th>
-                    <th></th>
-                </tr>
-                {{#each portJson.ports}}
-
-                {{#if divider}}
+            <table class="table" id="{{viewId}}_ports" style="{{#if subPatchSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}">
+                {{#each portGroups}}
+                <thead>
                     <tr>
-                        <th>Outputs</th>
-                        <th></th>
-                        <th></th>
+                        <th>{{title}}</th>
+                        <th style="width:40%">{{#if @first}}Title{{/if}}</th>
+                        <th>{{#if @first}}Attributes{{/if}}</th>
                         <th></th>
                     </tr>
-                {{/if}}
-
-                <tr>
+                </thead>
+                <tbody class="portDragList">
+                {{#each ports}}
+                <tr data-portid="{{id}}">
                     <td>
                         &nbsp;&nbsp;&nbsp;
-                        <span class="button-small button-icon" style="margin-right:0px;border-top-right-radius: 0;border-bottom-right-radius: 0;padding-left:5px;padding-right:2px;" id="{{../viewId}}_port_up_{{id}}"><span class="icon icon-chevron-up"></span></span><span class="button-small button-icon" style="margin-left:0px;border-top-left-radius: 0;border-bottom-left-radius: 0;padding-left:2px;padding-right:5px;" id="{{../viewId}}_port_down_{{id}}"><span class="icon icon-chevron-down"></span></span>
-                        <span class="button-small button-icon" id="{{../viewId}}_port_title_{{id}}"><span class="icon icon-edit"></span></span>
+                        <span class="portDragHandle icon icon-grip" title="Drag to reorder"></span>
+                        <span class="button-small button-icon" id="{{@root.viewId}}_port_title_{{id}}"><span class="icon icon-edit"></span></span>
                     </td>
                     <td>
                         <span class="portType_{{type}}_background">&nbsp;&nbsp;&nbsp;</span>&nbsp;
@@ -93,22 +87,18 @@
                             Default: {{value}}<br/>
                         {{/if}}
 
-                        {{#if uiDisplay}}
-                            Display: {{uiDisplay}}<br/>
-                        {{/if}}
-                        {{#if objType}}
-                            Object Type: {{objType}}<br/>
-                        {{/if}}
+                        <select class="hidden" id="{{@root.viewId}}_port_display_{{id}}"></select>
                         {{#if addUiAttribs}}
                             UiAttribs: {{json addUiAttribs}}<br/>
                         {{/if}}
 
                     </td>
                     <td>
-                        <span class="button-small button-icon" id="{{../viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
+                        <span class="button-small button-icon" id="{{@root.viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
                     </td>
                 </tr>
-
+                {{/each}}
+                </tbody>
                 {{/each}}
             </table>
 
