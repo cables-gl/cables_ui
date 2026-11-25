@@ -804,7 +804,7 @@ class ParamsListener extends Events
 
                             gui.patchView.unselectAllOps();
 
-                            subPatchOpUtil.addPortToBlueprint(subOuter.opId, port);
+                            subPatchOpUtil.addPortToSubpatch(subOuter.opId, port);
                         }
                     });
             }

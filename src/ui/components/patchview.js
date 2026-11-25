@@ -2461,7 +2461,7 @@ export default class PatchView extends Events
 
                 if (options.createSpOpPort)
                 {
-                    subPatchOpUtil.addPortToBlueprint(options.op.opId, p, {
+                    subPatchOpUtil.addPortToSubpatch(options.op.opId, p, {
                         "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp, sugg) =>
                         {}

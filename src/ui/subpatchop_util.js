@@ -443,7 +443,24 @@ subPatchOpUtil.sortPortsJsonPorts = (ports) =>
     return ports.sort((a, b) => { return a.order - b.order; });
 };
 
-subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
+/**
+ * an executed subpatch op loads its inner ops async, saving before that would store an empty subpatch
+ * @param {string} subPatchId
+ * @param {function} cb
+ */
+subPatchOpUtil.onSubPatchLoaded = (subPatchId, cb) =>
+{
+    if (gui.corePatch().getSubPatchOps(subPatchId, false).length > 0) return cb();
+
+    const listenerId = gui.corePatch().on("subpatchExpose", (exposedId) =>
+    {
+        if (exposedId != subPatchId) return;
+        gui.corePatch().off(listenerId);
+        cb();
+    });
+};
+
+subPatchOpUtil.addPortToSubpatch = (opId, port, options) =>
 {
     options = options || {};
     // const loadingModal = gui.startModalLoading("Adding port");
@@ -451,6 +468,19 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
     gui.patchView.unselectAllOps();
+
+    const portOuter = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
+    if (portOuter && portOuter.opId == opId && !options.portOpSaved)
+    {
+        // the reload below finds the inner op again by its ref, so it needs one and has to be saved
+        if (!port.op.storage || !port.op.storage.ref) port.op.setStorage({ "ref": utils.shortId() });
+        subPatchOpUtil.updateSubPatchOpAttachment(portOuter, {
+            "oldSubId": port.op.uiAttribs.subPatch,
+            "execute": false,
+            "next": () => { subPatchOpUtil.addPortToSubpatch(opId, port, { ...options, "portOpSaved": true }); }
+        });
+        return;
+    }
 
     // loadingModal.setTask("getting ports json");
     gui.savingTitleAnimStart("Adding Subpatch Port...");
@@ -481,39 +511,42 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 
                 gui.serverOps.execute(opId, (newOps) =>
                 {
-                    const newOp = newOps[0];
-                    gui.patchView.unselectAllOps();
-                    gui.opParams.refresh();
-                    if (subOuter) gui.patchView.setCurrentSubPatch(newOp.patchId.get());
-
-                    gui.corePatch().clearSubPatchCache(newOp.patchId.get());
-                    gui.corePatch().buildSubPatchCache();
-
-                    if (port.op.storage && port.op.storage.ref)
+                    subPatchOpUtil.onSubPatchLoaded(newOps[0].patchId.get(), () =>
                     {
-                        const theOp = gui.corePatch().getOpByRefId(port.op.storage.ref, newOp.patchId.get());
+                        const newOp = newOps[0];
+                        gui.patchView.unselectAllOps();
+                        gui.opParams.refresh();
+                        if (subOuter) gui.patchView.setCurrentSubPatch(newOp.patchId.get());
 
-                        gui.corePatch().link(
-                            theOp,
-                            port.name,
-                            gui.corePatch().getSubPatch2InnerInputOp(newOp.patchId.get()),
-                            "innerOut_" + newPortJson.id
-                        );
+                        gui.corePatch().clearSubPatchCache(newOp.patchId.get());
+                        gui.corePatch().buildSubPatchCache();
 
-                        gui.corePatch().link(
-                            theOp,
-                            port.name,
-                            gui.corePatch().getSubPatch2InnerOutputOp(newOp.patchId.get()),
-                            "innerIn_" + newPortJson.id
-                        );
-                    }
+                        if (port.op.storage && port.op.storage.ref)
+                        {
+                            const theOp = gui.corePatch().getOpByRefId(port.op.storage.ref, newOp.patchId.get());
 
-                    gui.savingTitleAnimEnd();
-                    if (options.cb)options.cb(newPortJson, newOp);
+                            gui.corePatch().link(
+                                theOp,
+                                port.name,
+                                gui.corePatch().getSubPatch2InnerInputOp(newOp.patchId.get()),
+                                "innerOut_" + newPortJson.id
+                            );
 
-                    const outerOp = gui.patchView.getSubPatchOuterOp(newOp.patchId.get());
+                            gui.corePatch().link(
+                                theOp,
+                                port.name,
+                                gui.corePatch().getSubPatch2InnerOutputOp(newOp.patchId.get()),
+                                "innerIn_" + newPortJson.id
+                            );
+                        }
 
-                    subPatchOpUtil.updateSubPatchOpAttachment(outerOp, { "oldSubId": newOp.patchId.get() });
+                        gui.savingTitleAnimEnd();
+                        if (options.cb)options.cb(newPortJson, newOp);
+
+                        const outerOp = gui.patchView.getSubPatchOuterOp(newOp.patchId.get());
+
+                        subPatchOpUtil.updateSubPatchOpAttachment(outerOp, { "oldSubId": newOp.patchId.get() });
+                    });
                 });
             });
         }

@@ -800,16 +800,7 @@ class CmdPatch
                                                         gui.emitEvent("createdSubPatchOp", newOp, subPatchId);
                                                     };
 
-                                                    if (gui.corePatch().getSubPatchOps(loadedSubPatchId, false).length > 0) onSubPatchLoaded();
-                                                    else
-                                                    {
-                                                        const listenerId = gui.corePatch().on("subpatchExpose", (exposedId) =>
-                                                        {
-                                                            if (exposedId != loadedSubPatchId) return;
-                                                            gui.corePatch().off(listenerId);
-                                                            onSubPatchLoaded();
-                                                        });
-                                                    }
+                                                    subPatchOpUtil.onSubPatchLoaded(loadedSubPatchId, onSubPatchLoaded);
                                                 });
                                             });
                                     }, { "doNotExecute": true });
