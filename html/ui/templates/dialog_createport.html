@@ -20,6 +20,14 @@
         </tr>
         <tr>
             <td>
+                Title
+            </td>
+            <td>
+                <input id="createPortName" value="{{port.title}}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 Type
             </td>
             <td>
@@ -32,7 +40,7 @@
                 </select>
             </td>
         </tr>
-        <tr>
+        <tr id="createPortDisplayRow">
             <td>
                 Display
             </td>
@@ -50,21 +58,13 @@
         </tr>
         <tr>
             <td>
-                Title
-            </td>
-            <td>
-                <input id="createPortName" value="{{port.title}}"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
                 Default Value
             </td>
             <td>
                 <input id="createPortValue" value="{{port.value}}"/>
             </td>
         </tr>
-        <tr>
+        <tr id="createPortValuesRow" class="hidden">
             <td>
                 Switch/Dropdown options (comma seperated)
             </td>
@@ -73,20 +73,41 @@
             </td>
         </tr>
         <tr>
+            <td colspan="3"><hr/></td>
+        </tr>
+        <tr>
             <td>
-                Group
+                Port group
             </td>
             <td>
                 <input id="createPortGroup" value="{{uiAttribs.group}}"/>
             </td>
+            <td class="formHelp">
+                Ports with the same group are shown together under this heading in the parameter panel
+            </td>
         </tr>
         <tr>
             <td>
+                Hide parameter
             </td>
             <td>
-                <label><input type="checkbox" id="createPortHideParam" {{#if uiAttribs.hideParam}}checked{{/if}}/> Hide parameter</label><br/>
-                <label><input type="checkbox" id="createPortHidePort" {{#if uiAttribs.hidePort}}checked{{/if}}/> Hide port</label><br/>
-                <label><input type="checkbox" id="createPortGreyout" {{#if uiAttribs.greyout}}checked{{/if}}/> Greyed out</label>
+                <input type="checkbox" id="createPortHideParam" {{#if uiAttribs.hideParam}}checked{{/if}}/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Hide port
+            </td>
+            <td>
+                <input type="checkbox" id="createPortHidePort" {{#if uiAttribs.hidePort}}checked{{/if}}/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Greyed out
+            </td>
+            <td>
+                <input type="checkbox" id="createPortGreyout" {{#if uiAttribs.greyout}}checked{{/if}}/>
             </td>
         </tr>
         <tr>

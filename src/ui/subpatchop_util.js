@@ -657,6 +657,13 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
     const eleType = ele.byId("createPortType");
     const eleDisplay = ele.byId("createPortDisplay");
     const eleObjTypeRow = ele.byId("createPortObjTypeRow");
+    const eleValuesRow = ele.byId("createPortValuesRow");
+
+    const updateValuesRow = () =>
+    {
+        if (eleType.value == Port.TYPE_STRING && (eleDisplay.value == "switch" || eleDisplay.value == "dropdown")) ele.show(eleValuesRow);
+        else ele.hide(eleValuesRow);
+    };
 
     const fillDisplays = (selected) =>
     {
@@ -670,12 +677,15 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
             o.selected = options[i].value == selected;
             eleDisplay.appendChild(o);
         }
-        eleDisplay.disabled = options.length == 0;
+        if (options.length) ele.show(ele.byId("createPortDisplayRow"));
+        else ele.hide(ele.byId("createPortDisplayRow"));
         if (eleType.value == Port.TYPE_OBJECT) ele.show(eleObjTypeRow);
         else ele.hide(eleObjTypeRow);
+        updateValuesRow();
     };
     fillDisplays(portData ? subPatchOpUtil.getPortDisplay(portData) : "");
     eleType.addEventListener("change", () => { fillDisplays(""); });
+    eleDisplay.addEventListener("change", updateValuesRow);
 
     const elSubmit = ele.byId("createPortSubmit");
 
@@ -703,9 +713,9 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
                 "id": portId,
                 "title": eleName.value,
                 "dir": parseInt(eleDir.value),
-                "values": values.split(","),
                 "type": type
             };
+            if (!eleValuesRow.classList.contains("hidden")) port.values = values.split(",");
 
             let addUiAttribs = {};
             try

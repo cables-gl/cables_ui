@@ -734,13 +734,20 @@ body
 
 .formtable
 {
+    .formHelp
+    {
+        color: var(--color-08);
+        font-size: 12px;
+        max-width: 250px;
+    }
+
     select
     {
         padding:5px !important;
         background-color: var(--color-04) !important;
         color: var(--color-11);
     }
-    input
+    input:not([type=checkbox])
     {
         background-color: var(--color-05);
         color: var(--color-11);
