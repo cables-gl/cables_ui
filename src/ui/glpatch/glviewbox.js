@@ -655,10 +655,13 @@ export default class GlViewBox
         this._restoreSubPatch(this._currentSubPatchId);
     }
 
-    storeCurrentSubPatch()
+    /**
+     * @param {number|string} [sub] store the current view for this subpatch instead of the current one
+     */
+    storeCurrentSubPatch(sub = this._currentSubPatchId)
     {
         const o = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
-        this._subPatchViewBoxes[this._currentSubPatchId] = o;
+        this._subPatchViewBoxes[sub] = o;
     }
 
     /**

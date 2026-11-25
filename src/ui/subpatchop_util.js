@@ -516,7 +516,12 @@ subPatchOpUtil.addPortToSubpatch = (opId, port, options) =>
                         const newOp = newOps[0];
                         gui.patchView.unselectAllOps();
                         gui.opParams.refresh();
-                        if (subOuter) gui.patchView.setCurrentSubPatch(newOp.patchId.get());
+                        if (subOuter)
+                        {
+                            // the reloaded op has a new subpatch id, keep the view instead of centering on it
+                            gui.patchView._patchRenderer.viewBox.storeCurrentSubPatch(newOp.patchId.get());
+                            gui.patchView.setCurrentSubPatch(newOp.patchId.get());
+                        }
 
                         gui.corePatch().clearSubPatchCache(newOp.patchId.get());
                         gui.corePatch().buildSubPatchCache();
