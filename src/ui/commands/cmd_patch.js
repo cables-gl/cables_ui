@@ -743,6 +743,7 @@ class CmdPatch
                                             {
                                                 if (err)
                                                 {
+                                                    gui.patchView.patchRenderer.subPatchOpAnimEndBounds(origOpsBounds);
                                                     this.showApiError(err);
                                                     return;
                                                 }

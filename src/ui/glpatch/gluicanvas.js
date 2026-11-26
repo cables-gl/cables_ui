@@ -110,6 +110,8 @@ export default class GlUiCanvas extends GlCanvas
         this.glPatch.updateTime();
         requestAnimationFrame(() => { this.render(); });
 
+        if (this.glPatch.paused) return; // keep the last frame while a subpatch op is being created, so intermediate states are not drawn
+
         if (this.targetFps != 0 && !this.glPatch.mouseState.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this.targetFps) return;
 
         const cgl = this.cgl;
