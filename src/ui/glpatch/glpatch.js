@@ -1982,12 +1982,6 @@ export default class GlPatch extends Events
      */
     subPatchOpAnimStart(bounds, next)
     {
-        if (userSettings.get(UserSettings.PREF_REDUCE_MOTION))
-        {
-            if (next) next();
-            return;
-        }
-
         this._subpatchAnimFade = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
         this._subpatchAnimOutX = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
         this._subpatchAnimOutY = new Anim({ "defaultEasing": Anim.EASING_CUBIC_OUT });
