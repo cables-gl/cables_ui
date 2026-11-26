@@ -186,7 +186,6 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 {
     // const loadingModal = gui.startModalLoading("Modify port ...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
     let setSavedParentSubpatch = false;
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
@@ -240,9 +239,6 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
                 {
                     gui.opParams.refresh();
 
-                    if (subOuter)
-                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
-
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
 
@@ -259,7 +255,6 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 {
     // const loadingModal = gui.startModalLoading("Deleting port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
     let setSavedParentSubpatch = false;
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
@@ -290,8 +285,6 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
                 gui.serverOps.execute(opId, (newOps) =>
                 {
                     gui.opParams.refresh();
-                    if (subOuter)
-                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
@@ -311,7 +304,6 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 subPatchOpUtil.portJsonSetOrder = (opId, portIds) =>
 {
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
     let setSavedParentSubpatch = false;
     if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
@@ -339,12 +331,6 @@ subPatchOpUtil.portJsonSetOrder = (opId, portIds) =>
                 gui.serverOps.execute(opId, (newOps) =>
                 {
                     gui.opParams.refresh();
-
-                    if (subOuter)
-                    {
-                        gui.patchView._patchRenderer.viewBox.storeCurrentSubPatch(newOps[0].patchId.get());
-                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
-                    }
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
@@ -454,8 +440,6 @@ subPatchOpUtil.addPortToSubpatch = (opId, port, options) =>
 {
     options = options || {};
     // const loadingModal = gui.startModalLoading("Adding port");
-    const oldSubPatchId = gui.patchView.getCurrentSubPatch();
-    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
     gui.patchView.unselectAllOps();
 
@@ -506,13 +490,6 @@ subPatchOpUtil.addPortToSubpatch = (opId, port, options) =>
                         const newOp = newOps[0];
                         gui.patchView.unselectAllOps();
                         gui.opParams.refresh();
-                        if (subOuter)
-                        {
-                            // the reloaded op has a new subpatch id, keep the view instead of centering on it
-                            gui.patchView._patchRenderer.viewBox.storeCurrentSubPatch(newOp.patchId.get());
-                            gui.patchView.setCurrentSubPatch(newOp.patchId.get());
-                        }
-
                         gui.corePatch().clearSubPatchCache(newOp.patchId.get());
                         gui.corePatch().buildSubPatchCache();
 
@@ -778,10 +755,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
     /** @type {{txt: string, level: number, id: string, options: any}} */
     let erro = null;
 
-    const a = {};
-    gui.patchView._patchRenderer.viewBox.serialize(a);
-    const viewbox = a.viewBoxesGl[oldSubId];
-
     ops.forEach((opBase) =>
     {
         const op = /** @type {UiOp} */ (opBase);
@@ -800,7 +773,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 
     const subId = utils.shortId();
     const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
-    const oldSubPatchId = gui.patchView.getCurrentSubPatch();
 
     const origOpsBounds = gui.patchView.getSubPatchBounds(gui.patchView.getCurrentSubPatch());
     if (origOpsBounds.maxAxis > 10000000)
@@ -845,15 +817,6 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
                         {
                             gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
                             gui.corePatch().clearSubPatchCache(newOp.patchId.get());
-
-                            if (refNewOp)
-                            {
-                                gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId), () =>
-                                {
-                                    gui.patchView._patchRenderer.viewBox.scrollTo(viewbox.x, viewbox.y, false);
-                                    gui.patchView._patchRenderer.viewBox.animateZoom(viewbox.z, 0.01);
-                                });
-                            }
 
                             if (options.next)options.next();
                             gui.savingTitleAnimEnd();

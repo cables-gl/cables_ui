@@ -443,10 +443,21 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "executeop" });
 
+        const curSubPatchId = gui.patchView.getCurrentSubPatch();
+
         this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(name, (num, newOps, refNewOp) =>
             {
+                // reloading gives subpatch ops a new subpatch id, follow it when we are inside and keep the view
+                const followOp = newOps.find((op) => { return op.oldSubPatchIds && op.oldSubPatchIds.includes(curSubPatchId); });
+                if (followOp)
+                {
+                    const viewBox = gui.patchView._patchRenderer.viewBox;
+                    viewBox.storeCurrentSubPatch(followOp.patchId.get());
+                    gui.patchView.setCurrentSubPatch(followOp.patchId.get(), () => { viewBox.animateZoom(viewBox.zoom, 0.01); });
+                }
+
                 for (let i = 0; i < newOps.length; i++) if (newOps[i].checkLinkTimeWarnings)newOps[i].checkLinkTimeWarnings();
 
                 if (newOps.length > 0)
