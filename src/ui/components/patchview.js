@@ -1519,7 +1519,7 @@ export default class PatchView extends Events
     getSubPatches(sort) // flat list
     {
         let foundPatchIds = [];
-        const foundBlueprints = {};
+        const foundSubOps = {};
         let subPatches = [];
         const ops = gui.corePatch().ops;
 
@@ -1546,7 +1546,7 @@ export default class PatchView extends Events
             }
             if (ops[i].isSubPatchOp() == 1 && ops[i].uiAttribs)
             {
-                foundBlueprints[ops[i].id] = ops[i];
+                foundSubOps[ops[i].id] = ops[i];
             }
         }
 
@@ -1597,15 +1597,15 @@ export default class PatchView extends Events
             }
         }
 
-        for (const blueprintId in foundBlueprints)
+        for (const subpatchId in foundSubOps)
         {
-            const blueprintOp = foundBlueprints[blueprintId];
-            const blueprintName = blueprintOp.uiAttribs.extendTitle || "loading...";
+            const subpatchOp = foundSubOps[subpatchId];
+            const name = subpatchOp.uiAttribs.extendTitle || "loading...";
             subPatches.push(
                 {
-                    "name": "Blueprint: " + blueprintName,
-                    "id": blueprintOp.uiAttribs ? blueprintOp.uiAttribs.blueprintSubpatch : null,
-                    "opId": blueprintOp.id,
+                    "name": "Blueprint: " + name,
+                    "id": subpatchOp.uiAttribs ? subpatchOp.uiAttribs.blueprintSubpatch : null,
+                    "opId": subpatchOp.id,
                     "type": "blueprint"
                 });
         }
@@ -3370,18 +3370,10 @@ export default class PatchView extends Events
         setValues(newValues);
     }
 
-    // getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
-    // {
-    //     const ops = gui.corePatch().ops;
-    //     for (let i = 0; i < ops.length; i++)
-    //         if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].uiAttribs.blueprintSubpatch == bpSubpatchId)
-    //             return ops[i];
-    // }
-
     /**
      * @param {string} subid
      */
-    getAllOpsInBlueprint(subid)
+    getAllOpsInSubPatch(subid)
     {
         const foundOps = [];
         const ops = gui.corePatch().ops;
