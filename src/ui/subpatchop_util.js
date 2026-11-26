@@ -725,7 +725,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 
 subPatchOpUtil._getSubPatchSerialized = function (oldSubId, newSubId)
 {
-    const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
+    const ops = gui.patchView.getAllOpsInSubPatch(oldSubId);
     const o = { "ops": [] };
 
     ops.forEach((op) =>
@@ -749,7 +749,7 @@ subPatchOpUtil.updateSubPatchOpAttachment = (newOp, options = {}) =>
 
     gui.savingTitleAnimStart("Saving Subpatch Op...");
 
-    const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
+    const ops = gui.patchView.getAllOpsInSubPatch(oldSubId);
     let hasNoSaveError = false;
 
     /** @type {{txt: string, level: number, id: string, options: any}} */
