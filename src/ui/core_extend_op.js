@@ -368,7 +368,7 @@ class UiOp extends Op
     {
         if (!gui.finishedLoading()) return;
 
-        if (this.isInBlueprint2())
+        if (this.isInSubpatchop())
         {
             const outer = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
             if (outer)
@@ -641,21 +641,25 @@ class UiOp extends Op
         return lowestOp;
     }
 
+    /**
+     * deprecated, kept for compatibility reasons...
+     * @deprecated
+     */
     isBlueprint2()
     {
-        if (this.storage.blueprintVer === 2) return this.patchId.get();
+        return this.isInSubpatchop();
     }
 
-    isInBlueprint2()
+    isInSubpatchop()
     {
         if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == Patch.DEFAULT_SUBPATCHID) return false;
 
         const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
         if (sop)
         {
-            if (sop.isBlueprint2()) return sop.isBlueprint2();
+            if (sop.isInSubpatchop()) return sop.isInSubpatchop();
 
-            const bp2 = sop.isInBlueprint2();
+            const bp2 = sop.isInSubpatchop();
             if (bp2) return bp2;
         }
 

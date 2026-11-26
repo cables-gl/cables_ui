@@ -1151,7 +1151,7 @@ export default class PatchSaveServer extends Events
             {
                 blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 
-                if (op.patchId && op.isInBlueprint2())
+                if (op.patchId && op.isInSubpatchop())
                 {
                     blueprintIds.push(op.patchId.get());
                 }

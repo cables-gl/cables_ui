@@ -138,7 +138,7 @@ export class patchStructureQuery
             if (gui.patchView.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
             else sub.rowClass = "";
 
-            if (subOp.isSubPatchOp() || subOp.isInBlueprint2())
+            if (subOp.isSubPatchOp() || subOp.isInSubpatchop())
             {
                 sub.blueprintVer = subOp.isSubPatchOp();
                 sub.icon = "folder";

@@ -1462,14 +1462,11 @@ export default class PatchView extends Events
             {
                 if (ops[i].patchId.get() == subId)
                 {
-                    let type = "subpatch";
-                    if (ops[i].isSubPatchOp()) type = "blueprint_subpatch2";
-
                     const patchInfo = {
                         "name": ops[i].name,
                         "patchid": ops[i].patchId.get(),
                         // "id": ops[i].patchId.get(),
-                        "type": type
+                        "type": "subpatch"
                     };
 
                     arr.push(patchInfo);
@@ -1650,34 +1647,7 @@ export default class PatchView extends Events
                 str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].patchid + "');\">" + names[i].name + "</a>";
         }
 
-        if (names.length > 0)
-        {
-            if (names[0].type == "blueprint_subpatch")
-            {
-                this._patchRenderer.greyOut = true;
-                let blueprintPatchId = names[0].blueprintPatchId;
-                if (!blueprintPatchId)
-                {
-                    const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
-                    if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
-                }
-                let bpText = "<span class=\"icon icon-external\"></span> Open patch";
-                let bpClick = "window.open('" + platform.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
-                if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
-                {
-                    bpText = "Go to subpatch";
-                    let subpatchId = names[0].blueprintLocalSubpatch;
-                    if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchParamPanel.show();";
-                }
-                str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
-
-                gui.restriction.setMessage("blueprint", "This is a blueprint subpatch, changes will not be saved!");
-            }
-        }
-        else
-        {
-            gui.restriction.setMessage("blueprint", null);
-        }
+        if (names.length === 0) gui.restriction.setMessage("blueprint", null);
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }
@@ -3417,7 +3387,7 @@ export default class PatchView extends Events
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].isInBlueprint2() == subid || ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+            if (ops[i].isInSubpatchop() == subid || ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
         }
         return foundOps;
     }

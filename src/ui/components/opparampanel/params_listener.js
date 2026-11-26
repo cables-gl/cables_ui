@@ -781,7 +781,7 @@ class ParamsListener extends Events
 
             // this._log.log("port.op.uiAttribs",);
 
-            if (port.op.isInBlueprint2() && port.op.objName.indexOf("Ops.Ui.") == -1)
+            if (port.op.isInSubpatchop() && port.op.objName.indexOf("Ops.Ui.") == -1)
             {
                 items.push(
                     {
@@ -789,7 +789,7 @@ class ParamsListener extends Events
                         "iconClass": "",
                         "func": () =>
                         {
-                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
+                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInSubpatchop());
 
                             // this._log.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
                             if (!gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch))
