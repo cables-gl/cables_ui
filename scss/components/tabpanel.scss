@@ -287,6 +287,27 @@
     .portDragGhost {
         opacity: 0.3;
     }
+
+    .portsTable {
+        td {
+            overflow-wrap: anywhere;
+        }
+
+        td:first-child,
+        td:last-child {
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .portDefaultValue {
+            display: inline-block;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: bottom;
+        }
+    }
 }
 
 .fileTypeColor_gl {

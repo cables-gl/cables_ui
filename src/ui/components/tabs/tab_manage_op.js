@@ -323,7 +323,17 @@ export default class TabManageOp
                 {
                     portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
 
-                    const inputs = portJson.ports.filter((p) => { return p.dir == 0; });
+                    const inputs = [];
+                    for (const p of portJson.ports)
+                    {
+                        if (p.dir != 0) continue;
+
+                        let displayValue = p.value;
+                        if (typeof p.value == "number") displayValue = String(Math.round(p.value * 1000) / 1000);
+
+                        inputs.push({ ...p, "displayValue": displayValue });
+                    }
+
                     const outputs = portJson.ports.filter((p) => { return p.dir != 0; });
                     if (inputs.length) portGroups.push({ "title": "Inputs", "ports": inputs });
                     if (outputs.length) portGroups.push({ "title": "Outputs", "ports": outputs });

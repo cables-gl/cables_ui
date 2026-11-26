@@ -60,7 +60,7 @@
                 <span class="error">Please save your subpatch to make changes to ports!</span>
             {{/if}}
 
-            <table class="table" id="{{viewId}}_ports" style="{{#if subPatchSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}">
+            <table class="table portsTable" id="{{viewId}}_ports" style="{{#if subPatchSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}">
                 {{#each portGroups}}
                 <thead>
                     <tr>
@@ -89,7 +89,7 @@
                     </td>
                     <td>
                         {{#if value}}
-                            Default: {{value}}<br/>
+                            Default: <span class="portDefaultValue" title="{{value}}">{{displayValue}}</span><br/>
                         {{/if}}
                         {{#if addUiAttribs}}
                             UiAttribs: {{json addUiAttribs}}<br/>
