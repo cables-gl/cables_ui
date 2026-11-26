@@ -1688,7 +1688,7 @@ class CmdPatch
 
         const dialogOptions = {
             "title": "Create operator",
-            "shortName": subPatchOpUtil.getAutoName(true),
+            "shortName": suggestedNamespace + subPatchOpUtil.getAutoName(true),
             "type": "patch",
             "suggestedNamespace": suggestedNamespace,
             "showReplace": false,
