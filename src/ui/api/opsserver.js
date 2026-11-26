@@ -445,7 +445,7 @@ export default class ServerOps
 
         this.loadOpDependencies(name, () =>
         {
-            gui.corePatch().reloadOp(name, (num, newOps) =>
+            gui.corePatch().reloadOp(name, (num, newOps, refNewOp) =>
             {
                 for (let i = 0; i < newOps.length; i++) if (newOps[i].checkLinkTimeWarnings)newOps[i].checkLinkTimeWarnings();
 
@@ -456,7 +456,7 @@ export default class ServerOps
                 gui.jobs().finish("executeop");
 
                 gui.savedState.resume();
-                if (next) next(newOps, options.refOldOp);
+                if (next) next(newOps, options.refOldOp, refNewOp);
                 gui.corePatch().emitEvent("opReloaded", name, newOps[0]);
             }, options.refOldOp);
         }, reloadDependencies);

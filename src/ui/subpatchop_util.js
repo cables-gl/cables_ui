@@ -499,7 +499,7 @@ subPatchOpUtil.addPortToSubpatch = (opId, port, options) =>
             {
                 // loadingModal.setTask("reload op1");
 
-                gui.serverOps.execute(opId, (newOps) =>
+                gui.serverOps.execute(opId, (newOps, _refOldOp, refNewOp) =>
                 {
                     subPatchOpUtil.onSubPatchLoaded(newOps[0].patchId.get(), () =>
                     {
@@ -536,13 +536,13 @@ subPatchOpUtil.addPortToSubpatch = (opId, port, options) =>
                         }
 
                         gui.savingTitleAnimEnd();
-                        if (options.cb)options.cb(newPortJson, newOp);
+                        if (options.cb)options.cb(newPortJson, newOp, refNewOp);
 
                         const outerOp = gui.patchView.getSubPatchOuterOp(newOp.patchId.get());
 
                         subPatchOpUtil.updateSubPatchOpAttachment(outerOp, { "oldSubId": newOp.patchId.get() });
                     });
-                });
+                }, { "refOldOp": options.refOldOp });
             });
         }
     );
@@ -652,7 +652,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 
     const html = getHandleBarHtml("dialog_createport", { "portId": portId, "port": portData, "uiAttribs": uiAttribs, "otherUiAttribs": otherUiAttribs });
 
-    new ModalDialog({ "html": html });
+    const dialog = new ModalDialog({ "html": html });
 
     const eleType = ele.byId("createPortType");
     const eleDisplay = ele.byId("createPortDisplay");
@@ -741,6 +741,7 @@ subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
             subPatchOpUtil.setPortDisplay(port, eleDisplay.value);
             subPatchOpUtil.setPortObjType(port, ele.byId("createPortObjType").value);
 
+            dialog.close();
             subPatchOpUtil.portJsonUtil(opId, portId, { "port": port });
         });
 };

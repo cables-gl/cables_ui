@@ -2463,8 +2463,11 @@ export default class PatchView extends Events
                 {
                     subPatchOpUtil.addPortToSubpatch(options.op.opId, p, {
                         "reverseDir": !isInnerOp,
-                        "cb": (newPortJson, newOp, sugg) =>
-                        {}
+                        "refOldOp": isInnerOp ? null : op2,
+                        "cb": (newPortJson, newOp, refNewOp) =>
+                        {
+                            if (refNewOp) this._p.link(p.op, p.name, refNewOp, newPortJson.id);
+                        }
                     });
                 }
                 else
