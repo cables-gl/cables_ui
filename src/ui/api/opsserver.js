@@ -131,6 +131,13 @@ export default class ServerOps
         });
         gui.corePatch().on(ServerOps.EVENT_OP_RENAME_FINISHED, (newOp) =>
         {
+            // op moved, no need to reload code, update opselect
+            if (newOp.oldName === newOp.objName)
+            {
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
+                return;
+            }
 
             this.#log.info("renamed op" + newOp.objName + "to" + newOp.oldName);
             this.loadOp(newOp, () =>
@@ -1138,16 +1145,21 @@ export default class ServerOps
      * @param {string} newName
      * @param {function(string,object):void} cb
      * @param {string} [opTargetDir]
+     * @param {string} [opId]
      */
-    rename(oldName, newName, cb, opTargetDir)
+    rename(oldName, newName, cb, opTargetDir, opId = null)
     {
         if (!platform.frontendOptions.opRenameInEditor) return cb("renaming ops is not possible on this platform");
 
-        const doc = gui.opDocs.getOpDocByName(oldName);
-        if (!doc) return cb("op not found: " + oldName);
+        if (!opId)
+        {
+            const doc = gui.opDocs.getOpDocByName(oldName);
+            if (!doc) return cb("op not found: " + oldName);
+            opId = doc.id;
+        }
 
         const renameRequest = {
-            "oldId": doc.id,
+            "oldId": opId,
             "newName": newName
         };
         if (opTargetDir) renameRequest.opTargetDir = opTargetDir;

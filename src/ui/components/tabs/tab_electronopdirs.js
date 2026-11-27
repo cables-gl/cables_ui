@@ -7,6 +7,7 @@ import { platform } from "../../platform.js";
 import { editorSession } from "../../elements/tabpanel/editor_session.js";
 import { contextMenu } from "../../elements/contextmenu.js";
 import { CmdPatch } from "../../commands/cmd_patch.js";
+import { ModalOpMove } from "../../dialogs/modalopmove.js";
 
 export default class ElectronOpDirs
 {
@@ -44,7 +45,9 @@ export default class ElectronOpDirs
                 {
                     if (dir.removable) dir.showOptions = true;
                     if (dir.numUsedOps) dir.showOptions = true;
-                    templateVars.push(dir);
+                    const ops = [];
+                    if (dir.opNames) dir.opNames.forEach((opName) => { ops.push({ "opName": opName, "opId": dir.opIds ? dir.opIds[opName] : null }); });
+                    templateVars.push({ ...dir, "ops": ops });
                 });
                 const html = getHandleBarHtml("tab_electron_opdirs", { "dirs": templateVars });
                 this._tab.html(html);
@@ -76,6 +79,17 @@ export default class ElectronOpDirs
                     const contextItems = [];
                     const opDir = opDirs[dataset.index];
                     if (!opDir) return;
+
+                    if (dataset.dir)
+                    {
+                        contextItems.push({
+                            "title": "Open folder",
+                            "func": () =>
+                            {
+                                platform.talkerAPI.send("openDir", { "dir": dataset.dir });
+                            }
+                        });
+                    }
 
                     if (opDir.type === "user" && dataset.index !== "0")
                     {
@@ -129,6 +143,15 @@ export default class ElectronOpDirs
                     }
 
                     contextMenu.show({ "items": contextItems }, e.target);
+                });
+
+                ele.clickables(this._tab.contentEle, ".moveop", (e, dataset) =>
+                {
+                    new ModalOpMove(dataset.opname, dataset.opid, dataset.dir, opDirs, () =>
+                    {
+                        this.show();
+                        this._loadOpsInDirs();
+                    });
                 });
             }
         });

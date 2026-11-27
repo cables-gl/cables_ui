@@ -1,0 +1,11 @@
+<script id="dialog_moveop" type="text/x-handlebars-template">
+    Move <b>{{opName}}</b> to another op directory.
+    <br/><br/>
+    <label for="moveOpTargetDir">Directory:</label><br/>
+    <select id="moveOpTargetDir" name="moveOpTargetDir" style="border-radius: 2px;">
+        {{#each opDirs}}
+            <option value="{{dir}}" {{#compare dir '==' ../currentDir}}selected="true"{{/compare}}>{{dir}}</option>
+        {{/each}}
+    </select>
+    <br/><br/>
+</script>

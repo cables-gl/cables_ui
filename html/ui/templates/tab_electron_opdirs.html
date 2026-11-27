@@ -29,11 +29,11 @@
                         <td>{{#if showOptions}}<a class="opdirthreedot" data-tt="more options" data-dir="{{dir}}" data-index="{{@index}}"><span class="icon icon-three-dots"></span></a>{{/if}}</td>
                     </tr>
                     {{#compare type '!=' 'dev' }}
-                        {{#each opNames}}
+                        {{#each ops}}
                         <tr class="row">
                             <td></td>
                             <td></td>
-                            <td colspan="4"><a class="link" onclick="CABLES.CMD.OP.manageOp('{{.}}');">{{.}}</a></td>
+                            <td colspan="4"><span class="icon icon-folder-input icon-0_75x moveop clickable" data-dir="{{../dir}}" data-opname="{{opName}}" data-opid="{{opId}}"></span>&nbsp;<a class="link" onclick="CABLES.CMD.OP.manageOp('{{opName}}');">{{opName}}</a></td>
                         </tr>
                         {{/each}}
                     {{/compare}}
