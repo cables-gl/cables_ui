@@ -650,11 +650,17 @@ class UiOp extends Op
         return this.isSubPatch();
     }
 
+    /**
+     * @returns {string|undefined} patchId of the subpatch this op contains, if it is a subpatch op
+     */
     isSubPatch()
     {
         if (this.storage.blueprintVer === 2) return this.patchId.get();
     }
 
+    /**
+     * @returns {string|false} patchId of the nearest subpatch op this op is inside, also through normal subpatches
+     */
     isInSubpatchop()
     {
         if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == Patch.DEFAULT_SUBPATCHID) return false;
@@ -662,7 +668,7 @@ class UiOp extends Op
         const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
         if (sop)
         {
-            if (sop.isSubPatch()) return true;
+            if (sop.isSubPatch()) return sop.isSubPatch();
 
             const bp2 = sop.isInSubpatchop();
             if (bp2) return bp2;

@@ -497,7 +497,7 @@ class CmdPatch
         const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
         if (subOuter)
         {
-            const bp = subOuter.isBlueprint2() || subOuter.isInSubpatchop();
+            const bp = subOuter.isSubPatch() || subOuter.isInSubpatchop();
             if (bp)
             {
                 gui.showLoadingProgress(true);
