@@ -647,7 +647,12 @@ class UiOp extends Op
      */
     isBlueprint2()
     {
-        return this.isInSubpatchop();
+        return this.isSubPatch();
+    }
+
+    isSubPatch()
+    {
+        if (this.storage.blueprintVer === 2) return this.patchId.get();
     }
 
     isInSubpatchop()
@@ -657,7 +662,7 @@ class UiOp extends Op
         const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
         if (sop)
         {
-            if (sop.isInSubpatchop()) return sop.isInSubpatchop();
+            if (sop.isSubPatch()) return true;
 
             const bp2 = sop.isInSubpatchop();
             if (bp2) return bp2;
